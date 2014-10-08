@@ -3,6 +3,9 @@ class Coordinate(tuple) :
     def __new__(cls, *args):
         return tuple.__new__(cls, args)
 
+    def __reduce__(self) :
+        return (self.__class__, tuple(self))
+
     def __add__(self, other):
         return tuple(sum(x) for x in zip(self, other))
 

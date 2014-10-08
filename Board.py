@@ -14,8 +14,6 @@ BLACK = False
 
 class Board :
 
-    #boardArray = []
-
     def __init__(self) :
         backRowBlack = [Rook(self, BLACK), Knight(self, BLACK), Bishop(self, BLACK), King(self, BLACK), Queen(self, BLACK), Bishop(self, BLACK), Knight(self, BLACK), Rook(self, BLACK)]
         frontRowBlack = []
@@ -40,8 +38,13 @@ class Board :
             pawn.getPossibleMoves()
         pass
 
+        self.history = []
+
     def __str__(self) :
         return '\n'.join(' '.join(str(item) for item in row) for row in self.boardArray)
+
+    def undoLastMove(self) :
+        self.boardArray = self.history.pop()
 
     def makeStringRep(self) :
         stringRep = ''
@@ -103,10 +106,12 @@ class Board :
                     yield self.boardArray[row][col]
 
     def makeMove(self, move) :
+        self.history.append(self.boardArray)
         pieceToMove = self.pieceAtPosition(move.oldPos)
         self.movePieceToPosition(pieceToMove, move.newPos)
         if isinstance(pieceToMove, Pawn) :
             pieceToMove.hasMoved = True
+        
 
     def checkForKings(self) :
         kingsFound = 0
