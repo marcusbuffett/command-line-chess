@@ -7,6 +7,7 @@ from Queen import Queen
 from Piece import Piece
 from Coordinate import Coordinate as C
 from termcolor import colored
+import copy
 
 
 WHITE = True
@@ -25,7 +26,6 @@ class Board :
         for _ in range(8) :
             frontRowWhite.append(Pawn(self, WHITE))
         backRowWhite = [Rook(self, WHITE), Knight(self, WHITE), Bishop(self, WHITE), King(self, WHITE), Queen(self, WHITE), Bishop(self, WHITE), Knight(self, WHITE), Rook(self, WHITE)]
-        #self.boardArray = [backRowBlack, frontRowBlack, emptyRow, emptyRow, emptyRow, emptyRow, frontRowWhite, backRowWhite]
         self.boardArray = []
         self.boardArray.append(backRowBlack)
         self.boardArray.append(frontRowBlack)
@@ -41,26 +41,50 @@ class Board :
         self.history = []
 
     def __str__(self) :
-        return '\n'.join(' '.join(str(item) for item in row) for row in self.boardArray)
+        return self.makeStringRep(self.boardArray)
 
     def undoLastMove(self) :
-        self.boardArray = self.history.pop()
+        lastMove, pieceTaken = self.history.pop()
+        pieceToMoveBack = self.pieceAtPosition(lastMove.newPos)
+        self.movePieceToPosition(pieceToMoveBack, lastMove.oldPos)
+        if pieceTaken :
+            pieceTaken.board = self
+            self.addPieceToPosition(pieceTaken, lastMove.newPos)
 
-    def makeStringRep(self) :
+    def addMoveToHistory(self, move) :
+
+        self.history.append([move, copy.deepcopy(self.pieceAtPosition(move.newPos))])
+
+    def makeStringRep(self, boardArray) :
         stringRep = ''
         for x in range(8) :
             for y in range(8) :
-                coord = self.locationInArrayToCoord([x, y])
-                piece = self.pieceAtPosition(coord)
-                if piece is not None:
-                    pieceRep = self.pieceAtPosition(coord).stringRep
-                    if piece.side == WHITE :
-                        stringRep += colored(pieceRep, 'blue')
-                    else :
-                        stringRep += colored(pieceRep, 'red')
+                piece =  boardArray[x][y]
+                if piece is not None :
+                    side = piece.side
+                    color = 'blue' if side == WHITE else 'red'
+                pieceRep = ''
+                if isinstance(piece, Pawn) :
+                    pieceRep = colored('P', color)
+
+                elif isinstance(piece, Rook) :
+                    pieceRep = colored('R', color)
+
+                elif isinstance(piece, Knight) :
+                    pieceRep = colored('N', color)
+
+                elif isinstance(piece, Bishop) :
+                    pieceRep = colored('B', color)
+
+                elif isinstance(piece, King) :
+                    pieceRep = colored('K', color)
+
+                elif isinstance(piece, Queen) :
+                    pieceRep = colored('Q', color)
+
                 else :
-                    stringRep += 'x'
-                stringRep += ' '
+                    pieceRep = 'x'
+                stringRep += pieceRep + ' '
             stringRep += '\n'
         return stringRep
 
@@ -106,11 +130,9 @@ class Board :
                     yield self.boardArray[row][col]
 
     def makeMove(self, move) :
-        self.history.append(self.boardArray)
+        self.addMoveToHistory(move)
         pieceToMove = self.pieceAtPosition(move.oldPos)
         self.movePieceToPosition(pieceToMove, move.newPos)
-        if isinstance(pieceToMove, Pawn) :
-            pieceToMove.hasMoved = True
         
 
     def checkForKings(self) :

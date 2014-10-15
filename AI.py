@@ -22,10 +22,37 @@ class AI :
                 for move in piece.getPossibleMoves() :
                     yield move
 
-    def getAllMovesLegal (self, side, board) :
+
+    def testIfLegalBoard(self, board, side) :
         for move in self.getAllMovesUnfiltered(side, board) :
+            board.makeMove(move)
+            kingsPresent = board.checkForKings()
+            board.undoLastMove()
+            if kingsPresent == False :
+                return False
+        return True
+
+
+    def moveIsLegal(self, move, board) :
+        side = board.pieceAtPosition(move.oldPos).side 
+        board.makeMove(move)
+        isLegal = self.testIfLegalBoard(board, not side)
+        board.undoLastMove()
+        return isLegal  
+
+
+    def getAllMovesLegal (self, side, board) :
+        unfilteredMoves = self.getAllMovesUnfiltered(side, board)
+        for move in unfilteredMoves :
             if self.moveIsLegal(move, board) :
                 yield move
+
+
+    def getFirstMove(self, side, board) :
+        move = list(self.getAllMovesLegal(side, board))[0]
+        return move
+
+
 
     def getAllMovesLegalConcurrent (self, side, board) :
         p = Pool(8)
@@ -37,38 +64,27 @@ class AI :
         legalMoves = [move for move in p.starmap(self.returnMoveIfLegal, unfilteredMovesWithBoard) if move is not None]
         p.close()
         p.join()
-        print([str(move) for move in legalMoves])
+        #print([str(move) for move in legalMoves])
         return legalMoves
 
-    def moveIsLegal(self, move, board) :
-        copyBoard = copy.deepcopy(board)
-        side = copyBoard.pieceAtPosition(move.oldPos).side 
-        copyBoard.makeMove(move)
-        return self.testIfLegalBoard(copyBoard, not side)
 
     def returnMoveIfLegal(self, move, board) :
         #print('MOVE : \n' + str(move))
         #print('BOARD : \n' + str(board.makeStringRep()))
-        side = board.pieceAtPosition(move.oldPos).side 
-        board.makeMove(move)
-        if self.testIfLegalBoard(board, not side) :
+        if self.moveIsLegal(move, board) :
             return move
 
-    def testIfLegalBoard(self, board, side) :
-        for move in self.getAllMovesUnfiltered(side, board) :
-            boardCopy = copy.deepcopy(board)
-            boardCopy.makeMove(move)
-            if boardCopy.checkForKings() == False :
-                return False
-        return True
 
     def getRandomMove(self, side, board) :
-        randomMove = random.choice(list(self.getAllMovesLegal(side, board)))
+        legalMoves = list(self.getAllMovesLegal(side, board))
+        print(legalMoves)
+        randomMove = random.choice(legalMoves)
         return randomMove
 
-    def getRandomMoveConcurrent(self, side, board) :
-        randomMove = random.choice(self.getAllMovesLegalConcurrent(side, board))
-        return randomMove
+
+    #def getRandomMoveConcurrent(self, side, board) :
+        #randomMove = random.choice(self.getAllMovesLegalConcurrent(side, board))
+        #return randomMove
 
     def makeRandomMove(self, side, board) :
         moveToMake = self.getRandomMove(side, board)
