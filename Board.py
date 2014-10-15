@@ -134,7 +134,7 @@ class Board :
     def getAllPieces(self) :
         for row in range(8) :
             for col in range(8) :
-                if isinstance(self.boardArray[row][col], Piece) :
+                if self.boardArray[row][col] :
                     yield self.boardArray[row][col]
 
     def makeMove(self, move) :
@@ -158,7 +158,7 @@ class Board :
     def checkForKings(self) :
         kingsFound = 0
         for piece in self.getAllPieces() :
-            if isinstance(piece, King) :
+            if piece.stringRep == 'K' :
                 kingsFound += 1
         if kingsFound == 2 :
             return True
