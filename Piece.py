@@ -32,6 +32,9 @@ class Piece :
                         yield Move(pos, newPos)
                     return
 
+    def copy(self) :
+        return self.__class__(self.board, self.side)
+
     
     
 

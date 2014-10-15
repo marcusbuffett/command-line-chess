@@ -20,41 +20,54 @@ board = Board()
 ai = AI()
 currentSide = WHITE
 
-print("What side would you like to play as?")
-chosenSide = input()
-if 'w' in chosenSide.lower() :
-    side = WHITE
-else :
-    side = BLACK
-#chosenSide = WHITE
+#print("What side would you like to play as?")
+#chosenSide = input()
+#if 'w' in chosenSide.lower() :
+    #side = WHITE
+#else :
+    #side = BLACK
+
+chosenSide = WHITE
 
 print(board)
 
-while True :
-    move = None
-    if currentSide == playerSide :
-        hasChosenValidMove = False
-
-        while (not hasChosenValidMove) :
-            moveInput = input("Please input your move : ")
-            try :
-                move = Move.moveFromHumanCoords(moveInput)
-            except :
-                print("Invalid input, please enter a valid move in long form notation (ex. d1e2)")
-                continue
-            if ai.isValidMove(move, currentSide, board) :
-                hasChosenValidMove = True
+#while True :
+    #move = None
     #if currentSide == playerSide :
-       #move = ai.getRandomMove(currentSide, board) 
+        #hasChosenValidMove = False
+
+        #while (not hasChosenValidMove) :
+            #moveInput = input("Please input your move : ")
+            #if moveInput == 'r' :
+                #move = ai.getRandomMove(currentSide, board)
+                #hasChosenValidMove = True
+                #continue
+            #try :
+                #move = Move.moveFromHumanCoords(moveInput)
+            #except :
+                #print("Invalid input, please enter a valid move in long form notation (ex. d1e2)")
+                #continue
+            #if ai.isValidMove(move, currentSide, board) :
+                #hasChosenValidMove = True
+    ##if currentSide == playerSide :
+       ##move = ai.getRandomMove(currentSide, board) 
         
-    else :
-       move = ai.getBestMove(currentSide, board) 
+    #else :
+       #move = ai.getBestMove(currentSide, board) 
 
-    board.makeMove(move)
-    currentSide = not currentSide
+    #board.makeMove(move)
+    #currentSide = not currentSide
+    #print(board)
+    ##print(board.getPointAdvantageOfSide(currentSide))
+    ##print(sys.getsizeof(ai))
+    ##print(sys.getsizeof(board))
+
+
+side = WHITE
+for _ in range(50) :
+    board.makeMove(ai.getBestMove(side, board))
     print(board)
-    #print(board.getPointAdvantageOfSide(currentSide))
-    #print(sys.getsizeof(ai))
-    #print(sys.getsizeof(board))
+    side = not side
 
+print(ai.movesAnalyzed)
 

@@ -48,11 +48,20 @@ class Board :
         pieceToMoveBack = self.pieceAtPosition(lastMove.newPos)
         self.movePieceToPosition(pieceToMoveBack, lastMove.oldPos)
         if pieceTaken :
-            pieceTaken.board = self
+            #pieceTaken.board = self
             self.addPieceToPosition(pieceTaken, lastMove.newPos)
 
     def addMoveToHistory(self, move) :
-        self.history.append([move, copy.deepcopy(self.pieceAtPosition(move.newPos))])
+        #self.history.append([move, copy.deepcopy(self.pieceAtPosition(move.newPos))])
+        
+        pieceAtNewPos = self.pieceAtPosition(move.newPos)
+        if pieceAtNewPos :
+            self.history.append([move, pieceAtNewPos.copy()])
+        else :
+            self.history.append([move, None])
+
+            
+
 
     def makeStringRep(self, boardArray) :
         stringRep = ''

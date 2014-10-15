@@ -13,6 +13,7 @@ BLACK = False
 class AI :
 
     depth = 1
+    movesAnalyzed = 0
     #board = None
     #def __init__(self, board) :
         #self.board = board
@@ -35,6 +36,7 @@ class AI :
 
 
     def moveIsLegal(self, move, board) :
+        self.movesAnalyzed += 1
         side = board.pieceAtPosition(move.oldPos).side 
         board.makeMove(move)
         isLegal = self.testIfLegalBoard(board, not side)
@@ -44,9 +46,15 @@ class AI :
 
     def getAllMovesLegal (self, side, board) :
         unfilteredMoves = self.getAllMovesUnfiltered(side, board)
+        unfilteredMovesCount = 0
+        legalMovesCount = 0
         for move in unfilteredMoves :
+            unfilteredMovesCount += 1
             if self.moveIsLegal(move, board) :
+                legalMovesCount += 1
                 yield move
+        #print("Unfiltered moves count : " + str(unfilteredMovesCount))
+        #print("Legal moves count : " + str(legalMovesCount))
 
 
     def getFirstMove(self, side, board) :
@@ -57,6 +65,7 @@ class AI :
 
     def getAllMovesLegalConcurrent (self, side, board) :
         p = Pool(8)
+        print("SHOULD NOT BE HERE")
         unfilteredMovesWithBoard = [(move, copy.deepcopy(board)) for move in self.getAllMovesUnfiltered(side, board)]
         #for thing in unfilteredMovesWithBoard :
             #print(thing)
