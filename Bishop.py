@@ -8,6 +8,7 @@ BLACK = False
 class Bishop (Piece) :
 
     stringRep = 'B'
+    value = 3
 
     def __init__(self, board, side) :
         super(Bishop, self).__init__(board, side)

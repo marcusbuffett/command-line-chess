@@ -52,7 +52,6 @@ class Board :
             self.addPieceToPosition(pieceTaken, lastMove.newPos)
 
     def addMoveToHistory(self, move) :
-
         self.history.append([move, copy.deepcopy(self.pieceAtPosition(move.newPos))])
 
     def makeStringRep(self, boardArray) :
@@ -133,6 +132,18 @@ class Board :
         self.addMoveToHistory(move)
         pieceToMove = self.pieceAtPosition(move.oldPos)
         self.movePieceToPosition(pieceToMove, move.newPos)
+
+    def getPointValueOfSide(self, side) :
+        points = 0
+        for piece in self.getAllPieces() :
+            if piece.side == side :
+                points += piece.value
+        return points
+
+    def getPointAdvantageOfSide(self, side) :
+        mySideValue = self.getPointValueOfSide(side)
+        otherSideValue = self.getPointValueOfSide(not side)
+        return mySideValue - otherSideValue
         
 
     def checkForKings(self) :

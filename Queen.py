@@ -7,6 +7,7 @@ BLACK = False
 class Queen (Piece) :
 
     stringRep = 'Q'
+    value = 9
 
     def __init__(self, board, side) :
         super(Queen, self).__init__(board, side)

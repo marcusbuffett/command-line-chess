@@ -8,6 +8,7 @@ BLACK = False
 class Knight (Piece) :
 
     stringRep = 'N'
+    value = 3
 
     def __init__(self, board, side) :
         super(Knight, self).__init__(board, side)

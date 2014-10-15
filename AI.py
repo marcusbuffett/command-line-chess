@@ -12,6 +12,7 @@ BLACK = False
 
 class AI :
 
+    depth = 1
     #board = None
     #def __init__(self, board) :
         #self.board = board
@@ -61,11 +62,11 @@ class AI :
             #print(thing)
             #print(thing[0])
         #sys.exit()
-        legalMoves = [move for move in p.starmap(self.returnMoveIfLegal, unfilteredMovesWithBoard) if move is not None]
+        legalMoves = p.starmap(self.returnMoveIfLegal, unfilteredMovesWithBoard)
         p.close()
         p.join()
         #print([str(move) for move in legalMoves])
-        return legalMoves
+        return list(filter(None, legalMoves))
 
 
     def returnMoveIfLegal(self, move, board) :
@@ -77,9 +78,41 @@ class AI :
 
     def getRandomMove(self, side, board) :
         legalMoves = list(self.getAllMovesLegal(side, board))
-        print(legalMoves)
+        #print(legalMoves)
         randomMove = random.choice(legalMoves)
         return randomMove
+    
+    def getBestMove(self, side, board) :
+        legalMoves = self.getAllMovesLegal(side, board)
+        moveTree = {move : {} for move in legalMoves}
+        #print(moveTree)
+
+        bestMoveWithAdvantage = []
+
+        for move in moveTree :
+            board.makeMove(move)
+            pointAdvantage = board.getPointAdvantageOfSide(side)
+            board.undoLastMove()
+            if not bestMoveWithAdvantage :
+                bestMoveWithAdvantage = [move, pointAdvantage]
+                continue
+            if pointAdvantage > bestMoveWithAdvantage[1] :
+                #print("Best move is : " + str(move))
+                #print("Point advantage is : " + str(pointAdvantage))
+                bestMoveWithAdvantage = [move, pointAdvantage]
+        
+        return bestMoveWithAdvantage[0]
+
+    def isValidMove(self, move, side, board) :
+        for legalMove in self.getAllMovesLegal(side, board) :
+            if move == legalMove :
+                return True
+        return False
+
+
+    def recursiveMoveFinder(self, moveTree, bestMove) :
+        pass
+
 
 
     #def getRandomMoveConcurrent(self, side, board) :

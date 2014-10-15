@@ -7,6 +7,7 @@ BLACK = False
 class Rook (Piece) :
 
     stringRep = 'R'
+    value = 5
 
     def __init__(self, board, side) :
         super(Rook, self).__init__(board, side)

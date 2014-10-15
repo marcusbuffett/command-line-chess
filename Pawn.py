@@ -8,6 +8,7 @@ BLACK = False
 class Pawn (Piece) :
 
     stringRep = 'P'
+    value = 1
 
     def __init__(self, board, side) :
         super(Pawn, self).__init__(board, side)
