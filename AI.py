@@ -62,29 +62,33 @@ class AI :
         p = Pool(8)
         print("SHOULD NOT BE HERE")
         unfilteredMovesWithBoard = [(move, copy.deepcopy(self.board)) for move in self.getAllMovesUnfiltered(side)]
-        #for thing in unfilteredMovesWithBoard :
-            #print(thing)
-            #print(thing[0])
-        #sys.exit()
         legalMoves = p.starmap(self.returnMoveIfLegal, unfilteredMovesWithBoard)
         p.close()
         p.join()
-        #print([str(move) for move in legalMoves])
         return list(filter(None, legalMoves))
 
 
     def returnMoveIfLegal(self, move) :
-        #print('MOVE : \n' + str(move))
-        #print('BOARD : \n' + str(board.makeStringRep()))
         if self.moveIsLegal(move) :
             return move
 
     def generateMoveTree(self, side) :
-        moveTree = {}
+        moveTree = {move : {} for move in self.getAllMovesLegal(side)}
+        moveTree = self.populateMoveTree(moveTree, not side, self.depth-1)
+        import pprint
+        pprinter = pprint.PrettyPrinter(indent=4)
+        pprinter.pprint(moveTree)
         
-    def populateMoveTree(self, moveTree, side) :
-        pass
-
+    def populateMoveTree(self, moveTree, side, layersLeft) :
+        if layersLeft > 0 :
+            for move in moveTree :
+                board.makeMove(move)
+                moveTree[move] = {legalMove : {} for legalMove in self.getAllMovesLegal(side)}
+                self.board.undoLastMove()
+                moveTree[move] = self.populateMoveTree(moveTree[move], not side, layersLeft-1)
+            return moveTree
+        else :
+            return moveTree
 
     def getRandomMove(self, side) :
         legalMoves = list(self.getAllMovesLegal(side))
@@ -93,11 +97,18 @@ class AI :
         return randomMove
     
     def getBestMove(self, side) :
-        legalMoves = self.getAllMovesLegal(side)
-        moveTree = {move : {} for move in legalMoves}
-        #print(moveTree)
-
+        moveTree = self.generateMoveTree(side)
         bestMoveWithAdvantage = []
+        return self.bestMoveWithMoveTree(moveTree, side)
+    
+        
+    def bestMoveWithMoveTree(moveTree, side) :
+
+        for move in moveTree :
+            board.makeMove(move)
+            for lowerMove in moveTree[move] :
+                board.makeMove(lowerMove)
+
 
         for move in moveTree :
             self.board.makeMove(move)
@@ -112,6 +123,25 @@ class AI :
                 bestMoveWithAdvantage = [move, pointAdvantage]
         
         return bestMoveWithAdvantage[0]
+
+    def traverseTreeForBestMove(self, side, moveTree, layersTraversed, bestMovesFound) :
+        if layersLeft < self.depth :
+            for move in moveTree :
+                board.makeMove(move)
+                return traverseTreeForBestMove(moveTree[move], layersLeft+1, bestMoveFound)
+        if layersLeft == self.depth :
+            for move in moveTree :
+                board.makeMove(move)
+                pointAdvantage = board.getPointAdvantageOfSide(side)
+                ##TODO
+                previousBestAdvantage = 1
+                return move
+                
+
+
+                
+
+
 
     def isValidMove(self, move, side) :
         for legalMove in self.getAllMovesLegal(side) :
@@ -132,4 +162,11 @@ class AI :
     def makeRandomMove(self, side) :
         moveToMake = self.getRandomMove(side)
         self.board.makeMove(moveToMake)
+
+
+if __name__ == "__main__" :
+    board = Board()
+    ai = AI(board)
+    ai.depth = 3
+    ai.generateMoveTree(True)
 
