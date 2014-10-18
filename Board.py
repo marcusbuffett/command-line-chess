@@ -60,6 +60,8 @@ class Board :
         else :
             self.history.append([move, None])
 
+    def getCurrentSide(self) :
+        return self.pieceAtPosition(self.history[-1][0].newPos).side
             
 
 
@@ -101,6 +103,9 @@ class Board :
             return True
         else :
             return False
+
+    def getSideOfMove(self, move) :
+        return self.pieceAtPosition(move.oldPos).side
 
     def getPositionOfPiece(self, piece) :
         for y in range(8) :
