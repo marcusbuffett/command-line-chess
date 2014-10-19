@@ -13,7 +13,7 @@ class Queen (Piece) :
         super(Queen, self).__init__(board, side)
 
     def getPossibleMoves(self) :
-        currentPosition = self.board.getPositionOfPiece(self)
+        currentPosition = self.position
         board = self.board
 
         # Rook moves

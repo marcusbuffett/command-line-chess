@@ -15,7 +15,7 @@ class Pawn (Piece) :
         self.hasMoved = False
 
     def getPossibleMoves(self) :
-        currentPosition = self.board.getPositionOfPiece(self)
+        currentPosition = self.position
         board = self.board
 
         # Pawn moves one up

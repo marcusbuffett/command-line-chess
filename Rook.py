@@ -14,7 +14,7 @@ class Rook (Piece) :
 
     def getPossibleMoves(self) :
         board = self.board
-        currentPosition = board.getPositionOfPiece(self)
+        currentPosition = self.position
 
         # Rook moves
         directions = [C(0, 1), C(0, -1), C(1, 0), C(-1, 0)]

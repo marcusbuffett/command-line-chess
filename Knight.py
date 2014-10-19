@@ -16,7 +16,7 @@ class Knight (Piece) :
 
     def getPossibleMoves(self) :
         board = self.board
-        currentPos = board.getPositionOfPiece(self)
+        currentPos = self.position
         movements = [C(2, 1), C(2, -1), C(-2, 1), C(-2, -1), C(1, 2), C(1, -2), C(-1, -2), C(-1, 2)]
         for movement in movements :
             newPos = currentPos + movement

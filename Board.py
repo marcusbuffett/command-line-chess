@@ -39,6 +39,11 @@ class Board :
         pass
 
         self.history = []
+        self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
+        for piece in self.pieces :
+            piece.updatePosition()
+
+        self.points = 0
 
     def __str__(self) :
         return self.makeStringRep(self.boardArray)
@@ -50,6 +55,8 @@ class Board :
         if pieceTaken :
             #pieceTaken.board = self
             self.addPieceToPosition(pieceTaken, lastMove.newPos)
+            self.pieces.append(pieceTaken)
+            pieceTaken.updatePosition()
 
     def addMoveToHistory(self, move) :
         #self.history.append([move, copy.deepcopy(self.pieceAtPosition(move.newPos))])
@@ -57,6 +64,11 @@ class Board :
         pieceAtNewPos = self.pieceAtPosition(move.newPos)
         if pieceAtNewPos :
             self.history.append([move, pieceAtNewPos.copy()])
+            self.pieces.remove(pieceAtNewPos)
+            if pieceAtNewPos.side == WHITE :
+                self.points - pieceAtNewPos.value
+            elif pieceAtNewPos.side == BLACK :
+                self.points + pieceAtNewPos.value
         else :
             self.history.append([move, None])
 
@@ -118,17 +130,20 @@ class Board :
         return self.boardArray[x][y]
 
     def movePieceToPosition(self, piece, pos) :
-        oldPos = self.getPositionOfPiece(piece)
+        oldPos = piece.position
         self.addPieceToPosition(piece, pos)
         self.clearPosition(oldPos)
 
     def addPieceToPosition(self, piece, pos) :
         x, y = self.coordToLocationInArray(pos)
         self.boardArray[x][y] = piece
+        piece.position = pos
 
     def clearPosition(self, pos) :
         x, y = self.coordToLocationInArray(pos)
+            #self.pieces.remove(self.boardArray[x][y])
         self.boardArray[x][y] = None
+
         
     def coordToLocationInArray(self, pos) :
         return (7-pos[1], pos[0])
@@ -137,10 +152,11 @@ class Board :
         return (loc[1], 7-loc[0])
 
     def getAllPieces(self) :
-        for row in range(8) :
-            for col in range(8) :
-                if self.boardArray[row][col] :
-                    yield self.boardArray[row][col]
+        return self.pieces
+        #for row in range(8) :
+            #for col in range(8) :
+                #if self.boardArray[row][col] :
+                    #yield self.boardArray[row][col]
 
     def makeMove(self, move) :
         self.addMoveToHistory(move)
@@ -155,14 +171,18 @@ class Board :
         return points
 
     def getPointAdvantageOfSide(self, side) :
-        mySideValue = self.getPointValueOfSide(side)
-        otherSideValue = self.getPointValueOfSide(not side)
-        return mySideValue - otherSideValue
+        if side == WHITE :
+            return self.points
+        if side == BLACK :
+            return -self.points
+        #mySideValue = self.getPointValueOfSide(side)
+        #otherSideValue = self.getPointValueOfSide(not side)
+        #return mySideValue - otherSideValue
         
 
     def checkForKings(self) :
         kingsFound = 0
-        for piece in self.getAllPieces() :
+        for piece in self.pieces :
             if piece.stringRep == 'K' :
                 kingsFound += 1
         if kingsFound == 2 :

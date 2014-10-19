@@ -17,7 +17,7 @@ BLACK = False
 
 playerSide = WHITE
 board = Board()
-ai = AI(board)
+ai = AI(board, WHITE, 2)
 currentSide = WHITE
 
 #print("What side would you like to play as?")
@@ -63,12 +63,12 @@ print(board)
     ##print(sys.getsizeof(board))
 
 
-side = WHITE
-for _ in range(2000) :
-    board.makeMove(ai.getRandomMove(side))
-    #print(board)
-    side = not side
+#side = WHITE
+#for _ in range(2000) :
+    #board.makeMove(ai.getRandomMove(side))
+    ##print(board)
+    #side = not side
 
-print(board)
-print(ai.movesAnalyzed)
+#print(board)
+#print(ai.movesAnalyzed)
 

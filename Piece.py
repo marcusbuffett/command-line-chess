@@ -8,6 +8,8 @@ Y = 1
 
 class Piece :
 
+    position = None
+
     def __init__ (self, board, side) :
         self.board = board
         self.side = side
@@ -32,6 +34,9 @@ class Piece :
                         yield Move(pos, newPos)
                     return
 
+    def updatePosition(self) :
+        self.position = self.board.getPositionOfPiece(self)
+    
     def copy(self) :
         return self.__class__(self.board, self.side)
 

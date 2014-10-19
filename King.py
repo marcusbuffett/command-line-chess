@@ -15,7 +15,7 @@ class King (Piece) :
 
     def getPossibleMoves(self) :
         board = self.board
-        currentPos = board.getPositionOfPiece(self)
+        currentPos = self.position
         movements = [C(0, 1), C(0, -1), C(1, 0), C(-1, 0), C(1, 1), C(1, -1), C(-1, 1), C(-1, -1)]
         for movement in movements :
             newPos = currentPos + movement
