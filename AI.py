@@ -39,6 +39,7 @@ class AI :
             self.movesAnalyzed += 1
             if self.movesAnalyzed % 10000 == 0 :
                 print(self.movesAnalyzed)
+                print(self.board)
             if kingsPresent == False :
                 return False
         return True
@@ -224,12 +225,6 @@ class AI :
                 previousBestAdvantage = 1
                 return move
                 
-
-
-                
-
-
-
     def isValidMove(self, move, side) :
         for legalMove in self.getAllMovesLegal(side) :
             if move == legalMove :
@@ -253,11 +248,9 @@ class AI :
 
 if __name__ == "__main__" :
     mainBoard = Board()
-    ai = AI(mainBoard, True, 3)
+    ai = AI(mainBoard, True, 2)
     print(mainBoard)
     ai.makeBestMove()
     print(mainBoard)
     print(ai.movesAnalyzed)
-    #ai.depth = 3
-    #ai.generateMoveTree(True)
 
