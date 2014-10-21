@@ -15,35 +15,57 @@ BLACK = False
 
 class Board :
 
-    def __init__(self) :
-        backRowBlack = [Rook(self, BLACK), Knight(self, BLACK), Bishop(self, BLACK), King(self, BLACK), Queen(self, BLACK), Bishop(self, BLACK), Knight(self, BLACK), Rook(self, BLACK)]
-        frontRowBlack = []
-        for _ in range(8) :
-            frontRowBlack.append(Pawn(self, BLACK))
-        emptyRow = [None]*8
+    def __init__(self, simple = False) :
+        if not simple :
+            backRowBlack = [Rook(self, BLACK), Knight(self, BLACK), Bishop(self, BLACK), King(self, BLACK), Queen(self, BLACK), Bishop(self, BLACK), Knight(self, BLACK), Rook(self, BLACK)]
+            frontRowBlack = []
+            for _ in range(8) :
+                frontRowBlack.append(Pawn(self, BLACK))
 
-        frontRowWhite = []
-        for _ in range(8) :
-            frontRowWhite.append(Pawn(self, WHITE))
-        backRowWhite = [Rook(self, WHITE), Knight(self, WHITE), Bishop(self, WHITE), King(self, WHITE), Queen(self, WHITE), Bishop(self, WHITE), Knight(self, WHITE), Rook(self, WHITE)]
-        self.boardArray = []
-        self.boardArray.append(backRowBlack)
-        self.boardArray.append(frontRowBlack)
-        for _ in range(4) :
-            self.boardArray.append([None] * 8)
-        self.boardArray.append(frontRowWhite)
-        self.boardArray.append(backRowWhite)
-        
-        for pawn in frontRowBlack :
-            pawn.getPossibleMoves()
-        pass
+            frontRowWhite = []
+            for _ in range(8) :
+                frontRowWhite.append(Pawn(self, WHITE))
 
-        self.history = []
-        self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
-        for piece in self.pieces :
-            piece.updatePosition()
+            backRowWhite = [Rook(self, WHITE), Knight(self, WHITE), Bishop(self, WHITE), King(self, WHITE), Queen(self, WHITE), Bishop(self, WHITE), Knight(self, WHITE), Rook(self, WHITE)]
+            self.boardArray = []
+            self.boardArray.append(backRowBlack)
+            self.boardArray.append(frontRowBlack)
+            for _ in range(4) :
+                self.boardArray.append([None] * 8)
+            self.boardArray.append(frontRowWhite)
+            self.boardArray.append(backRowWhite)
 
-        self.points = 0
+            self.history = []
+            self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
+            for piece in self.pieces :
+                piece.updatePosition()
+
+            self.points = 0
+        elif simple :
+            backRowBlack = [None, None, None, King(self, BLACK), None, None, None, None]
+            frontRowBlack = [None, None, None, None, None, None, None, None]
+
+            frontRowWhite = [None, None, None, None, None, None, None, None]
+
+            backRowWhite = [None, None, None, King(self, WHITE), None, None, None, None]
+            self.boardArray = []
+            self.boardArray.append(backRowBlack)
+            self.boardArray.append(frontRowBlack)
+            for _ in range(4) :
+                self.boardArray.append([None] * 8)
+            self.boardArray.append(frontRowWhite)
+            self.boardArray.append(backRowWhite)
+            
+
+            self.history = []
+            self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
+            for piece in self.pieces :
+                piece.updatePosition()
+            print(self.pieces)
+
+            self.points = 0
+
+
 
     def __str__(self) :
         return self.makeStringRep(self.boardArray)
@@ -54,6 +76,10 @@ class Board :
         self.movePieceToPosition(pieceToMoveBack, lastMove.oldPos)
         if pieceTaken :
             #pieceTaken.board = self
+            if pieceTaken.side == WHITE :
+                self.points += pieceTaken.value
+            if pieceTaken.side == BLACK :
+                self.points -= pieceTaken.value
             self.addPieceToPosition(pieceTaken, lastMove.newPos)
             self.pieces.append(pieceTaken)
             pieceTaken.updatePosition()
@@ -65,18 +91,12 @@ class Board :
         if pieceAtNewPos :
             self.history.append([move, pieceAtNewPos.copy()])
             self.pieces.remove(pieceAtNewPos)
-            if pieceAtNewPos.side == WHITE :
-                self.points - pieceAtNewPos.value
-            elif pieceAtNewPos.side == BLACK :
-                self.points + pieceAtNewPos.value
         else :
             self.history.append([move, None])
 
     def getCurrentSide(self) :
         return self.pieceAtPosition(self.history[-1][0].newPos).side
             
-
-
     def makeStringRep(self, boardArray) :
         stringRep = ''
         for x in range(8) :
@@ -109,6 +129,96 @@ class Board :
                 stringRep += pieceRep + ' '
             stringRep += '\n'
         return stringRep
+
+    def rankOfPiece(self, piece) :
+        return str(piece.position[1] + 1)
+
+
+    def fileOfPiece(self, piece) :
+        transTable = str.maketrans('01234567', 'abcdefgh')
+        return str(piece.position[0]).translate(transTable)
+
+
+    def getShortNotationOfMove(self, move) :
+        notation = ""
+        pieceToMove = self.pieceAtPosition(move.oldPos)
+        pieceToTake = self.pieceAtPosition(move.newPos)
+
+        if pieceToMove.stringRep != 'p' :
+            notation += pieceToMove.stringRep
+
+        if pieceToTake is not None :
+            if pieceToMove.stringRep == 'p' :
+                notation += self.fileOfPiece(pieceToMove)
+            notation += 'x'
+
+        notation += self.positionToHumanCoord(move.newPos)
+        return notation
+    
+    def getShortNotationOfMoveWithFile(self, move) :
+        #TODO: Use self.getShortNotationOfMove instead of repeating code
+        notation = ""
+        pieceToMove = self.pieceAtPosition(move.oldPos)
+        pieceToTake = self.pieceAtPosition(move.newPos)
+
+        if pieceToMove.stringRep != 'p' :
+            notation += pieceToMove.stringRep
+            notation += self.fileOfPiece(pieceToMove)
+
+        if pieceToTake is not None :
+            notation += 'x'
+
+        notation += self.positionToHumanCoord(move.newPos)
+        return notation
+    
+    def getShortNotationOfMoveWithRank(self, move) :
+        #TODO: Use self.getShortNotationOfMove instead of repeating code
+        notation = ""
+        pieceToMove = self.pieceAtPosition(move.oldPos)
+        pieceToTake = self.pieceAtPosition(move.newPos)
+
+        if pieceToMove.stringRep != 'p' :
+            notation += pieceToMove.stringRep
+            notation += self.rankOfPiece(pieceToMove)
+
+        if pieceToTake is not None :
+            notation += 'x'
+
+        notation += self.positionToHumanCoord(move.newPos)
+        return notation
+
+    def getShortNotationOfMoveWithFileAndRank(self, move) :
+        #TODO: Use self.getShortNotationOfMove instead of repeating code
+        notation = ""
+        pieceToMove = self.pieceAtPosition(move.oldPos)
+        pieceToTake = self.pieceAtPosition(move.newPos)
+
+        if pieceToMove.stringRep != 'p' :
+            notation += pieceToMove.stringRep
+            notation += self.fileOfPiece(pieceToMove)
+            notation += self.rankOfPiece(pieceToMove)
+            
+
+        if pieceToTake is not None :
+            notation += 'x'
+
+        notation += self.positionToHumanCoord(move.newPos)
+        return notation
+        return 
+
+
+
+    def humanCoordToPosition(self, coord) :
+        transTable = str.maketrans('abcdefgh', '12345678')
+        coord = coord.translate(transTable)
+        coord = [int(c)-1 for c in coord]
+        pos = C(coord[0], coord[1])
+        return pos
+        
+    def positionToHumanCoord(self, pos) :
+        transTable = str.maketrans('01234567', 'abcdefgh')
+        notation = str(pos[0]).translate(transTable) + str(pos[1]+1) 
+        return notation
 
     def isValidPos(self, pos) :
         if 0 <= pos[0] <= 7 and 0 <= pos[1] <= 7 :
@@ -151,21 +261,22 @@ class Board :
     def locationInArrayToCoord(self, loc) :
         return (loc[1], 7-loc[0])
 
-    def getAllPieces(self) :
-        return self.pieces
-        #for row in range(8) :
-            #for col in range(8) :
-                #if self.boardArray[row][col] :
-                    #yield self.boardArray[row][col]
-
     def makeMove(self, move) :
         self.addMoveToHistory(move)
         pieceToMove = self.pieceAtPosition(move.oldPos)
+        pieceToTake = self.pieceAtPosition(move.newPos)
+
+        if pieceToTake :
+            if pieceToTake.side == WHITE :
+                self.points -= pieceToTake.value
+            if pieceToTake.side == BLACK :
+                self.points += pieceToTake.value
+            
         self.movePieceToPosition(pieceToMove, move.newPos)
 
     def getPointValueOfSide(self, side) :
         points = 0
-        for piece in self.getAllPieces() :
+        for piece in self.pieces :
             if piece.side == side :
                 points += piece.value
         return points
@@ -189,5 +300,45 @@ class Board :
             return True
         else :
             return False
+
+    def getAllMovesUnfiltered (self, side) :
+        for piece in self.pieces :
+            if piece.side == side :
+                for move in piece.getPossibleMoves() :
+                    yield move
+
+
+    def testIfLegalBoard(self, side) :
+        for move in self.getAllMovesUnfiltered(side) :
+            self.makeMove(move)
+            kingsPresent = self.checkForKings()
+            self.undoLastMove()
+            if kingsPresent == False :
+                return False
+        return True
+
+
+    def moveIsLegal(self, move) :
+        side = self.pieceAtPosition(move.oldPos).side 
+        self.makeMove(move)
+        isLegal = self.testIfLegalBoard(not side)
+        self.undoLastMove()
+        return isLegal  
+
+
+    def getAllMovesLegal (self, side) :
+        unfilteredMoves = list(self.getAllMovesUnfiltered(side))
+        #print(list(unfilteredMoves))
+        #print("UNFILTERED MOVES LENGTH : " + str(len(list(unfilteredMoves))))
+        legalMoves = []
+        for move in unfilteredMoves :
+            #print("CHECKING MOVE : " + str(move))
+            if self.moveIsLegal(move) :
+                #print("MOVE IS LEGAL")
+                legalMoves.append(move)
+            #else :
+                #print("MOVE IS NOT LEGAL")
+        #print("RETURNING LEGAL MOVES : " + str(legalMoves))
+        return legalMoves
 
 

@@ -7,7 +7,7 @@ BLACK = False
 
 class Pawn (Piece) :
 
-    stringRep = 'P'
+    stringRep = 'p'
     value = 1
 
     def __init__(self, board, side) :
@@ -17,6 +17,15 @@ class Pawn (Piece) :
     def getPossibleMoves(self) :
         currentPosition = self.position
         board = self.board
+        if self.side == WHITE and self.position[1] != 1 :
+            self.hasMoved = True
+        elif self.side == BLACK and self.position[1] != 6 :
+            self.hasMoved = True
+        else :
+            self.hasMoved = False
+
+
+            self.hasMoved 
 
         # Pawn moves one up
         movement = C(0, 1) if self.side is WHITE else C(0, -1)

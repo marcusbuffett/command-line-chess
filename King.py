@@ -23,7 +23,3 @@ class King (Piece) :
                 if board.pieceAtPosition(newPos) is None or board.pieceAtPosition(newPos).side != self.side :
                     yield Move(currentPos, newPos)
 
-        
-            
-
-

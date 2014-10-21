@@ -3,12 +3,17 @@ import re
 
 class Move :
     
+    notation = None
+
     def __init__(self, oldPos, newPos) :
         self.oldPos = oldPos
         self.newPos = newPos
 
     def __str__(self) :
-        return 'Old pos : ' + str(self.oldPos) + ' -- New pos : ' + str(self.newPos)
+        displayString = 'Old pos : ' + str(self.oldPos) + ' -- New pos : ' + str(self.newPos)
+        if self.notation :
+            displayString += ' Notation : ' + self.notation
+        return displayString
 
     def __eq__(self, other) :
         if self.oldPos == other.oldPos and self.newPos == other.newPos :

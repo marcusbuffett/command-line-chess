@@ -15,7 +15,6 @@ BLACK = False
 class AI :
 
     depth = 1
-    movesAnalyzed = 0
     board = None
     side = None
 
@@ -24,60 +23,19 @@ class AI :
         self.side = side
         self.depth = depth
 
-    def getAllMovesUnfiltered (self, side) :
-        for piece in self.board.getAllPieces() :
-            if piece.side == side :
-                for move in piece.getPossibleMoves() :
-                    yield move
-
-
-    def testIfLegalBoard(self, side, board) :
-        for move in self.getAllMovesUnfiltered(side) :
-            self.board.makeMove(move)
-            kingsPresent = self.board.checkForKings()
-            self.board.undoLastMove()
-            self.movesAnalyzed += 1
-            if self.movesAnalyzed % 10000 == 0 :
-                print(self.movesAnalyzed)
-                print(self.board)
-            if kingsPresent == False :
-                return False
-        return True
-
-
-    def moveIsLegal(self, move) :
-        side = self.board.pieceAtPosition(move.oldPos).side 
-        self.board.makeMove(move)
-        isLegal = self.testIfLegalBoard(not side, self.board)
-        self.board.undoLastMove()
-        return isLegal  
-
-
-    def getAllMovesLegal (self, side) :
-        unfilteredMoves = self.getAllMovesUnfiltered(side)
-        legalMoves = []
-        for move in unfilteredMoves :
-            if self.moveIsLegal(move) :
-                legalMoves.append(move)
-        return legalMoves
 
 
     def getFirstMove(self, side) :
-        move = list(self.getAllMovesLegal(side))[0]
+        move = list(self.board.getAllMovesLegal(side))[0]
         return move
 
     def getAllMovesLegalConcurrent (self, side) :
         p = Pool(8)
-        unfilteredMovesWithBoard = [(move, copy.deepcopy(self.board)) for move in self.getAllMovesUnfiltered(side)]
+        unfilteredMovesWithBoard = [(move, copy.deepcopy(self.board)) for move in self.board.getAllMovesUnfiltered(side)]
         legalMoves = p.starmap(self.returnMoveIfLegal, unfilteredMovesWithBoard)
         p.close()
         p.join()
         return list(filter(None, legalMoves))
-
-
-    def returnMoveIfLegal(self, move) :
-        if self.moveIsLegal(move) :
-            return move
 
     def minChildrenOfNode(self, node) :
         lowestNodes = []
@@ -122,16 +80,15 @@ class AI :
         #return traverseNodeForPointAdvantage(self, child)
         
     def getRandomMove(self) :
-        legalMoves = list(self.getAllMovesLegal(self.side))
+        legalMoves = list(self.board.getAllMovesLegal(self.side))
         randomMove = random.choice(legalMoves)
         return randomMove
 
     def generateMoveTree(self) :
         moveTree = []
-        for move in self.getAllMovesLegal(self.side) :
+        for move in self.board.getAllMovesLegal(self.side) :
             moveTree.append(MoveNode(move, [], None))
 
-        print("MOVE TREE LENGTH : " + str(len(moveTree)))
         for node in moveTree :
             self.board.makeMove(node.move)
             self.populateNodeChildren(node)
@@ -164,7 +121,7 @@ class AI :
         side = self.board.getCurrentSide()
         pointAdvantage = self.board.getPointAdvantageOfSide(self.side)
         node.pointAdvantage = pointAdvantage
-        for move in self.getAllMovesLegal(not side) :
+        for move in self.board.getAllMovesLegal(not side) :
             node.children.append(MoveNode(move, [], node))
             self.board.makeMove(move)
             for child in node.children :
@@ -183,6 +140,7 @@ class AI :
             #for node in optimalNodes :
             #return node.pointAdvantage
         else :
+
             return node.pointAdvantage
 
 
@@ -191,6 +149,13 @@ class AI :
     def getBestMove(self) :
         moveTree = self.generateMoveTree()
         bestMoves = self.bestMovesWithMoveTree(moveTree)
+
+        #print("MOVES")
+        #for move in self.board.getAllMovesLegal(self.side) :
+            #print(move)
+        #print("BEST MOVES")
+        #for move in bestMoves :
+            #print(move)
         randomBestMove = random.choice(bestMoves)
 
         return randomBestMove
@@ -226,7 +191,7 @@ class AI :
                 return move
                 
     def isValidMove(self, move, side) :
-        for legalMove in self.getAllMovesLegal(side) :
+        for legalMove in self.board.getAllMovesLegal(side) :
             if move == legalMove :
                 return True
         return False
@@ -248,9 +213,8 @@ class AI :
 
 if __name__ == "__main__" :
     mainBoard = Board()
-    ai = AI(mainBoard, True, 2)
+    ai = AI(mainBoard, True, 3)
     print(mainBoard)
     ai.makeBestMove()
     print(mainBoard)
-    print(ai.movesAnalyzed)
 
