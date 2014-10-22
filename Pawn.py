@@ -16,7 +16,6 @@ class Pawn (Piece) :
 
     def getPossibleMoves(self) :
         currentPosition = self.position
-        board = self.board
         if self.side == WHITE and self.position[1] != 1 :
             self.hasMoved = True
         elif self.side == BLACK and self.position[1] != 6 :
@@ -24,22 +23,19 @@ class Pawn (Piece) :
         else :
             self.hasMoved = False
 
-
-            self.hasMoved 
-
         # Pawn moves one up
         movement = C(0, 1) if self.side is WHITE else C(0, -1)
         advanceOnePosition = currentPosition + movement
-        if board.isValidPos(advanceOnePosition) :
-            if board.pieceAtPosition(advanceOnePosition) is None :
+        if self.board.isValidPos(advanceOnePosition) :
+            if self.board.pieceAtPosition(advanceOnePosition) is None :
                 yield Move(currentPosition, advanceOnePosition)
 
         #Pawn moves two up
         if not self.hasMoved :
             movement = C(0, 2) if self.side is WHITE else C(0, -2)
             advanceTwoPosition = currentPosition + movement
-            if board.isValidPos(advanceTwoPosition) :
-                if board.pieceAtPosition(advanceTwoPosition) is None :
+            if self.board.isValidPos(advanceTwoPosition) :
+                if self.board.pieceAtPosition(advanceTwoPosition) is None :
                     yield Move(currentPosition, advanceTwoPosition)
 
         #Pawn takes
@@ -51,8 +47,8 @@ class Pawn (Piece) :
 
         for movement in movements :
             newPosition = self.position + movement
-            if board.isValidPos(newPosition) :
-                pieceToTake = board.pieceAtPosition(newPosition)
+            if self.board.isValidPos(newPosition) :
+                pieceToTake = self.board.pieceAtPosition(newPosition)
                 if pieceToTake and pieceToTake.side != self.side :
                     yield Move(currentPosition, newPosition)
 
