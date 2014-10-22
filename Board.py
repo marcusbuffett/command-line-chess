@@ -16,9 +16,11 @@ BLACK = False
 class Board :
 
     movesMade = 0
+    boardArray = []
+    checkmate = False
 
-    def __init__(self, simple = False) :
-        if not simple :
+    def __init__(self, simple = False, mateInOne = False) :
+        if not simple and not mateInOne:
             backRowBlack = [Rook(self, BLACK), Knight(self, BLACK), Bishop(self, BLACK), King(self, BLACK), Queen(self, BLACK), Bishop(self, BLACK), Knight(self, BLACK), Rook(self, BLACK)]
             frontRowBlack = []
             for _ in range(8) :
@@ -43,29 +45,49 @@ class Board :
                 piece.updatePosition()
 
             self.points = 0
-        elif simple :
-            backRowBlack = [None, None, None, King(self, BLACK), None, None, None, None]
-            frontRowBlack = [None, None, None, None, None, None, None, None]
+            self.currentSide = WHITE
+        #elif simple :
+            #backRowBlack = [None, None, King(self, BLACK), None, Queen(self, BLACK), None, None, None]
+            #frontRowBlack = [None, None, None, None, None, None, None, None]
 
-            frontRowWhite = [None, None, None, None, None, None, None, None]
+            #frontRowWhite = [None, None, None, None, None, None, None, None]
 
-            backRowWhite = [None, None, None, King(self, WHITE), None, None, None, None]
-            self.boardArray = []
-            self.boardArray.append(backRowBlack)
-            self.boardArray.append(frontRowBlack)
-            for _ in range(4) :
-                self.boardArray.append([None] * 8)
-            self.boardArray.append(frontRowWhite)
-            self.boardArray.append(backRowWhite)
+            #backRowWhite = [None, None, None, King(self, WHITE), Rook(self, WHITE), None, None, None]
+            #self.boardArray = []
+            #self.boardArray.append(backRowBlack)
+            #self.boardArray.append(frontRowBlack)
+            #for _ in range(4) :
+                #self.boardArray.append([None] * 8)
+            #self.boardArray.append(frontRowWhite)
+            #self.boardArray.append(backRowWhite)
             
 
-            self.history = []
-            self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
-            for piece in self.pieces :
-                piece.updatePosition()
-            print(self.pieces)
+            #self.history = []
+            #self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
+            #for piece in self.pieces :
+                #piece.updatePosition()
 
-            self.points = 0
+            #self.points = 0
+
+        #elif mateInOne :
+            #self.boardArray.append([None, None, None, None, None, None, None, None])
+            #self.boardArray.append([None, None, None, None, None, None, None, None])
+            #self.boardArray.append([None, None, None, None, None, None, None, None])
+            #self.boardArray.append([None, None, None, None, None, None, None, None])
+            #self.boardArray.append([None, None, None, None, None, None, None, None])
+            #self.boardArray.append([None, None, None, King(self, BLACK), None, None, None, None])
+            #self.boardArray.append([None, None, None, None, None, None, None, Queen(self, BLACK)])
+            #self.boardArray.append([None, None, None, King(self, WHITE), None, None, None, None])
+
+            #self.history = []
+            #self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
+            #for piece in self.pieces :
+                #piece.updatePosition()
+            #self.currentSide = WHITE
+
+            #self.points = 0
+
+
 
 
 
@@ -85,7 +107,22 @@ class Board :
             self.addPieceToPosition(pieceTaken, lastMove.newPos)
             self.pieces.append(pieceTaken)
             pieceTaken.updatePosition()
+        self.currentSide = not self.currentSide
 
+    def isCheckmate(self) :
+        #if self.getLastMove().newPos == C(3, 1) :
+                #print(legalMove)
+        if len(self.getAllMovesLegal(self.currentSide)) == 0 :
+            for move in self.getAllMovesUnfiltered(not self.currentSide) :
+                pieceToTake = self.pieceAtPosition(move.newPos)
+                if pieceToTake and pieceToTake.stringRep == "K" :
+                    return True
+        return False
+    
+    def getLastMove(self) :
+        return self.history[-1][0]
+
+ 
     def addMoveToHistory(self, move) :
         #self.history.append([move, copy.deepcopy(self.pieceAtPosition(move.newPos))])
         
@@ -97,39 +134,23 @@ class Board :
             self.history.append([move, None])
 
     def getCurrentSide(self) :
-        return self.pieceAtPosition(self.history[-1][0].newPos).side
+        return self.currentSide
             
     def makeStringRep(self, boardArray) :
         stringRep = ''
         for x in range(8) :
             for y in range(8) :
                 piece =  boardArray[x][y]
+                pieceRep = ''
                 if piece is not None :
                     side = piece.side
                     color = 'blue' if side == WHITE else 'red'
-                pieceRep = ''
-                if isinstance(piece, Pawn) :
-                    pieceRep = colored('P', color)
-
-                elif isinstance(piece, Rook) :
-                    pieceRep = colored('R', color)
-
-                elif isinstance(piece, Knight) :
-                    pieceRep = colored('N', color)
-
-                elif isinstance(piece, Bishop) :
-                    pieceRep = colored('B', color)
-
-                elif isinstance(piece, King) :
-                    pieceRep = colored('K', color)
-
-                elif isinstance(piece, Queen) :
-                    pieceRep = colored('Q', color)
-
+                    pieceRep = colored(piece.stringRep, color)
                 else :
                     pieceRep = 'x'
                 stringRep += pieceRep + ' '
             stringRep += '\n'
+        stringRep = stringRep.strip()
         return stringRep
 
     def rankOfPiece(self, piece) :
@@ -276,6 +297,7 @@ class Board :
                 self.points += pieceToTake.value
             
         self.movePieceToPosition(pieceToMove, move.newPos)
+        self.currentSide = not self.currentSide
 
     def getPointValueOfSide(self, side) :
         points = 0

@@ -6,6 +6,7 @@ class MoveNode :
     move = []
     pointAdvantage = None
     children = []
+    depth = 1
 
     def __init__(self, move, children, parent) :
         self.move = move
@@ -13,8 +14,9 @@ class MoveNode :
         self.parent = parent
 
     def __str__(self) :
-        stringRep = "Move : " + str(self.move) + " Point advantage : " + str(self.pointAdvantage)
+        stringRep = "Move : " + str(self.move) + " Point advantage : " + str(self.pointAdvantage) + " Checkmate : " + str(self.move.checkmate)
         stringRep += "\n"
+
         #stringRep = ""
         for child in self.children :
             stringRep += " " * self.getDepth() * 4
@@ -24,12 +26,26 @@ class MoveNode :
         #return "Move : " + str(self.move) + " Children : " + str(self.children)
 
     def __gt__(self, other) :
+        if self.move.checkmate and not other.move.checkmate :
+            return True
+        if not self.move.checkmate and other.move.checkmate :
+            return False
+        if self.move.checkmate and other.move.checkmate :
+            return False
         return self.pointAdvantage > other.pointAdvantage
 
     def __lt__(self, other) :
+        if self.move.checkmate and not other.move.checkmate :
+            return False
+        if not self.move.checkmate and other.move.checkmate :
+            return True
+        if self.move.checkmate and other.move.checkmate :
+            return False
         return self.pointAdvantage < other.pointAdvantage
 
     def __eq__(self, other) :
+        if self.move.checkmate and other.move.checkmate :
+            return True
         return self.pointAdvantage == other.pointAdvantage
 
     def getHighestNode(self) :

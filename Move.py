@@ -4,6 +4,11 @@ import re
 class Move :
     
     notation = None
+    check = False
+    checkmate = False
+    castle = False
+    pessant = False
+    stalemate = False
 
     def __init__(self, oldPos, newPos) :
         self.oldPos = oldPos
@@ -22,7 +27,7 @@ class Move :
             return False
 
     def __hash__(self):
-          return hash((self.oldPos, self.newPos))
+        return hash((self.oldPos, self.newPos))
 
 
 

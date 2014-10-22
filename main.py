@@ -19,7 +19,7 @@ BLACK = False
 playerSide = WHITE
 board = Board()
 ai = AI(board, BLACK, 2)
-currentSide = WHITE
+board.currentSide = WHITE
 
 #print("What side would you like to play as?")
 #chosenSide = input()
@@ -28,47 +28,57 @@ currentSide = WHITE
 #else :
     #side = BLACK
 
-chosenSide = WHITE
+#chosenSide = WHITE
 
 parser = InputParser(board, WHITE)
 
+#while True :
+    #move = None
+    #playerAI = AI(board, WHITE, 1)
+    #if currentSide == playerSide :
+        #hasChosenValidMove = False
+
+        #while (not hasChosenValidMove) :
+            #moveInput = input("Please input your move : ")
+            #if moveInput == 'r' :
+                #move = playerAI.getRandomMove()
+                #hasChosenValidMove = True
+                #continue
+            #try :
+                #move = parser.moveForShortNotation(moveInput)
+                #hasChosenValidMove = True
+            #except :
+                #print("Invalid input, please enter a valid move in long form notation (ex. d1e2)")
+                #continue
+    #else :
+        #move = ai.getBestMove() 
+
+    #move.notation = parser.notationForMove(move)
+
+    #print("MOVE: " + str(move.notation))
+    #board.makeMove(move)
+    #currentSide = not currentSide
+    #print(board)
+    #print(board.getPointAdvantageOfSide(currentSide))
+    #print()
+
+moves = 0
 while True :
     move = None
-    playerAI = AI(board, WHITE, 1)
-    if currentSide == playerSide :
-        hasChosenValidMove = False
-
-        while (not hasChosenValidMove) :
-            moveInput = input("Please input your move : ")
-            if moveInput == 'r' :
-                move = playerAI.getRandomMove()
-                hasChosenValidMove = True
-                continue
-            try :
-                move = parser.moveForShortNotation(moveInput)
-                hasChosenValidMove = True
-            except :
-                print("Invalid input, please enter a valid move in long form notation (ex. d1e2)")
-                continue
+    playerAI = AI(board, WHITE, 2)
+    if board.currentSide == playerSide :
+        move = playerAI.getRandomMove()
     else :
-       move = ai.getBestMove() 
+        move = ai.getBestMove() 
 
-    print("MAKING MOVE : " + str(move))
+    move.notation = parser.notationForMove(move)
+
+    print("MOVE: " + str(move.notation))
     board.makeMove(move)
-    currentSide = not currentSide
-
+    moves += 1
     print(board)
-    print(board.getPointAdvantageOfSide(currentSide))
-    #print(sys.getsizeof(ai))
-    #print(sys.getsizeof(board))
-
-
-#side = WHITE
-#for _ in range(2000) :
-    #board.makeMove(ai.getRandomMove(side))
-    ##print(board)
-    #side = not side
-
-#print(board)
-#print(ai.movesAnalyzed)
-
+    print(board.getPointAdvantageOfSide(board.currentSide))
+    if board.isCheckmate() :
+        print("MOVES : " + str(moves))
+        print("CHECKMATE!")
+        break

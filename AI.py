@@ -4,6 +4,7 @@ from Move import Move
 from Piece import Piece
 from Board import Board
 from MoveNode import MoveNode
+from InputParser import InputParser
 import copy
 import random
 from multiprocessing import Queue, Pool, Process
@@ -18,11 +19,13 @@ class AI :
     board = None
     side = None
     movesAnalyzed = 0
+    
 
     def __init__(self, board, side, depth) :
         self.board = board
         self.side = side
         self.depth = depth
+        self.parser = InputParser(self.board, self.side)
 
 
 
@@ -118,11 +121,27 @@ class AI :
         ##self.board.undoLastMove()
 
     def populateNodeChildren(self, node) :
+        #if self.board.isCheckmate() :
+            #node.pointAdvantage = 100
+            #return
         node.pointAdvantage = self.board.getPointAdvantageOfSide(self.side)
-        if node.getDepth() == self.depth :
+        node.depth = node.getDepth()
+        if node.depth == self.depth :
             return
-        side = self.board.getCurrentSide()
-        for move in self.board.getAllMovesLegal(not side) :
+
+        side = self.board.currentSide
+        
+        legalMoves = self.board.getAllMovesLegal(side)
+        if not legalMoves :
+            if self.board.isCheckmate() :
+                node.move.checkmate = True
+                node.pointAdvantage = 100
+                return
+            else :
+                node.move.stalemate = True
+                return
+
+        for move in legalMoves :
             self.movesAnalyzed += 1
             node.children.append(MoveNode(move, [], node))
             self.board.makeMove(move)
@@ -130,16 +149,15 @@ class AI :
             self.board.undoLastMove()
 
     def getOptimalPointAdvantageForNode(self, node) :
-        #print("GETTING OPTIMAL VALUE OF NODE : " + str(node))
         if node.children:
             for child in node.children :
                 child.pointAdvantage = self.getOptimalPointAdvantageForNode(child)
-                #print("RETURNING : " + str(max(self.getOptimalPointAdvantageForNode(child))))
-                
-            return(max(node.children).pointAdvantage)
-            #optimalNodes = self.maxChildrenOfNode(node)
-            #for node in optimalNodes :
-            #return node.pointAdvantage
+
+            #If the depth is divisible by 2, it's a move for the AI's side, so return max
+            if node.children[0].depth % 2 == 1 :
+                return(max(node.children).pointAdvantage)
+            else :
+                return(min(node.children).pointAdvantage)
         else :
 
             return node.pointAdvantage
@@ -151,11 +169,11 @@ class AI :
         moveTree = self.generateMoveTree()
         bestMoves = self.bestMovesWithMoveTree(moveTree)
         randomBestMove = random.choice(bestMoves)
+        randomBestMove.notation = self.parser.notationForMove(randomBestMove)
         return randomBestMove
 
     def makeBestMove(self) :
         self.board.makeMove(self.getBestMove())
-    
         
     def bestMovesWithMoveTree(self, moveTree) :
         bestMoveNodes = []
@@ -206,7 +224,7 @@ class AI :
 
 if __name__ == "__main__" :
     mainBoard = Board()
-    ai = AI(mainBoard, True, 3)
+    ai = AI(mainBoard, True, 2)
     print(mainBoard)
     ai.makeBestMove()
     print(mainBoard)

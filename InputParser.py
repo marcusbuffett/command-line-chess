@@ -27,16 +27,24 @@ class InputParser :
         return Move(oldPos, newPos)
 
     def moveForShortNotation(self, notation) :
-        moves = self.getLegalMovesWithShortNotation()
+        moves = self.getLegalMovesWithShortNotation(self.side)
         for move in moves :
             if move.notation == notation :
                 return move
         else :
             return 'No match'
 
-    def getLegalMovesWithShortNotation(self) :
+    def notationForMove(self, move) :
+        side = self.board.getSideOfMove(move)
+        moves = self.getLegalMovesWithShortNotation(side)
+        for m in moves :
+            if m == move :
+                return m.notation
+
+
+    def getLegalMovesWithShortNotation(self, side) :
         moves = []
-        for legalMove in self.board.getAllMovesLegal(self.side) :
+        for legalMove in self.board.getAllMovesLegal(side) :
             moves.append(legalMove)
             legalMove.notation = self.board.getShortNotationOfMove(legalMove)
 
@@ -52,9 +60,6 @@ class InputParser :
         for duplicateMove in duplicateNotationMoves :
             duplicateMove.notation = self.board.getShortNotationOfMoveWithFileAndRank(duplicateMove)
 
-        for move in moves :
-            print(move)
-        
         return moves
 
     def duplicateMovesFromMoves(self, moves) :
