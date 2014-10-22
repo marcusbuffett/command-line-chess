@@ -17,6 +17,7 @@ class AI :
     depth = 1
     board = None
     side = None
+    movesAnalyzed = 0
 
     def __init__(self, board, side, depth) :
         self.board = board
@@ -94,6 +95,8 @@ class AI :
             self.populateNodeChildren(node)
             self.board.undoLastMove()
             #for _ in range(self.depth) :
+        
+
 
         return moveTree
 
@@ -115,17 +118,15 @@ class AI :
         ##self.board.undoLastMove()
 
     def populateNodeChildren(self, node) :
+        node.pointAdvantage = self.board.getPointAdvantageOfSide(self.side)
         if node.getDepth() == self.depth :
-            node.pointAdvantage = self.board.getPointAdvantageOfSide(self.side)
             return
         side = self.board.getCurrentSide()
-        pointAdvantage = self.board.getPointAdvantageOfSide(self.side)
-        node.pointAdvantage = pointAdvantage
         for move in self.board.getAllMovesLegal(not side) :
+            self.movesAnalyzed += 1
             node.children.append(MoveNode(move, [], node))
             self.board.makeMove(move)
-            for child in node.children :
-                self.populateNodeChildren(child)
+            self.populateNodeChildren(node.children[-1])
             self.board.undoLastMove()
 
     def getOptimalPointAdvantageForNode(self, node) :
@@ -149,15 +150,7 @@ class AI :
     def getBestMove(self) :
         moveTree = self.generateMoveTree()
         bestMoves = self.bestMovesWithMoveTree(moveTree)
-
-        #print("MOVES")
-        #for move in self.board.getAllMovesLegal(self.side) :
-            #print(move)
-        #print("BEST MOVES")
-        #for move in bestMoves :
-            #print(move)
         randomBestMove = random.choice(bestMoves)
-
         return randomBestMove
 
     def makeBestMove(self) :
@@ -217,4 +210,6 @@ if __name__ == "__main__" :
     print(mainBoard)
     ai.makeBestMove()
     print(mainBoard)
+    print(ai.movesAnalyzed)
+    print(mainBoard.movesMade)
 

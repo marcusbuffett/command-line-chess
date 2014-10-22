@@ -15,6 +15,8 @@ BLACK = False
 
 class Board :
 
+    movesMade = 0
+
     def __init__(self, simple = False) :
         if not simple :
             backRowBlack = [Rook(self, BLACK), Knight(self, BLACK), Bishop(self, BLACK), King(self, BLACK), Queen(self, BLACK), Bishop(self, BLACK), Knight(self, BLACK), Rook(self, BLACK)]
@@ -262,6 +264,7 @@ class Board :
         return (loc[1], 7-loc[0])
 
     def makeMove(self, move) :
+        self.movesMade += 1
         self.addMoveToHistory(move)
         pieceToMove = self.pieceAtPosition(move.oldPos)
         pieceToTake = self.pieceAtPosition(move.newPos)
@@ -310,11 +313,14 @@ class Board :
 
     def testIfLegalBoard(self, side) :
         for move in self.getAllMovesUnfiltered(side) :
-            self.makeMove(move)
-            kingsPresent = self.checkForKings()
-            self.undoLastMove()
-            if kingsPresent == False :
+            pieceToTake = self.pieceAtPosition(move.newPos)
+            if pieceToTake and pieceToTake.stringRep == 'K' :
                 return False
+            #self.makeMove(move)
+            #kingsPresent = self.checkForKings()
+            #self.undoLastMove()
+            #if kingsPresent == False :
+                #return False
         return True
 
 
@@ -326,19 +332,13 @@ class Board :
         return isLegal  
 
 
+
     def getAllMovesLegal (self, side) :
         unfilteredMoves = list(self.getAllMovesUnfiltered(side))
-        #print(list(unfilteredMoves))
-        #print("UNFILTERED MOVES LENGTH : " + str(len(list(unfilteredMoves))))
         legalMoves = []
         for move in unfilteredMoves :
-            #print("CHECKING MOVE : " + str(move))
             if self.moveIsLegal(move) :
-                #print("MOVE IS LEGAL")
                 legalMoves.append(move)
-            #else :
-                #print("MOVE IS NOT LEGAL")
-        #print("RETURNING LEGAL MOVES : " + str(legalMoves))
         return legalMoves
 
 

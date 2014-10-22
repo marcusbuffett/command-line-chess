@@ -20,16 +20,14 @@ class Piece :
         return 'Type : ' + type(self).__name__ + ' - Position : ' + str(self.board.getPositionOfPiece(self)) + " - Side : " + sideString
 
     def movesInDirectionFromPos(self, pos, direction, side) :
-        board = self.board
         for dis in range(1, 8) :
             movement = C(dis * direction[X], dis * direction[Y])
             newPos = pos + movement
-            if board.isValidPos(newPos) :
+            if self.board.isValidPos(newPos) :
                 if self.board.pieceAtPosition(newPos) is None :
                     yield Move(pos, newPos)
-                    continue
                 
-                if self.board.pieceAtPosition(newPos) is not None :
+                elif self.board.pieceAtPosition(newPos) is not None :
                     if self.board.pieceAtPosition(newPos).side != side :
                         yield Move(pos, newPos)
                     return
