@@ -18,7 +18,6 @@ class Bishop (Piece) :
         currentPosition = self.position
         board = self.board
 
-        # Rook moves
         directions = [C(1, 1), C(1, -1), C(-1, 1), C(-1, -1)]
         for direction in directions :
             for move in self.movesInDirectionFromPos(currentPosition, direction, self.side) :

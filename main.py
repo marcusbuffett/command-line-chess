@@ -32,36 +32,6 @@ board.currentSide = WHITE
 
 parser = InputParser(board, WHITE)
 
-#while True :
-    #move = None
-    #playerAI = AI(board, WHITE, 1)
-    #if currentSide == playerSide :
-        #hasChosenValidMove = False
-
-        #while (not hasChosenValidMove) :
-            #moveInput = input("Please input your move : ")
-            #if moveInput == 'r' :
-                #move = playerAI.getRandomMove()
-                #hasChosenValidMove = True
-                #continue
-            #try :
-                #move = parser.moveForShortNotation(moveInput)
-                #hasChosenValidMove = True
-            #except :
-                #print("Invalid input, please enter a valid move in long form notation (ex. d1e2)")
-                #continue
-    #else :
-        #move = ai.getBestMove() 
-
-    #move.notation = parser.notationForMove(move)
-
-    #print("MOVE: " + str(move.notation))
-    #board.makeMove(move)
-    #currentSide = not currentSide
-    #print(board)
-    #print(board.getPointAdvantageOfSide(currentSide))
-    #print()
-
 moves = 0
 while True :
     move = None

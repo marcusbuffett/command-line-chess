@@ -8,7 +8,6 @@ class Coordinate(tuple) :
 
     def __add__(self, other):
         return Coordinate(self[0] + other[0], self[1] + other[1])
-        #return tuple(sum(x) for x in zip(self, other))
 
     def __sub__(self, other):
         return self.__add__(-i for i in other)

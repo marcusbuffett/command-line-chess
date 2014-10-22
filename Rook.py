@@ -16,7 +16,6 @@ class Rook (Piece) :
         board = self.board
         currentPosition = self.position
 
-        # Rook moves
         directions = [C(0, 1), C(0, -1), C(1, 0), C(-1, 0)]
         for direction in directions :
             for move in self.movesInDirectionFromPos(currentPosition, direction, self.side) :

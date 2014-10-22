@@ -16,7 +16,6 @@ class Piece :
 
     def __str__(self) :
         sideString = 'White' if self.side == WHITE else 'Black'
-        #print(type(self).__name__)
         return 'Type : ' + type(self).__name__ + ' - Position : ' + str(self.board.getPositionOfPiece(self)) + " - Side : " + sideString
 
     def movesInDirectionFromPos(self, pos, direction, side) :

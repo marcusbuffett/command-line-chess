@@ -46,46 +46,46 @@ class Board :
 
             self.points = 0
             self.currentSide = WHITE
-        #elif simple :
-            #backRowBlack = [None, None, King(self, BLACK), None, Queen(self, BLACK), None, None, None]
-            #frontRowBlack = [None, None, None, None, None, None, None, None]
+        elif simple :
+            backRowBlack = [None, None, King(self, BLACK), None, Queen(self, BLACK), None, None, None]
+            frontRowBlack = [None, None, None, None, None, None, None, None]
 
-            #frontRowWhite = [None, None, None, None, None, None, None, None]
+            frontRowWhite = [None, None, None, None, None, None, None, None]
 
-            #backRowWhite = [None, None, None, King(self, WHITE), Rook(self, WHITE), None, None, None]
-            #self.boardArray = []
-            #self.boardArray.append(backRowBlack)
-            #self.boardArray.append(frontRowBlack)
-            #for _ in range(4) :
-                #self.boardArray.append([None] * 8)
-            #self.boardArray.append(frontRowWhite)
-            #self.boardArray.append(backRowWhite)
+            backRowWhite = [None, None, None, King(self, WHITE), Rook(self, WHITE), None, None, None]
+            self.boardArray = []
+            self.boardArray.append(backRowBlack)
+            self.boardArray.append(frontRowBlack)
+            for _ in range(4) :
+                self.boardArray.append([None] * 8)
+            self.boardArray.append(frontRowWhite)
+            self.boardArray.append(backRowWhite)
             
 
-            #self.history = []
-            #self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
-            #for piece in self.pieces :
-                #piece.updatePosition()
+            self.history = []
+            self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
+            for piece in self.pieces :
+                piece.updatePosition()
 
-            #self.points = 0
+            self.points = 0
 
-        #elif mateInOne :
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, None, None, King(self, BLACK), None, None, None, None])
-            #self.boardArray.append([None, None, None, None, None, None, None, Queen(self, BLACK)])
-            #self.boardArray.append([None, None, None, King(self, WHITE), None, None, None, None])
+        elif mateInOne :
+            self.boardArray.append([None, None, None, None, None, None, None, None])
+            self.boardArray.append([None, None, None, None, None, None, None, None])
+            self.boardArray.append([None, None, None, None, None, None, None, None])
+            self.boardArray.append([None, None, None, None, None, None, None, None])
+            self.boardArray.append([None, None, None, None, None, None, None, None])
+            self.boardArray.append([None, None, None, King(self, BLACK), None, None, None, None])
+            self.boardArray.append([None, None, None, None, None, None, None, Queen(self, BLACK)])
+            self.boardArray.append([None, None, None, King(self, WHITE), None, None, None, None])
 
-            #self.history = []
-            #self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
-            #for piece in self.pieces :
-                #piece.updatePosition()
-            #self.currentSide = WHITE
+            self.history = []
+            self.pieces = list(filter(None, [piece for sublist in self.boardArray for piece in sublist]))
+            for piece in self.pieces :
+                piece.updatePosition()
+            self.currentSide = WHITE
 
-            #self.points = 0
+            self.points = 0
 
 
 
@@ -99,7 +99,6 @@ class Board :
         pieceToMoveBack = self.pieceAtPosition(lastMove.newPos)
         self.movePieceToPosition(pieceToMoveBack, lastMove.oldPos)
         if pieceTaken :
-            #pieceTaken.board = self
             if pieceTaken.side == WHITE :
                 self.points += pieceTaken.value
             if pieceTaken.side == BLACK :
@@ -110,8 +109,6 @@ class Board :
         self.currentSide = not self.currentSide
 
     def isCheckmate(self) :
-        #if self.getLastMove().newPos == C(3, 1) :
-                #print(legalMove)
         if len(self.getAllMovesLegal(self.currentSide)) == 0 :
             for move in self.getAllMovesUnfiltered(not self.currentSide) :
                 pieceToTake = self.pieceAtPosition(move.newPos)
@@ -124,7 +121,6 @@ class Board :
 
  
     def addMoveToHistory(self, move) :
-        #self.history.append([move, copy.deepcopy(self.pieceAtPosition(move.newPos))])
         
         pieceAtNewPos = self.pieceAtPosition(move.newPos)
         if pieceAtNewPos :
@@ -274,7 +270,6 @@ class Board :
 
     def clearPosition(self, pos) :
         x, y = self.coordToLocationInArray(pos)
-            #self.pieces.remove(self.boardArray[x][y])
         self.boardArray[x][y] = None
 
         
@@ -311,9 +306,6 @@ class Board :
             return self.points
         if side == BLACK :
             return -self.points
-        #mySideValue = self.getPointValueOfSide(side)
-        #otherSideValue = self.getPointValueOfSide(not side)
-        #return mySideValue - otherSideValue
         
 
     def checkForKings(self) :
@@ -338,11 +330,6 @@ class Board :
             pieceToTake = self.pieceAtPosition(move.newPos)
             if pieceToTake and pieceToTake.stringRep == 'K' :
                 return False
-            #self.makeMove(move)
-            #kingsPresent = self.checkForKings()
-            #self.undoLastMove()
-            #if kingsPresent == False :
-                #return False
         return True
 
 

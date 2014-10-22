@@ -27,8 +27,6 @@ class AI :
         self.depth = depth
         self.parser = InputParser(self.board, self.side)
 
-
-
     def getFirstMove(self, side) :
         move = list(self.board.getAllMovesLegal(side))[0]
         return move
@@ -65,24 +63,6 @@ class AI :
                 highestNodes.append(child)
         return highestNodes
 
-    #def traverseNodeForPointAdvantage(self, node) :
-        #nodeSide = board.sideOfMove(node.move)
-        #if not node.children :
-            #board.makeMove(node.move)
-            #pointAdvantage = board.getPointAdvantageOfSide(side)
-            #for _ in range(node.depth) :
-                #board.undoLastMove()
-            #return pointAdvantage
-
-        #child = None
-        #if side  == self.side :
-            #child = self.maxChildOfNode(node)
-        #else :
-            #child = self.minChildOfNode(node)
-
-        #board.makeMove(child.move)
-        #return traverseNodeForPointAdvantage(self, child)
-        
     def getRandomMove(self) :
         legalMoves = list(self.board.getAllMovesLegal(self.side))
         randomMove = random.choice(legalMoves)
@@ -97,33 +77,10 @@ class AI :
             self.board.makeMove(node.move)
             self.populateNodeChildren(node)
             self.board.undoLastMove()
-            #for _ in range(self.depth) :
-        
-
-
         return moveTree
 
 
-    #def generateNode(self, node) :
-        #if node.getDepth() == self.depth :
-            #return node
-        #move = node.move
-        
-        #side = self.board.getSideOfMove(move)
-        #node.pointAdvantage = self.board.getPointAdvantageOfSide(side)
-        #self.board.makeMove(move)
-        #for childMove in self.getAllMovesLegal(side) :
-            #node.children.append(MoveNode(childMove, [], node))
-        #for child in node.children :
-            #self.generateNode(child)
-            ##if child.children : 
-                ##self.board.undoLastMove()
-        ##self.board.undoLastMove()
-
     def populateNodeChildren(self, node) :
-        #if self.board.isCheckmate() :
-            #node.pointAdvantage = 100
-            #return
         node.pointAdvantage = self.board.getPointAdvantageOfSide(self.side)
         node.depth = node.getDepth()
         if node.depth == self.depth :
@@ -159,12 +116,8 @@ class AI :
             else :
                 return(min(node.children).pointAdvantage)
         else :
-
             return node.pointAdvantage
 
-
-
-    
     def getBestMove(self) :
         moveTree = self.generateMoveTree()
         bestMoves = self.bestMovesWithMoveTree(moveTree)
@@ -207,16 +160,6 @@ class AI :
                 return True
         return False
 
-
-    def recursiveMoveFinder(self, moveTree, bestMove) :
-        pass
-
-
-
-    #def getRandomMoveConcurrent(self, side) :
-        #randomMove = random.choice(self.getAllMovesLegalConcurrent(side))
-        #return randomMove
-
     def makeRandomMove(self) :
         moveToMake = self.getRandomMove()
         self.board.makeMove(moveToMake)
@@ -224,7 +167,7 @@ class AI :
 
 if __name__ == "__main__" :
     mainBoard = Board()
-    ai = AI(mainBoard, True, 2)
+    ai = AI(mainBoard, True, 4)
     print(mainBoard)
     ai.makeBestMove()
     print(mainBoard)

@@ -28,12 +28,3 @@ class Move :
 
     def __hash__(self):
         return hash((self.oldPos, self.newPos))
-
-
-
-#if __name__ == '__main__' :
-    #coord = 'A4'
-    #print(Move.moveFromHumanCoords(coord).)
-        
-        
-

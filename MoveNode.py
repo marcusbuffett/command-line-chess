@@ -17,13 +17,11 @@ class MoveNode :
         stringRep = "Move : " + str(self.move) + " Point advantage : " + str(self.pointAdvantage) + " Checkmate : " + str(self.move.checkmate)
         stringRep += "\n"
 
-        #stringRep = ""
         for child in self.children :
             stringRep += " " * self.getDepth() * 4
             stringRep += str(child)
 
         return stringRep
-        #return "Move : " + str(self.move) + " Children : " + str(self.children)
 
     def __gt__(self, other) :
         if self.move.checkmate and not other.move.checkmate :
