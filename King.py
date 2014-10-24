@@ -10,16 +10,76 @@ class King (Piece) :
     stringRep = 'K'
     value = 100
 
-    def __init__(self, board, side) :
+    def __init__(self, board, side, movesMade=0) :
         super(King, self).__init__(board, side)
+        self.movesMade = movesMade
 
     def getPossibleMoves(self) :
-        board = self.board
         currentPos = self.position
         movements = [C(0, 1), C(0, -1), C(1, 0), C(-1, 0), C(1, 1), C(1, -1), C(-1, 1), C(-1, -1)]
         for movement in movements :
             newPos = currentPos + movement
-            if board.isValidPos(newPos) :
-                if board.pieceAtPosition(newPos) is None or board.pieceAtPosition(newPos).side != self.side :
+            if self.board.isValidPos(newPos) :
+                if self.board.pieceAtPosition(newPos) is None or self.board.pieceAtPosition(newPos).side != self.side :
                     yield Move(currentPos, newPos)
 
+        #Castling
+        if self.movesMade == 0 :
+            inCheck = False
+            kingsideCastleBlocked = False
+            queensideCastleBlocked = False
+            kingsideCastleCheck = False
+            queensideCastleCheck = False
+            kingsideRookMoved = True
+            queensideRookMoved = True
+
+            kingsideCastlePositions = [self.position + C(1,0), self.position + C(2,0)]
+            for pos in kingsideCastlePositions :
+                if self.board.pieceAtPosition(pos) :
+                    kingsideCastleBlocked = True
+
+            queensideCastlePositions = [self.position - C(1,0), self.position - C(2,0), self.position - C(3,0)]
+            for pos in queensideCastlePositions :
+                if self.board.pieceAtPosition(pos) :
+                    queensideCastleBlocked = True
+
+            if kingsideCastleBlocked and queensideCastleBlocked :
+                return
+
+            otherSideMoves = self.board.getAllMovesUnfiltered(not self.side, includeKing = False)
+            for move in otherSideMoves :
+                if move.newPos == self.position :
+                    inCheck = True
+                    break
+                if move.newPos == self.position + C(1,0) or move.newPos == self.position + C(2,0) :
+                    kingsideCastleCheck = True
+                if move.newPos == self.position - C(1,0) or move.newPos == self.position - C(2,0) :
+                    queensideCastleCheck = True
+
+            kingsideRookPos = self.position + C(3,0)
+            kingsideRook = self.board.pieceAtPosition(kingsideRookPos) if self.board.isValidPos(kingsideRookPos) else None
+            if kingsideRook and kingsideRook.stringRep == 'R' and kingsideRook.movesMade == 0 :
+                kingsideRookMoved = False
+
+            queensideRookPos = self.position - C(4,0)
+            queensideRook = self.board.pieceAtPosition(queensideRookPos) if self.board.isValidPos(queensideRookPos) else None
+            if queensideRook and queensideRook.stringRep == 'R' and queensideRook.movesMade == 0 :
+                queensideRookMoved = False
+                
+
+            #print("kingside blocked " + str(kingsideCastleBlocked))
+            #print("queenside blocked " + str(queensideCastleBlocked))
+            #print("In check : " + str(inCheck))
+            #print("kingsideCastleCheck : " + str(kingsideCastleCheck))
+            #print("queensideCastleCheck : " + str(queensideCastleCheck))
+            #print("kingside rook moved : " + str(kingsideRookMoved))
+            #print("queenside rook moved : " + str(queensideRookMoved))
+            if not inCheck :
+                if not kingsideCastleBlocked and not kingsideCastleCheck and not kingsideRookMoved :
+                    move = Move(self.position, self.position + C(2,0))
+                    move.castle = True
+                    yield move
+                if not queensideCastleBlocked and not queensideCastleCheck and not queensideRookMoved :
+                    move = Move(self.position, self.position - C(2,0))
+                    move.castle = True
+                    yield move

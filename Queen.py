@@ -9,8 +9,9 @@ class Queen (Piece) :
     stringRep = 'Q'
     value = 9
 
-    def __init__(self, board, side) :
+    def __init__(self, board, side, movesMade=0) :
         super(Queen, self).__init__(board, side)
+        self.movesMade = movesMade
 
     def getPossibleMoves(self) :
         currentPosition = self.position

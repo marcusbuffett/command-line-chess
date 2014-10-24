@@ -9,12 +9,15 @@ class Rook (Piece) :
     stringRep = 'R'
     value = 5
 
-    def __init__(self, board, side) :
+    def __init__(self, board, side, movesMade=0) :
         super(Rook, self).__init__(board, side)
+        self.movesMade = movesMade
 
     def getPossibleMoves(self) :
         board = self.board
         currentPosition = self.position
+        if not currentPosition :
+            print(self.movesMade)
 
         directions = [C(0, 1), C(0, -1), C(1, 0), C(-1, 0)]
         for direction in directions :

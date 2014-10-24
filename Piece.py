@@ -9,14 +9,15 @@ Y = 1
 class Piece :
 
     position = None
+    movesMade = 0
 
-    def __init__ (self, board, side) :
+    def __init__ (self, board, side, movesMade=0) :
         self.board = board
         self.side = side
 
     def __str__(self) :
         sideString = 'White' if self.side == WHITE else 'Black'
-        return 'Type : ' + type(self).__name__ + ' - Position : ' + str(self.board.getPositionOfPiece(self)) + " - Side : " + sideString
+        return 'Type : ' + type(self).__name__ + ' - Position : ' + str(self.position) + " - Side : " + sideString
 
     def movesInDirectionFromPos(self, pos, direction, side) :
         for dis in range(1, 8) :
@@ -33,8 +34,10 @@ class Piece :
 
     def updatePosition(self) :
         self.position = self.board.getPositionOfPiece(self)
+        print("UPDATING POSITION")
     
     def copy(self) :
+        cpy = self.__class__(self.board, self.side, movesMade = self.movesMade)
         return self.__class__(self.board, self.side)
 
     

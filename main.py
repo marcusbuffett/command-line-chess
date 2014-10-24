@@ -16,10 +16,6 @@ import sys
 WHITE = True
 BLACK = False
 
-playerSide = WHITE
-board = Board()
-ai = AI(board, BLACK, 2)
-board.currentSide = WHITE
 
 #print("What side would you like to play as?")
 #chosenSide = input()
@@ -30,25 +26,31 @@ board.currentSide = WHITE
 
 #chosenSide = WHITE
 
-parser = InputParser(board, WHITE)
 
-moves = 0
-while True :
-    move = None
-    playerAI = AI(board, WHITE, 2)
-    if board.currentSide == playerSide :
-        move = playerAI.getRandomMove()
-    else :
-        move = ai.getBestMove() 
-
-    move.notation = parser.notationForMove(move)
-
-    print("MOVE: " + str(move.notation))
-    board.makeMove(move)
-    moves += 1
+for _ in range(1) : 
+    moves = 0
+    board = Board()
     print(board)
-    print(board.getPointAdvantageOfSide(board.currentSide))
-    if board.isCheckmate() :
-        print("MOVES : " + str(moves))
-        print("CHECKMATE!")
-        break
+    #for move in board.getAllMovesLegal(board.currentSide) :
+        #print(move)
+    parser = InputParser(board, WHITE)
+    blackai = AI(board, BLACK, 2)
+    whiteai = AI(board, WHITE, 2)
+    for _ in range(50) :
+        move = None
+        if board.currentSide == WHITE :
+            move = whiteai.getRandomMove()
+        else :
+            move = blackai.getRandomMove() 
+
+        move.notation = parser.notationForMove(move)
+
+        print("MOVE: " + str(move.notation))
+        board.makeMove(move)
+        moves += 1
+        print(board)
+        #print(board.getPointAdvantageOfSide(board.currentSide))
+        if board.isCheckmate() :
+            #print("MOVES : " + str(moves))
+            #print("CHECKMATE!")
+            break

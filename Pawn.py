@@ -10,18 +10,12 @@ class Pawn (Piece) :
     stringRep = 'p'
     value = 1
 
-    def __init__(self, board, side) :
+    def __init__(self, board, side, movesMade=0) :
         super(Pawn, self).__init__(board, side)
-        self.hasMoved = False
+        self.movesMade = movesMade
 
     def getPossibleMoves(self) :
         currentPosition = self.position
-        if self.side == WHITE and self.position[1] != 1 :
-            self.hasMoved = True
-        elif self.side == BLACK and self.position[1] != 6 :
-            self.hasMoved = True
-        else :
-            self.hasMoved = False
 
         # Pawn moves one up
         movement = C(0, 1) if self.side == WHITE else C(0, -1)
@@ -31,7 +25,7 @@ class Pawn (Piece) :
                 yield Move(currentPosition, advanceOnePosition)
 
         #Pawn moves two up
-        if not self.hasMoved :
+        if self.movesMade == 0 :
             movement = C(0, 2) if self.side == WHITE else C(0, -2)
             advanceTwoPosition = currentPosition + movement
             if self.board.isValidPos(advanceTwoPosition) :
@@ -47,6 +41,20 @@ class Pawn (Piece) :
                 pieceToTake = self.board.pieceAtPosition(newPosition)
                 if pieceToTake and pieceToTake.side != self.side :
                     yield Move(currentPosition, newPosition)
+
+        #En pessane
+        movements = [C(1,1), C(-1,1)] if self.side == WHITE else [C(1,-1), C(-1,-1)]
+        for movement in movements :
+            posBesidePawn = self.position + C(movement[0], 0)
+            if self.board.isValidPos(posBesidePawn) :
+                pieceBesidePawn = self.board.pieceAtPosition(posBesidePawn)
+                lastPieceMoved = self.board.getLastPieceMoved()
+                if pieceBesidePawn and pieceBesidePawn.stringRep == 'p' and lastPieceMoved is pieceBesidePawn :
+                    move = Move(self.position, self.position + movement)
+                    move.pessant = True
+                    yield move
+
+
 
 
 

@@ -18,6 +18,10 @@ class Move :
         displayString = 'Old pos : ' + str(self.oldPos) + ' -- New pos : ' + str(self.newPos)
         if self.notation :
             displayString += ' Notation : ' + self.notation
+        if self.castle :
+            displayString += ' CASTLE'
+        if self.pessant :
+            displayString += ' PESSANT'
         return displayString
 
     def __eq__(self, other) :

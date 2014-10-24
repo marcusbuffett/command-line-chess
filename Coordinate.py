@@ -10,5 +10,5 @@ class Coordinate(tuple) :
         return Coordinate(self[0] + other[0], self[1] + other[1])
 
     def __sub__(self, other):
-        return self.__add__(-i for i in other)
+        return Coordinate(self[0] - other[0], self[1] - other[1])
 

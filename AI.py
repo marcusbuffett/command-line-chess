@@ -167,7 +167,7 @@ class AI :
 
 if __name__ == "__main__" :
     mainBoard = Board()
-    ai = AI(mainBoard, True, 4)
+    ai = AI(mainBoard, True, 3)
     print(mainBoard)
     ai.makeBestMove()
     print(mainBoard)
