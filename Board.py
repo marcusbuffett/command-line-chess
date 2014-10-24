@@ -18,7 +18,7 @@ class Board :
     def __init__(self, mateInOne = False, castleBoard = False) :
         self.boardArray = []
 
-        if not simple and not mateInOne and not castleBoard:
+        if not mateInOne and not castleBoard:
             backRowBlack = [Rook(self, BLACK), Knight(self, BLACK), Bishop(self, BLACK), King(self, BLACK), Queen(self, BLACK), Bishop(self, BLACK), Knight(self, BLACK), Rook(self, BLACK)]
             frontRowBlack = [Pawn(self, BLACK) for _ in range(8)]
             frontRowWhite = [Pawn(self, WHITE) for _ in range(8)]
@@ -86,13 +86,6 @@ class Board :
 
         pieceToMoveBack.movesMade -= 1
         self.currentSide = not self.currentSide
-        if self.getPositionOfPiece(pieceToMoveBack) :
-            pass
-            #print("Succeeded in getting position at undo last move")
-        else :
-            print("FAILED at undo last move")
-            import sys
-            sys.exit()
 
 
 
@@ -255,14 +248,6 @@ class Board :
         x, y = self.coordToLocationInArray(pos)
         self.boardArray[x][y] = piece
         piece.position = pos
-        if self.getPositionOfPiece(piece) :
-            pass
-            #print("Succeeded in getting position at undo last move")
-        else :
-            print("FAILED at add piece to position")
-            import sys
-            sys.exit()
-
 
     def clearPosition(self, pos) :
         x, y = self.coordToLocationInArray(pos)
@@ -305,16 +290,6 @@ class Board :
             return -self.points
         
 
-    def checkForKings(self) :
-        kingsFound = 0
-        for piece in self.pieces :
-            if piece.stringRep == 'K' :
-                kingsFound += 1
-        if kingsFound == 2 :
-            return True
-        else :
-            return False
-
     def getAllMovesUnfiltered (self, side, includeKing=True) :
         unfilteredMoves = []
         for piece in self.pieces :
@@ -323,11 +298,6 @@ class Board :
                     for move in piece.getPossibleMoves() :
                         unfilteredMoves.append(move)
         return unfilteredMoves
-
-    def getKingOfSide (self, side) :
-        for piece in self.pieces :
-            if piece.stringRep == 'K' and piece.side == side :
-                return piece
 
     def testIfLegalBoard(self, side) :
         for move in self.getAllMovesUnfiltered(side) :
