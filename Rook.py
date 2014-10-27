@@ -9,8 +9,8 @@ class Rook (Piece) :
     stringRep = 'R'
     value = 5
 
-    def __init__(self, board, side, movesMade=0) :
-        super(Rook, self).__init__(board, side)
+    def __init__(self, board, side, position,  movesMade=0) :
+        super(Rook, self).__init__(board, side, position)
         self.movesMade = movesMade
 
     def getPossibleMoves(self) :

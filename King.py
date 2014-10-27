@@ -10,8 +10,8 @@ class King (Piece) :
     stringRep = 'K'
     value = 100
 
-    def __init__(self, board, side, movesMade=0) :
-        super(King, self).__init__(board, side)
+    def __init__(self, board, side, position,  movesMade=0) :
+        super(King, self).__init__(board, side, position)
         self.movesMade = movesMade
 
     def getPossibleMoves(self) :
@@ -77,9 +77,15 @@ class King (Piece) :
             if not inCheck :
                 if not kingsideCastleBlocked and not kingsideCastleCheck and not kingsideRookMoved :
                     move = Move(self.position, self.position + C(2,0))
-                    move.castle = True
+                    rookMove = Move(self.position, self.position + C(1,0))
+                    move.specialMovePiece = self.board.pieceAtPosition(kingsideRookPos)
+                    move.kingsideCastle = True
+                    move.rookMove = rookMove
                     yield move
                 if not queensideCastleBlocked and not queensideCastleCheck and not queensideRookMoved :
                     move = Move(self.position, self.position - C(2,0))
-                    move.castle = True
+                    rookMove = Move(self.position, self.position - C(1,0))
+                    move.specialMovePiece = self.board.pieceAtPosition(queensideRookPos)
+                    move.queensideCastle = True
+                    move.rookMove = rookMove
                     yield move

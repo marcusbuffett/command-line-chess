@@ -8,12 +8,12 @@ Y = 1
 
 class Piece :
 
-    position = None
-    movesMade = 0
 
-    def __init__ (self, board, side, movesMade=0) :
+    def __init__ (self, board, side, position, movesMade=0) :
         self.board = board
         self.side = side
+        self.position = position
+        movesMade = 0
 
     def __str__(self) :
         sideString = 'White' if self.side == WHITE else 'Black'
@@ -31,15 +31,10 @@ class Piece :
                     if self.board.pieceAtPosition(newPos).side != side :
                         yield Move(pos, newPos)
                     return
-
-    def updatePosition(self) :
-        self.position = self.board.getPositionOfPiece(self)
-        print("UPDATING POSITION")
     
     def copy(self) :
-        cpy = self.__class__(self.board, self.side, movesMade = self.movesMade)
-        return self.__class__(self.board, self.side)
-
+        cpy = self.__class__(self.board, self.side, self.position,  movesMade = self.movesMade)
+        return cpy
     
     
 

@@ -10,8 +10,8 @@ class Knight (Piece) :
     stringRep = 'N'
     value = 3
 
-    def __init__(self, board, side, movesMade=0) :
-        super(Knight, self).__init__(board, side)
+    def __init__(self, board, side, position,  movesMade=0) :
+        super(Knight, self).__init__(board, side, position)
         self.movesMade = movesMade 
 
 

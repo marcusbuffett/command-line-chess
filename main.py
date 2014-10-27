@@ -27,16 +27,24 @@ BLACK = False
 #chosenSide = WHITE
 
 
-for _ in range(1) : 
+for _ in range(30) : 
     moves = 0
     board = Board()
     print(board)
-    #for move in board.getAllMovesLegal(board.currentSide) :
-        #print(move)
+    #move = Move(C(1, 4), C(2, 5))
+    #move.pessant = True
+    #move.specialMovePiece = board.pieces[1]
+    #print(move)
+    #board.makeMove(move)
+    #print(board)
+    #board.undoLastMove()
+    #print(board)
+    for move in board.getAllMovesLegal(board.currentSide) :
+        print(move)
     parser = InputParser(board, WHITE)
     blackai = AI(board, BLACK, 2)
     whiteai = AI(board, WHITE, 2)
-    for _ in range(50) :
+    for _ in range(20) :
         move = None
         if board.currentSide == WHITE :
             move = whiteai.getRandomMove()
@@ -49,6 +57,7 @@ for _ in range(1) :
         board.makeMove(move)
         moves += 1
         print(board)
+        print()
         #print(board.getPointAdvantageOfSide(board.currentSide))
         if board.isCheckmate() :
             #print("MOVES : " + str(moves))
