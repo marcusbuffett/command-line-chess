@@ -35,6 +35,7 @@ class Board :
 
         elif promotion :
             pawnToPromote = Pawn(self, WHITE, C(1,6))
+            pawnToPromote.movesMade = 1
             kingWhite = King(self, WHITE, C(4,0))
             kingBlack = King(self, BLACK, C(3, 2))
             self.pieces.extend([pawnToPromote, kingWhite, kingBlack])
@@ -50,7 +51,7 @@ class Board :
             self.points = 0
             self.movesMade = 0
             self.checkmate = False
-            firstMove = Move(C(2,6), C(2,4))
+            firstMove = Move(pawn2, C(2,4))
             self.makeMove(firstMove)
             self.currentSide = WHITE
             return
@@ -346,7 +347,8 @@ class Board :
         return points
 
     def getPointAdvantageOfSide(self, side) :
-        return self.getPointValueOfSide(side) - self.getPointValueOfSide(not side)
+        pointAdvantage = self.getPointValueOfSide(side) - self.getPointValueOfSide(not side) 
+        return pointAdvantage
         if side == WHITE :
             return self.points
         if side == BLACK :
@@ -378,7 +380,7 @@ class Board :
         return isLegal  
 
 
-
+    #TODO: remove side parameter, unneccesary
     def getAllMovesLegal (self, side) :
         unfilteredMoves = list(self.getAllMovesUnfiltered(side))
         legalMoves = []

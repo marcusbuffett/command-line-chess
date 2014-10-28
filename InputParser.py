@@ -29,10 +29,8 @@ class InputParser :
     def moveForShortNotation(self, notation) :
         moves = self.getLegalMovesWithShortNotation(self.side)
         for move in moves :
-            if move.notation == notation :
+            if move.notation.lower() == notation.lower() :
                 return move
-        else :
-            return 'No match'
 
     def notationForMove(self, move) :
         side = self.board.getSideOfMove(move)

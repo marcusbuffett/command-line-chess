@@ -35,7 +35,8 @@ class Move :
 
     def __eq__(self, other) :
         if self.oldPos == other.oldPos and self.newPos == other.newPos :
-            return True
+            if self.specialMovePiece == other.specialMovePiece :
+                return True
         else :
             return False
 

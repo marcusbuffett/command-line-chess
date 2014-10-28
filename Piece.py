@@ -32,6 +32,11 @@ class Piece :
                     if pieceAtNewPos.side != side :
                         yield Move(self, newPos, pieceToCapture = pieceAtNewPos)
                     return
+
+    def __eq__(self, other) :
+        if self.board == other.board and self.side == other.side and self.position == other.position and self.__class__ == other.__class__:
+            return True
+        return False
     
     def copy(self) :
         cpy = self.__class__(self.board, self.side, self.position,  movesMade = self.movesMade)

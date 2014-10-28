@@ -81,7 +81,7 @@ class Pawn (Piece) :
 
 
                 if pieceBesidePawn and pieceBesidePawn.stringRep == 'p' and pieceBesidePawn.side != self.side and lastPieceMoved is pieceBesidePawn and lastMoveWasAdvanceTwo:
-                    move = Move(self, movement, pieceToCapture = pieceBesidePawn)
+                    move = Move(self, self.position + movement, pieceToCapture = pieceBesidePawn)
                     move.pessant = True
                     move.specialMovePiece = pieceBesidePawn
                     yield move
