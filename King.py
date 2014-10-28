@@ -20,8 +20,11 @@ class King (Piece) :
         for movement in movements :
             newPos = currentPos + movement
             if self.board.isValidPos(newPos) :
-                if self.board.pieceAtPosition(newPos) is None or self.board.pieceAtPosition(newPos).side != self.side :
-                    yield Move(currentPos, newPos)
+                pieceAtNewPos = self.board.pieceAtPosition(newPos)
+                if self.board.pieceAtPosition(newPos) is None :
+                    yield Move(self, newPos)
+                elif pieceAtNewPos.side != self.side :
+                    yield Move(self, newPos, pieceToCapture = pieceAtNewPos)
 
         #Castling
         if self.movesMade == 0 :
@@ -66,24 +69,16 @@ class King (Piece) :
             if queensideRook and queensideRook.stringRep == 'R' and queensideRook.movesMade == 0 :
                 queensideRookMoved = False
                 
-
-            #print("kingside blocked " + str(kingsideCastleBlocked))
-            #print("queenside blocked " + str(queensideCastleBlocked))
-            #print("In check : " + str(inCheck))
-            #print("kingsideCastleCheck : " + str(kingsideCastleCheck))
-            #print("queensideCastleCheck : " + str(queensideCastleCheck))
-            #print("kingside rook moved : " + str(kingsideRookMoved))
-            #print("queenside rook moved : " + str(queensideRookMoved))
             if not inCheck :
                 if not kingsideCastleBlocked and not kingsideCastleCheck and not kingsideRookMoved :
-                    move = Move(self.position, self.position + C(2,0))
+                    move = Move(self, self.position + C(2,0))
                     rookMove = Move(self.position, self.position + C(1,0))
                     move.specialMovePiece = self.board.pieceAtPosition(kingsideRookPos)
                     move.kingsideCastle = True
                     move.rookMove = rookMove
                     yield move
                 if not queensideCastleBlocked and not queensideCastleCheck and not queensideRookMoved :
-                    move = Move(self.position, self.position - C(2,0))
+                    move = Move(self, self.position - C(2,0))
                     rookMove = Move(self.position, self.position - C(1,0))
                     move.specialMovePiece = self.board.pieceAtPosition(queensideRookPos)
                     move.queensideCastle = True

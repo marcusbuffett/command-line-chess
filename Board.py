@@ -95,17 +95,17 @@ class Board :
         lastMove, pieceTaken = self.history.pop()
 
         if lastMove.queensideCastle or lastMove.kingsideCastle :
-            king = self.pieceAtPosition(lastMove.newPos)
-            rook = move.specialMovePiece
+            king = lastMove.piece
+            rook = lastMove.specialMovePiece
             
             self.movePieceToPosition(king, lastMove.oldPos)
-            self.movePieceToPosition(rook, move.rookMove.oldPos)
+            self.movePieceToPosition(rook, lastMove.rookMove.oldPos)
 
             king.movesMade -= 1
             rook.movesMade -= 1
 
         elif lastMove.pessant :
-            pawnMoved = self.pieceAtPosition(lastMove.newPos)
+            pawnMoved = lastMove.piece
             pawnTaken = pieceTaken
             self.pieces.append(pawnTaken)
             self.movePieceToPosition(pawnMoved, lastMove.oldPos)
@@ -119,7 +119,7 @@ class Board :
             pass
 
         else :
-            pieceToMoveBack = self.pieceAtPosition(lastMove.newPos)
+            pieceToMoveBack = lastMove.piece
             self.movePieceToPosition(pieceToMoveBack, lastMove.oldPos)
             if pieceTaken :
                 if pieceTaken.side == WHITE :
@@ -137,7 +137,7 @@ class Board :
     def isCheckmate(self) :
         if len(self.getAllMovesLegal(self.currentSide)) == 0 :
             for move in self.getAllMovesUnfiltered(not self.currentSide) :
-                pieceToTake = self.pieceAtPosition(move.newPos)
+                pieceToTake = move.pieceToCapture
                 if pieceToTake and pieceToTake.stringRep == "K" :
                     return True
         return False
@@ -148,17 +148,15 @@ class Board :
 
     def getLastPieceMoved(self) :
         if self.history :
-            return self.pieceAtPosition(self.history[-1][0].newPos)
+            return self.history[-1][0].piece
     
     def addMoveToHistory(self, move) :
         pieceTaken = None
         if move.pessant :
             pieceTaken = move.specialMovePiece
             self.history.append([move, pieceTaken])
-            print("APPENDING PAWN : " + str(pieceTaken) + ' at mem pos : ' + repr(pieceTaken))
-            print(self.pieces)
             return
-        pieceTaken = self.pieceAtPosition(move.newPos)
+        pieceTaken = move.pieceToCapture
         if pieceTaken :
             self.history.append([move, pieceTaken])
             return
@@ -200,8 +198,8 @@ class Board :
 
     def getShortNotationOfMove(self, move) :
         notation = ""
-        pieceToMove = self.pieceAtPosition(move.oldPos)
-        pieceToTake = self.pieceAtPosition(move.newPos)
+        pieceToMove = move.piece
+        pieceToTake = move.pieceToCapture
 
         if pieceToMove.stringRep != 'p' :
             notation += pieceToMove.stringRep
@@ -284,7 +282,7 @@ class Board :
             return False
 
     def getSideOfMove(self, move) :
-        return self.pieceAtPosition(move.oldPos).side
+        return move.piece.side
 
     def getPositionOfPiece(self, piece) :
         for y in range(8) :
@@ -317,7 +315,7 @@ class Board :
     def makeMove(self, move) :
         self.addMoveToHistory(move)
         if move.kingsideCastle or move.queensideCastle :
-            kingToMove = self.pieceAtPosition(move.oldPos)
+            kingToMove = move.piece
             rookToMove = move.specialMovePiece
             self.movePieceToPosition(kingToMove, move.newPos)
             self.movePieceToPosition(rookToMove, move.rookMovePos)
@@ -325,15 +323,15 @@ class Board :
             rookToMove.movesMade += 1
 
         elif move.pessant :
-            pawnToMove = self.pieceAtPosition(move.oldPos)
+            pawnToMove = move.piece
             pawnToTake = move.specialMovePiece
             pawnToMove.position = move.newPos
             self.pieces.remove(pawnToTake)
             pawnToMove.movesMade += 1
 
         else :
-            pieceToMove = self.pieceAtPosition(move.oldPos)
-            pieceToTake = self.pieceAtPosition(move.newPos)
+            pieceToMove = move.piece
+            pieceToTake = move.pieceToCapture
 
             if pieceToTake :
                 if pieceToTake.side == WHITE :
@@ -372,14 +370,14 @@ class Board :
 
     def testIfLegalBoard(self, side) :
         for move in self.getAllMovesUnfiltered(side) :
-            pieceToTake = self.pieceAtPosition(move.newPos)
+            pieceToTake = move.pieceToCapture
             if pieceToTake and pieceToTake.stringRep == 'K' :
                 return False
         return True
 
 
     def moveIsLegal(self, move) :
-        side = self.pieceAtPosition(move.oldPos).side 
+        side = move.piece.side 
         self.makeMove(move)
         isLegal = self.testIfLegalBoard(not side)
         self.undoLastMove()

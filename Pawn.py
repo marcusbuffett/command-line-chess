@@ -31,7 +31,6 @@ class Pawn (Piece) :
             #if col == 7 or col == 0:
                 #piecesForPromotion = [Rook(self.board, self.side), Knight(self.board, self.side), Bishop(self.board, self.side)]
                 #for piece in piecesForPromotion :
-                    #print("YEAH")
                     #move = Move(self.position, advanceOnePosition)
                     #move.promotion = True
                     #move.specialMovePiece = piece
@@ -40,7 +39,7 @@ class Pawn (Piece) :
                 
 
             if self.board.pieceAtPosition(advanceOnePosition) is None :
-                yield Move(currentPosition, advanceOnePosition)
+                yield Move(self, advanceOnePosition)
 
         #Pawn moves two up
         if self.movesMade == 0 :
@@ -48,7 +47,7 @@ class Pawn (Piece) :
             advanceTwoPosition = currentPosition + movement
             if self.board.isValidPos(advanceTwoPosition) :
                 if self.board.pieceAtPosition(advanceTwoPosition) is None and self.board.pieceAtPosition(advanceOnePosition) is None:
-                    yield Move(currentPosition, advanceTwoPosition)
+                    yield Move(self, advanceTwoPosition)
 
         #Pawn takes
         movements = [C(1,1), C(-1,1)] if self.side == WHITE else [C(1,-1), C(-1,-1)]
@@ -58,7 +57,7 @@ class Pawn (Piece) :
             if self.board.isValidPos(newPosition) :
                 pieceToTake = self.board.pieceAtPosition(newPosition)
                 if pieceToTake and pieceToTake.side != self.side :
-                    yield Move(currentPosition, newPosition)
+                    yield Move(self, newPosition, pieceToCapture = pieceToTake)
 
         #En pessant
         movements = [C(1,1), C(-1,1)] if self.side == WHITE else [C(1,-1), C(-1,-1)]
@@ -76,12 +75,9 @@ class Pawn (Piece) :
 
 
                 if pieceBesidePawn and pieceBesidePawn.stringRep == 'p' and pieceBesidePawn.side != self.side and lastPieceMoved is pieceBesidePawn and lastMoveWasAdvanceTwo:
-                    move = Move(self.position, self.position + movement)
+                    move = Move(self, movement, pieceToCapture = pieceBesidePawn)
                     move.pessant = True
                     move.specialMovePiece = pieceBesidePawn
-                    print("YIELDING EN PESSANT")
-                    print(vars(move))
-                    print(self.board)
                     yield move
 
         

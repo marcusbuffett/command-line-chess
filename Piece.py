@@ -24,12 +24,13 @@ class Piece :
             movement = C(dis * direction[X], dis * direction[Y])
             newPos = pos + movement
             if self.board.isValidPos(newPos) :
-                if self.board.pieceAtPosition(newPos) is None :
-                    yield Move(pos, newPos)
+                pieceAtNewPos = self.board.pieceAtPosition(newPos)
+                if pieceAtNewPos is None :
+                    yield Move(self, newPos)
                 
-                elif self.board.pieceAtPosition(newPos) is not None :
-                    if self.board.pieceAtPosition(newPos).side != side :
-                        yield Move(pos, newPos)
+                elif pieceAtNewPos is not None :
+                    if pieceAtNewPos.side != side :
+                        yield Move(self, newPos, pieceToCapture = pieceAtNewPos)
                     return
     
     def copy(self) :

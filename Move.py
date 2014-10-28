@@ -3,7 +3,7 @@ import re
 
 class Move :
     
-    def __init__(self, oldPos, newPos) :
+    def __init__(self, piece, newPos, pieceToCapture = None) :
         self.notation = None
         self.check = False
         self.checkmate = False
@@ -13,8 +13,10 @@ class Move :
         self.pessant = False
         self.stalemate = False
 
-        self.oldPos = oldPos
+        self.piece = piece
+        self.oldPos = piece.position
         self.newPos = newPos
+        self.pieceToCapture = pieceToCapture
         #For en pessant and castling
         self.specialMovePiece = None
         #For castling
@@ -39,3 +41,6 @@ class Move :
 
     def __hash__(self):
         return hash((self.oldPos, self.newPos))
+
+    def reverse(self) :
+        return Move(self.piece, self.piece.position, pieceToCapture = self.pieceToCapture)

@@ -22,5 +22,8 @@ class Knight (Piece) :
         for movement in movements :
             newPos = currentPos + movement
             if board.isValidPos(newPos) :
-                if board.pieceAtPosition(newPos) is None or board.pieceAtPosition(newPos).side != self.side :
-                    yield Move(currentPos, newPos)
+                pieceAtNewPos = board.pieceAtPosition(newPos)
+                if pieceAtNewPos is None :
+                    yield Move(self, newPos)
+                elif pieceAtNewPos.side != self.side :
+                    yield Move(self, newPos, pieceToCapture = pieceAtNewPos)
