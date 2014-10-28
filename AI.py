@@ -92,11 +92,12 @@ class AI :
         if not legalMoves :
             if self.board.isCheckmate() :
                 node.move.checkmate = True
-                node.pointAdvantage = 100
                 return
-            else :
+            elif self.board.isStalemate() :
                 node.move.stalemate = True
+                node.pointAdvantage = 0
                 return
+            raise Exception()
 
         for move in legalMoves :
             self.movesAnalyzed += 1

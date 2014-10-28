@@ -27,16 +27,17 @@ class Pawn (Piece) :
         advanceOnePosition = currentPosition + movement
         if self.board.isValidPos(advanceOnePosition) :
             #Promotion moves
-            col = advanceOnePosition[1]
-            if col == 7 or col == 0:
-                piecesForPromotion = [Rook(self.board, self.side, advanceOnePosition), Knight(self.board, self.side, advanceOnePosition), Bishop(self.board, self.side, advanceOnePosition), Queen(self.board, self.side, advanceOnePosition)]
-                for piece in piecesForPromotion :
-                    move = Move(self, advanceOnePosition)
-                    move.promotion = True
-                    move.specialMovePiece = piece
-                    yield move
             if self.board.pieceAtPosition(advanceOnePosition) is None :
-                yield Move(self, advanceOnePosition)
+                col = advanceOnePosition[1]
+                if col == 7 or col == 0:
+                    piecesForPromotion = [Rook(self.board, self.side, advanceOnePosition), Knight(self.board, self.side, advanceOnePosition), Bishop(self.board, self.side, advanceOnePosition), Queen(self.board, self.side, advanceOnePosition)]
+                    for piece in piecesForPromotion :
+                        move = Move(self, advanceOnePosition)
+                        move.promotion = True
+                        move.specialMovePiece = piece
+                        yield move
+                else :
+                    yield Move(self, advanceOnePosition)
 
         #Pawn moves two up
         if self.movesMade == 0 :
@@ -54,16 +55,17 @@ class Pawn (Piece) :
             if self.board.isValidPos(newPosition) :
                 pieceToTake = self.board.pieceAtPosition(newPosition)
                 if pieceToTake and pieceToTake.side != self.side :
-                    yield Move(self, newPosition, pieceToCapture = pieceToTake)
-
                     col = newPosition[1]
+                    #Promotions
                     if col == 7 or col == 0:
-                        piecesForPromotion = [Rook(self.board, self.side, advanceOnePosition), Knight(self.board, self.side, advanceOnePosition), Bishop(self.board, self.side, advanceOnePosition), Queen(self.board, self.side, advanceOnePosition)]
+                        piecesForPromotion = [Rook(self.board, self.side, newPosition), Knight(self.board, self.side, newPosition), Bishop(self.board, self.side, newPosition), Queen(self.board, self.side, newPosition)]
                         for piece in piecesForPromotion :
                             move = Move(self, advanceOnePosition)
                             move.promotion = True
                             move.specialMovePiece = piece
                             yield move
+                    else :
+                        yield Move(self, newPosition, pieceToCapture = pieceToTake)
 
         #En pessant
         movements = [C(1,1), C(-1,1)] if self.side == WHITE else [C(1,-1), C(-1,-1)]

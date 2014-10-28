@@ -2,16 +2,13 @@ from Move import Move
 
 class MoveNode :
 
-    parent = None
-    move = []
-    pointAdvantage = None
-    children = []
-    depth = 1
 
     def __init__(self, move, children, parent) :
         self.move = move
         self.children = children
         self.parent = parent
+        pointAdvantage = None
+        depth = 1
 
     def __str__(self) :
         stringRep = "Move : " + str(self.move) + " Point advantage : " + str(self.pointAdvantage) + " Checkmate : " + str(self.move.checkmate)
@@ -37,7 +34,7 @@ class MoveNode :
             return False
         if not self.move.checkmate and other.move.checkmate :
             return True
-        if self.move.checkmate and other.move.checkmate :
+        if self.move.stalemate and other.move.stalemate :
             return False
         return self.pointAdvantage < other.pointAdvantage
 
