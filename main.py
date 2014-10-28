@@ -38,7 +38,8 @@ def printCommandOptions () :
     undoOption = 'u : undo last move'
     printLegalMovesOption = 'l : show all legal moves'
     randomMoveOption = 'r : make a random move'
-    options = [undoOption, printLegalMovesOption, randomMoveOption]
+    moveOption = 'a3, Nc3, Qxa2, etc : make the move'
+    options = [undoOption, printLegalMovesOption, randomMoveOption, moveOption]
     for option in options :
         print(option)
 
