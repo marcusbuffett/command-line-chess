@@ -117,6 +117,15 @@ class Board :
                 if pieceToTake and pieceToTake.stringRep == "K" :
                     return True
         return False
+
+    def isStalemate(self) :
+        if len(self.getAllMovesLegal(self.currentSide)) == 0 :
+            for move in self.getAllMovesUnfiltered(not self.currentSide) :
+                pieceToTake = move.pieceToCapture
+                if pieceToTake and pieceToTake.stringRep == "K" :
+                    return False
+            return True
+        return False
     
     def getLastMove(self) :
         if self.history :

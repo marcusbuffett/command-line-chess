@@ -72,6 +72,20 @@ def startGame(board, playerSide, ai) :
     while True :
         print(board)
         print()
+        if board.isCheckmate() :
+            if board.currentSide == playerSide :
+                print("Checkmate, you lost")
+            else :
+                print("Checkmate! You won!")
+            return
+
+        if board.isStalemate() :
+            if board.currentSide == playerSide :
+                print("Stalemate")
+            else :
+                print("Stalemate")
+            return
+            
         if board.currentSide == playerSide :
             printPointAdvantage(board)
             move = None
