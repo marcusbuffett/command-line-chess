@@ -17,7 +17,7 @@ class Piece :
 
     def __str__(self) :
         sideString = 'White' if self.side == WHITE else 'Black'
-        return 'Type : ' + type(self).__name__ + ' - Position : ' + str(self.position) + " - Side : " + sideString
+        return 'Type : ' + type(self).__name__ + ' - Position : ' + str(self.position) + " - Side : " + sideString + ' -- Value : ' + str(self.value)
 
     def movesInDirectionFromPos(self, pos, direction, side) :
         for dis in range(1, 8) :

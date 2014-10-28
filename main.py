@@ -24,9 +24,9 @@ for _ in range(1) :
     for move in board.getAllMovesLegal(board.currentSide) :
         print(move)
     parser = InputParser(board, WHITE)
-    blackai = AI(board, BLACK, 2)
-    whiteai = AI(board, WHITE, 2)
-    for _ in range(120) :
+    blackai = AI(board, BLACK, 1)
+    whiteai = AI(board, WHITE, 3)
+    for _ in range(101) :
         move = None
         if board.currentSide == WHITE :
             move = whiteai.getBestMove()

@@ -19,47 +19,27 @@ class Board :
 
     def __init__(self, mateInOne = False, castleBoard = False, pessant = False, promotion = False) :
         self.pieces = []
+        self.history = []
+        self.points = 0
+        self.currentSide = WHITE
+        self.movesMade = 0
+        self.checkmate = False
 
         if not mateInOne and not castleBoard and not pessant and not promotion:
             self.pieces.extend([Rook(self, BLACK, C(0,7)), Knight(self, BLACK, C(1,7)), Bishop(self, BLACK, C(2,7)), King(self, BLACK, C(3,7)), Queen(self, BLACK, C(4,7)), Bishop(self, BLACK, C(5,7)), Knight(self, BLACK, C(6,7)), Rook(self, BLACK, C(7,7))])
             for x in range(8) :
                 self.pieces.append(Pawn(self, BLACK, C(x, 6)))
-
             for x in range(8) :
                 self.pieces.append(Pawn(self, WHITE, C(x, 1)))
             self.pieces.extend([Rook(self, WHITE, C(0,0)), Knight(self, WHITE, C(1,0)), Bishop(self, WHITE, C(2,0)), King(self, WHITE, C(3,0)), Queen(self, WHITE, C(4,0)), Bishop(self, WHITE, C(5,0)), Knight(self, WHITE, C(6,0)), Rook(self, WHITE, C(7,0))])
 
-        elif mateInOne :
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, King(self, BLACK), None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, Queen(self, BLACK)])
-            self.boardArray.append([None, None, None, King(self, WHITE), None, None, None, None])
-
-
-        elif castleBoard :
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([None, None, None, King(self, BLACK), None, None, None, None])
-            self.boardArray.append([None, None, None, None, None, None, None, None])
-            self.boardArray.append([Rook(self, WHITE), None, None, None, King(self, WHITE), None, None, None])
+        elif promotion :
+            pawnToPromote = Pawn(self, WHITE, C(1,6))
+            kingWhite = King(self, WHITE, C(4,0))
+            kingBlack = King(self, BLACK, C(3, 2))
+            self.pieces.extend([pawnToPromote, kingWhite, kingBlack])
 
         elif pessant :
-
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, None, Pawn(self, BLACK), None, None, None, None, None])
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, Pawn(self, WHITE), None, None, None, None, None, None])
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, None, None, King(self, BLACK), None, None, None, None])
-            #self.boardArray.append([None, None, None, None, None, None, None, None])
-            #self.boardArray.append([None, None, None, None, King(self, WHITE), None, None, None])
             pawn = Pawn(self, WHITE, C(1,4))
             pawn2 = Pawn(self, BLACK, C(2,6))
             kingWhite = King(self, WHITE, C(4,0))
@@ -75,19 +55,6 @@ class Board :
             self.currentSide = WHITE
             return
             
-
-
-        self.history = []
-
-        self.points = 0
-        self.currentSide = WHITE
-        self.movesMade = 0
-        self.checkmate = False
-
-
-
-
-
     def __str__(self) :
         return self.makeStringRep(self.pieces)
 
@@ -116,7 +83,15 @@ class Board :
                 self.points -= 1
 
         elif lastMove.promotion :
-            pass
+            pawnPromoted = lastMove.piece
+            promotedPiece = self.pieceAtPosition(lastMove.newPos)
+            self.pieces.remove(promotedPiece)
+            self.pieces.append(pawnPromoted)
+            if pawnPromoted.side == WHITE :
+                self.points -= promotedPiece.value - 1
+            elif pawnPromoted.side == BLACK :
+                self.points += promotedPiece.value - 1
+            pawnPromoted.movesMade -= 1
 
         else :
             pieceToMoveBack = lastMove.piece
@@ -201,6 +176,12 @@ class Board :
         pieceToMove = move.piece
         pieceToTake = move.pieceToCapture
 
+        if move.queensideCastle :
+            return "0-0-0"
+
+        if move.kingsideCastle :
+            return "0-0"
+        
         if pieceToMove.stringRep != 'p' :
             notation += pieceToMove.stringRep
 
@@ -210,6 +191,10 @@ class Board :
             notation += 'x'
 
         notation += self.positionToHumanCoord(move.newPos)
+
+        if move.promotion :
+            notation += "=" + str(move.specialMovePiece.stringRep)
+
         return notation
     
     def getShortNotationOfMoveWithFile(self, move) :
@@ -329,6 +314,14 @@ class Board :
             self.pieces.remove(pawnToTake)
             pawnToMove.movesMade += 1
 
+        elif move.promotion :
+            self.pieces.remove(move.piece)
+            self.pieces.append(move.specialMovePiece)
+            if move.piece.side == WHITE :
+                self.points += move.specialMovePiece.value - 1
+            if move.piece.side == BLACK :
+                self.points -= move.specialMovePiece.value - 1
+
         else :
             pieceToMove = move.piece
             pieceToTake = move.pieceToCapture
@@ -353,6 +346,7 @@ class Board :
         return points
 
     def getPointAdvantageOfSide(self, side) :
+        return self.getPointValueOfSide(side) - self.getPointValueOfSide(not side)
         if side == WHITE :
             return self.points
         if side == BLACK :
