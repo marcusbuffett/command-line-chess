@@ -57,7 +57,7 @@ class Board :
             return
             
     def __str__(self) :
-        return self.makeStringRep(self.pieces)
+        return self.wrapStringRep(self.makeStringRep(self.pieces))
 
     def undoLastMove(self) :
         lastMove, pieceTaken = self.history.pop()
@@ -171,6 +171,14 @@ class Board :
             stringRep += '\n'
         stringRep = stringRep.strip()
         return stringRep
+
+    def wrapStringRep(self, stringRep):
+        sRep = '\n'.join(
+            ['   a b c d e f g h   ', '                     '] +
+            ['%d  %s  %d' % (8-r, s.strip(), 8-r) for r,s in enumerate(stringRep.split('\n'))] + 
+            ['                     ', '   a b c d e f g h   ']
+            )
+        return sRep
 
     def rankOfPiece(self, piece) :
         return str(piece.position[1] + 1)
