@@ -174,10 +174,10 @@ class Board :
 
     def wrapStringRep(self, stringRep):
         sRep = '\n'.join(
-            ['   a b c d e f g h   ', '                     '] +
+            ['   a b c d e f g h   ', ' '*21] +
             ['%d  %s  %d' % (8-r, s.strip(), 8-r) for r,s in enumerate(stringRep.split('\n'))] + 
-            ['                     ', '   a b c d e f g h   ']
-            )
+            [' '*21, '   a b c d e f g h   ']
+            ).rstrip()
         return sRep
 
     def rankOfPiece(self, piece) :
