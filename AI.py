@@ -13,160 +13,167 @@ from multiprocessing import Queue, Pool, Process
 WHITE = True
 BLACK = False
 
-class AI :
+
+class AI:
 
     depth = 1
     board = None
     side = None
     movesAnalyzed = 0
-    
 
-    def __init__(self, board, side, depth) :
+    def __init__(self, board, side, depth):
         self.board = board
         self.side = side
         self.depth = depth
         self.parser = InputParser(self.board, self.side)
 
-    def getFirstMove(self, side) :
+    def getFirstMove(self, side):
         move = list(self.board.getAllMovesLegal(side))[0]
         return move
 
-    def getAllMovesLegalConcurrent (self, side) :
+    def getAllMovesLegalConcurrent(self, side):
         p = Pool(8)
-        unfilteredMovesWithBoard = [(move, copy.deepcopy(self.board)) for move in self.board.getAllMovesUnfiltered(side)]
-        legalMoves = p.starmap(self.returnMoveIfLegal, unfilteredMovesWithBoard)
+        unfilteredMovesWithBoard = \
+            [(move, copy.deepcopy(self.board))
+             for move in self.board.getAllMovesUnfiltered(side)]
+        legalMoves = p.starmap(self.returnMoveIfLegal,
+                               unfilteredMovesWithBoard)
         p.close()
         p.join()
         return list(filter(None, legalMoves))
 
-    def minChildrenOfNode(self, node) :
+    def minChildrenOfNode(self, node):
         lowestNodes = []
-        for child in node.children :
-            if not lowestNodes :
+        for child in node.children:
+            if not lowestNodes:
                 lowestNodes.append(child)
-            elif child < lowestNodes[0] :
+            elif child < lowestNodes[0]:
                 lowestNodes = []
                 lowestNodes.append(child)
-            elif child == lowestNodes[0] :
+            elif child == lowestNodes[0]:
                 lowestNodes.append(child)
         return lowestNodes
 
-    def maxChildrenOfNode(self, node) :
+    def maxChildrenOfNode(self, node):
         highestNodes = []
-        for child in node.children :
-            if not highestNodes :
+        for child in node.children:
+            if not highestNodes:
                 highestNodes.append(child)
-            elif child < highestNodes[0] :
+            elif child < highestNodes[0]:
                 highestNodes = []
                 highestNodes.append(child)
-            elif child == highestNodes[0] :
+            elif child == highestNodes[0]:
                 highestNodes.append(child)
         return highestNodes
 
-    def getRandomMove(self) :
+    def getRandomMove(self):
         legalMoves = list(self.board.getAllMovesLegal(self.side))
         randomMove = random.choice(legalMoves)
         return randomMove
 
-    def generateMoveTree(self) :
+    def generateMoveTree(self):
         moveTree = []
-        for move in self.board.getAllMovesLegal(self.side) :
+        for move in self.board.getAllMovesLegal(self.side):
             moveTree.append(MoveNode(move, [], None))
 
-        for node in moveTree :
+        for node in moveTree:
             self.board.makeMove(node.move)
             self.populateNodeChildren(node)
             self.board.undoLastMove()
         return moveTree
 
-
-    def populateNodeChildren(self, node) :
+    def populateNodeChildren(self, node):
         node.pointAdvantage = self.board.getPointAdvantageOfSide(self.side)
         node.depth = node.getDepth()
-        if node.depth == self.depth :
+        if node.depth == self.depth:
             return
 
         side = self.board.currentSide
-        
+
         legalMoves = self.board.getAllMovesLegal(side)
-        if not legalMoves :
-            if self.board.isCheckmate() :
+        if not legalMoves:
+            if self.board.isCheckmate():
                 node.move.checkmate = True
                 return
-            elif self.board.isStalemate() :
+            elif self.board.isStalemate():
                 node.move.stalemate = True
                 node.pointAdvantage = 0
                 return
             raise Exception()
 
-        for move in legalMoves :
+        for move in legalMoves:
             self.movesAnalyzed += 1
             node.children.append(MoveNode(move, [], node))
             self.board.makeMove(move)
             self.populateNodeChildren(node.children[-1])
             self.board.undoLastMove()
 
-    def getOptimalPointAdvantageForNode(self, node) :
+    def getOptimalPointAdvantageForNode(self, node):
         if node.children:
-            for child in node.children :
-                child.pointAdvantage = self.getOptimalPointAdvantageForNode(child)
+            for child in node.children:
+                child.pointAdvantage = \
+                    self.getOptimalPointAdvantageForNode(child)
 
-            #If the depth is divisible by 2, it's a move for the AI's side, so return max
-            if node.children[0].depth % 2 == 1 :
+            # If the depth is divisible by 2,
+            # it's a move for the AI's side, so return max
+            if node.children[0].depth % 2 == 1:
                 return(max(node.children).pointAdvantage)
-            else :
+            else:
                 return(min(node.children).pointAdvantage)
-        else :
+        else:
             return node.pointAdvantage
 
-    def getBestMove(self) :
+    def getBestMove(self):
         moveTree = self.generateMoveTree()
         bestMoves = self.bestMovesWithMoveTree(moveTree)
         randomBestMove = random.choice(bestMoves)
         randomBestMove.notation = self.parser.notationForMove(randomBestMove)
         return randomBestMove
 
-    def makeBestMove(self) :
+    def makeBestMove(self):
         self.board.makeMove(self.getBestMove())
-        
-    def bestMovesWithMoveTree(self, moveTree) :
+
+    def bestMovesWithMoveTree(self, moveTree):
         bestMoveNodes = []
-        for moveNode in moveTree :
-            moveNode.pointAdvantage = self.getOptimalPointAdvantageForNode(moveNode)
-            if not bestMoveNodes :
+        for moveNode in moveTree:
+            moveNode.pointAdvantage = \
+                self.getOptimalPointAdvantageForNode(moveNode)
+            if not bestMoveNodes:
                 bestMoveNodes.append(moveNode)
-            elif moveNode > bestMoveNodes[0] :
+            elif moveNode > bestMoveNodes[0]:
                 bestMoveNodes = []
                 bestMoveNodes.append(moveNode)
-            elif moveNode == bestMoveNodes[0] :
+            elif moveNode == bestMoveNodes[0]:
                 bestMoveNodes.append(moveNode)
-        
+
         return [node.move for node in bestMoveNodes]
 
-    def traverseTreeForBestMove(self, side, moveTree, layersTraversed, bestMovesFound) :
-        if layersLeft < self.depth :
-            for move in moveTree :
+    def traverseTreeForBestMove(self, side, moveTree,
+                                layersTraversed, bestMovesFound):
+        if layersLeft < self.depth:
+            for move in moveTree:
                 board.makeMove(move)
-                return traverseTreeForBestMove(moveTree[move], layersLeft+1, bestMoveFound)
-        if layersLeft == self.depth :
-            for move in moveTree :
+                return traverseTreeForBestMove(moveTree[move],
+                                               layersLeft+1, bestMoveFound)
+        if layersLeft == self.depth:
+            for move in moveTree:
                 board.makeMove(move)
                 pointAdvantage = board.getPointAdvantageOfSide(side)
                 previousBestAdvantage = 1
                 return move
-                
-    def isValidMove(self, move, side) :
-        for legalMove in self.board.getAllMovesLegal(side) :
-            if move == legalMove :
+
+    def isValidMove(self, move, side):
+        for legalMove in self.board.getAllMovesLegal(side):
+            if move == legalMove:
                 return True
         return False
 
-    def makeRandomMove(self) :
+    def makeRandomMove(self):
         moveToMake = self.getRandomMove()
         self.board.makeMove(moveToMake)
 
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
     mainBoard = Board()
     ai = AI(mainBoard, True, 3)
     print(mainBoard)
@@ -174,4 +181,3 @@ if __name__ == "__main__" :
     print(mainBoard)
     print(ai.movesAnalyzed)
     print(mainBoard.movesMade)
-
