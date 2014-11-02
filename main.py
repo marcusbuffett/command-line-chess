@@ -114,7 +114,7 @@ def startGame(board, playerSide, ai) :
             move.notation = parser.notationForMove(move)
             makeMove(move, board)
 
-board = Board(promotion = True)
+board = Board()
 playerSide = askForPlayerSide()
 print()
 aiDepth = askForDepthOfAI()
