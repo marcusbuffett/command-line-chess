@@ -17,98 +17,106 @@ import sys
 WHITE = True
 BLACK = False
 
-def askForPlayerSide () :
+
+def askForPlayerSide():
     playerChoiceInput = input("What side would you like to play as? ").lower()
-    if 'w' in playerChoiceInput :
+    if 'w' in playerChoiceInput:
         print("You will play as white")
         return WHITE
-    else :
+    else:
         print("You will play as black")
         return BLACK
 
-def askForDepthOfAI () :
+
+def askForDepthOfAI():
     depthInput = 2
-    try :
+    try:
         depthInput = int(input("How deep should the AI look for moves? Warning : values above 3 will be very slow. "))
-    except :
+    except:
         print("Invalid input, defaulting to 2")
     return depthInput
 
-def printCommandOptions () :
+
+def printCommandOptions():
     undoOption = 'u : undo last move'
     printLegalMovesOption = 'l : show all legal moves'
     randomMoveOption = 'r : make a random move'
     moveOption = 'a3, Nc3, Qxa2, etc : make the move'
     options = [undoOption, printLegalMovesOption, randomMoveOption, moveOption]
-    for option in options :
+    for option in options:
         print(option)
 
-def printAllLegalMoves (board, parser) :
-    for move in parser.getLegalMovesWithShortNotation(board.currentSide) :
+
+def printAllLegalMoves(board, parser):
+    for move in parser.getLegalMovesWithShortNotation(board.currentSide):
         print(move.notation)
 
-def getRandomMove (board, parser) :
+
+def getRandomMove(board, parser):
     legalMoves = board.getAllMovesLegal(board.currentSide)
     randomMove = random.choice(legalMoves)
     randomMove.notation = parser.notationForMove(randomMove)
     return randomMove
 
-def makeMove (move, board) :
+
+def makeMove(move, board):
     print()
     print("Making move : " + move.notation)
     board.makeMove(move)
 
-def printPointAdvantage (board) :
+
+def printPointAdvantage(board):
     print("Currently, the point difference is : " + str(board.getPointAdvantageOfSide(board.currentSide)))
 
-def undoLastTwoMoves(board) :
-    if len(board.history) >= 2 :
+
+def undoLastTwoMoves(board):
+    if len(board.history) >= 2:
         board.undoLastMove()
         board.undoLastMove()
 
 
-def startGame(board, playerSide, ai) :
+def startGame(board, playerSide, ai):
     parser = InputParser(board, playerSide)
-    while True :
+    while True:
         print(board)
         print()
-        if board.isCheckmate() :
-            if board.currentSide == playerSide :
+        if board.isCheckmate():
+            if board.currentSide == playerSide:
                 print("Checkmate, you lost")
-            else :
+            else:
                 print("Checkmate! You won!")
             return
 
-        if board.isStalemate() :
-            if board.currentSide == playerSide :
+        if board.isStalemate():
+            if board.currentSide == playerSide:
                 print("Stalemate")
-            else :
+            else:
                 print("Stalemate")
             return
-            
-        if board.currentSide == playerSide :
+
+        if board.currentSide == playerSide:
             printPointAdvantage(board)
             move = None
             command = input("It's your move, what do you want to do? Type '?' for options. ").lower()
-            if command == 'u' :
+            if command == 'u':
                 undoLastTwoMoves(board)
                 continue
-            elif command == '?' :
+            elif command == '?':
                 printCommandOptions()
                 continue
-            elif command == 'l' :
+            elif command == 'l':
                 printAllLegalMoves(board, parser)
                 continue
-            elif command == 'r' :
+            elif command == 'r':
                 move = getRandomMove(board, parser)
-            else :
+            else:
                 move = parser.moveForShortNotation(command)
-            if move :
+            if move:
                 makeMove(move, board)
-            else :
+            else:
                 print("Couldn't parse input, make sure you entered a valid command or move")
 
-        else :
+        else:
             print("AI thinking...")
             move = ai.getBestMove()
             move.notation = parser.notationForMove(move)
@@ -120,7 +128,3 @@ print()
 aiDepth = askForDepthOfAI()
 opponentAI = AI(board, not playerSide, aiDepth)
 startGame(board, playerSide, opponentAI)
-
-
-
-    
