@@ -21,5 +21,6 @@ class Bishop (Piece):
 
         directions = [C(1, 1), C(1, -1), C(-1, 1), C(-1, -1)]
         for direction in directions:
-            for move in self.movesInDirectionFromPos(currentPosition, direction, self.side):
+            for move in self.movesInDirectionFromPos(currentPosition,
+                                                     direction, self.side):
                 yield move

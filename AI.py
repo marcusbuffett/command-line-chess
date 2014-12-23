@@ -33,8 +33,11 @@ class AI:
 
     def getAllMovesLegalConcurrent(self, side):
         p = Pool(8)
-        unfilteredMovesWithBoard = [(move, copy.deepcopy(self.board)) for move in self.board.getAllMovesUnfiltered(side)]
-        legalMoves = p.starmap(self.returnMoveIfLegal, unfilteredMovesWithBoard)
+        unfilteredMovesWithBoard = \
+            [(move, copy.deepcopy(self.board))
+             for move in self.board.getAllMovesUnfiltered(side)]
+        legalMoves = p.starmap(self.returnMoveIfLegal,
+                               unfilteredMovesWithBoard)
         p.close()
         p.join()
         return list(filter(None, legalMoves))
@@ -108,9 +111,11 @@ class AI:
     def getOptimalPointAdvantageForNode(self, node):
         if node.children:
             for child in node.children:
-                child.pointAdvantage = self.getOptimalPointAdvantageForNode(child)
+                child.pointAdvantage = \
+                    self.getOptimalPointAdvantageForNode(child)
 
-            # If the depth is divisible by 2, it's a move for the AI's side, so return max
+            # If the depth is divisible by 2,
+            # it's a move for the AI's side, so return max
             if node.children[0].depth % 2 == 1:
                 return(max(node.children).pointAdvantage)
             else:
@@ -131,7 +136,8 @@ class AI:
     def bestMovesWithMoveTree(self, moveTree):
         bestMoveNodes = []
         for moveNode in moveTree:
-            moveNode.pointAdvantage = self.getOptimalPointAdvantageForNode(moveNode)
+            moveNode.pointAdvantage = \
+                self.getOptimalPointAdvantageForNode(moveNode)
             if not bestMoveNodes:
                 bestMoveNodes.append(moveNode)
             elif moveNode > bestMoveNodes[0]:
@@ -142,11 +148,13 @@ class AI:
 
         return [node.move for node in bestMoveNodes]
 
-    def traverseTreeForBestMove(self, side, moveTree, layersTraversed, bestMovesFound):
+    def traverseTreeForBestMove(self, side, moveTree,
+                                layersTraversed, bestMovesFound):
         if layersLeft < self.depth:
             for move in moveTree:
                 board.makeMove(move)
-                return traverseTreeForBestMove(moveTree[move], layersLeft + 1, bestMoveFound)
+                return traverseTreeForBestMove(moveTree[move],
+                                               layersLeft+1, bestMoveFound)
         if layersLeft == self.depth:
             for move in moveTree:
                 board.makeMove(move)
