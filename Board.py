@@ -31,8 +31,8 @@ class Board:
             self.pieces.extend([Rook(self, BLACK, C(0, 7)),
                                 Knight(self, BLACK, C(1, 7)),
                                 Bishop(self, BLACK, C(2, 7)),
-                                King(self, BLACK, C(3, 7)),
-                                Queen(self, BLACK, C(4, 7)),
+                                Queen(self, BLACK, C(3, 7)),                                
+                                King(self, BLACK, C(4, 7)),
                                 Bishop(self, BLACK, C(5, 7)),
                                 Knight(self, BLACK, C(6, 7)),
                                 Rook(self, BLACK, C(7, 7))])
@@ -43,8 +43,8 @@ class Board:
             self.pieces.extend([Rook(self, WHITE, C(0, 0)),
                                 Knight(self, WHITE, C(1, 0)),
                                 Bishop(self, WHITE, C(2, 0)),
-                                King(self, WHITE, C(3, 0)),
-                                Queen(self, WHITE, C(4, 0)),
+                                Queen(self, WHITE, C(3, 0)),
+                                King(self, WHITE, C(4, 0)),                                
                                 Bishop(self, WHITE, C(5, 0)),
                                 Knight(self, WHITE, C(6, 0)),
                                 Rook(self, WHITE, C(7, 0))])
