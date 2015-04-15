@@ -1,0 +1,1 @@
+[Card {cardQuestion = "How old", cardAnswer = "21", cardDeck = "Ben", cardTracker = CardTracker {ctEF = 2.6, ctN = 1, ctTimeQuizzed = 1427598653, ctLastResponseQuality = Just 5}, cardStatTracker = StatTracker {stTimesQuizzed = 2, stResponseCounters = [0,0,0,0,0,1]}}]

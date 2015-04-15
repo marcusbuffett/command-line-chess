@@ -1,18 +1,7 @@
 from Board import Board
-from Pawn import Pawn
-from Rook import Rook
-from King import King
-from Queen import Queen
-from Bishop import Bishop
-from Knight import Knight
-from Coordinate import Coordinate as C
-from Move import Move
-from Piece import Piece
-from AI import AI
 from InputParser import InputParser
-import time
+from AI import AI
 import random
-import sys
 
 WHITE = True
 BLACK = False
@@ -100,7 +89,7 @@ def startGame(board, playerSide, ai):
             return
 
         if board.currentSide == playerSide:
-            printPointAdvantage(board)
+            # printPointAdvantage(board)
             move = None
             command = input("It's your move."
                             " Type '?' for options. ? ").lower()
@@ -135,4 +124,9 @@ playerSide = askForPlayerSide()
 print()
 aiDepth = askForDepthOfAI()
 opponentAI = AI(board, not playerSide, aiDepth)
-startGame(board, playerSide, opponentAI)
+
+try:
+    startGame(board, playerSide, opponentAI)
+except KeyboardInterrupt:
+    print('Keyboard intterupt, exiting')
+    exit()
