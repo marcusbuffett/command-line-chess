@@ -20,7 +20,7 @@ class Pawn(Piece):
         super(Pawn, self).__init__(board, side, position)
         self.movesMade = movesMade
 
-    @profile
+    # @profile
     def getPossibleMoves(self):
         currentPosition = self.position
 

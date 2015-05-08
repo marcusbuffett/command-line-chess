@@ -23,8 +23,6 @@ class Piece:
                ' -- Value : ' + str(self.value) + \
                " -- Moves made : " + str(self.movesMade)
 
-
-    @profile
     def movesInDirectionFromPos(self, pos, direction, side):
         for dis in range(1, 8):
             movement = C(dis * direction[X], dis * direction[Y])

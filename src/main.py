@@ -1,6 +1,7 @@
 from Board import Board
 from InputParser import InputParser
 from AI import AI
+import sys
 import random
 
 WHITE = True
@@ -128,5 +129,4 @@ opponentAI = AI(board, not playerSide, aiDepth)
 try:
     startGame(board, playerSide, opponentAI)
 except KeyboardInterrupt:
-    print('Keyboard intterupt, exiting')
-    exit()
+    sys.exit()
