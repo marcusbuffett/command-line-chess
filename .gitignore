@@ -1,4 +1,6 @@
 *.pyc
 *.pycache
 *.bak
+build/
+dist/
 

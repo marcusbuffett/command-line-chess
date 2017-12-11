@@ -7,14 +7,14 @@ class Move:
         self.kingsideCastle = False
         self.queensideCastle = False
         self.promotion = False
-        self.pessant = False
+        self.passant = False
         self.stalemate = False
 
         self.piece = piece
         self.oldPos = piece.position
         self.newPos = newPos
         self.pieceToCapture = pieceToCapture
-        # For en pessant and castling
+        # For en passant and castling
         self.specialMovePiece = None
         # For castling
         self.rookMove = None
@@ -24,7 +24,7 @@ class Move:
                         ' -- New pos : ' + str(self.newPos)
         if self.notation:
             displayString += ' Notation : ' + self.notation
-        if self.pessant:
+        if self.passant:
             displayString = 'Old pos : ' + str(self.oldPos) + \
                             ' -- New pos : ' + str(self.newPos) + \
                             ' -- Pawn taken : ' + str(self.specialMovePiece)

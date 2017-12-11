@@ -16,7 +16,7 @@ BLACK = False
 class Board:
 
     def __init__(self, mateInOne=False, castleBoard=False,
-                 pessant=False, promotion=False):
+                 passant=False, promotion=False):
         self.pieces = []
         self.history = []
         self.points = 0
@@ -24,7 +24,7 @@ class Board:
         self.movesMade = 0
         self.checkmate = False
 
-        if not mateInOne and not castleBoard and not pessant and not promotion:
+        if not mateInOne and not castleBoard and not passant and not promotion:
             self.pieces.extend([Rook(self, BLACK, C(0, 7)),
                                 Knight(self, BLACK, C(1, 7)),
                                 Bishop(self, BLACK, C(2, 7)),
@@ -53,7 +53,7 @@ class Board:
             kingBlack = King(self, BLACK, C(3, 2))
             self.pieces.extend([pawnToPromote, kingWhite, kingBlack])
 
-        elif pessant:
+        elif passant:
             pawn = Pawn(self, WHITE, C(1, 4))
             pawn2 = Pawn(self, BLACK, C(2, 6))
             kingWhite = King(self, WHITE, C(4, 0))
@@ -85,7 +85,7 @@ class Board:
             king.movesMade -= 1
             rook.movesMade -= 1
 
-        elif lastMove.pessant:
+        elif lastMove.passant:
             pawnMoved = lastMove.piece
             pawnTaken = pieceTaken
             self.pieces.append(pawnTaken)
@@ -148,7 +148,7 @@ class Board:
 
     def addMoveToHistory(self, move):
         pieceTaken = None
-        if move.pessant:
+        if move.passant:
             pieceTaken = move.specialMovePiece
             self.history.append([move, pieceTaken])
             return
@@ -205,10 +205,10 @@ class Board:
         pieceToTake = move.pieceToCapture
 
         if move.queensideCastle:
-            return "0-0-0"
+            return "O-O-O"
 
         if move.kingsideCastle:
-            return "0-0"
+            return "O-O"
 
         if pieceToMove.stringRep != 'p':
             notation += pieceToMove.stringRep
@@ -329,11 +329,11 @@ class Board:
             kingToMove = move.piece
             rookToMove = move.specialMovePiece
             self.movePieceToPosition(kingToMove, move.newPos)
-            self.movePieceToPosition(rookToMove, move.rookMovePos)
+            self.movePieceToPosition(rookToMove, move.rookMove.newPos)
             kingToMove.movesMade += 1
             rookToMove.movesMade += 1
 
-        elif move.pessant:
+        elif move.passant:
             pawnToMove = move.piece
             pawnToTake = move.specialMovePiece
             pawnToMove.position = move.newPos
