@@ -54,7 +54,6 @@ def getRandomMove(board, parser):
 
 
 def makeMove(move, board):
-    print()
     print("Making move : " + move.notation)
     board.makeMove(move)
 
@@ -73,6 +72,7 @@ def undoLastTwoMoves(board):
 def startGame(board, playerSide, ai):
     parser = InputParser(board, playerSide)
     while True:
+        print()
         print(board)
         print()
         if board.isCheckmate():

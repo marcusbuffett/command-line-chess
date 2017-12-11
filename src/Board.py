@@ -177,18 +177,16 @@ class Board:
                     color = 'blue' if side == WHITE else 'red'
                     pieceRep = colored(piece.stringRep, color)
                 else:
-                    pieceRep = 'x'
+                    pieceRep = ' '
                 stringRep += pieceRep + ' '
             stringRep += '\n'
-        stringRep = stringRep.strip()
-        return stringRep
+        return stringRep.strip()
 
     def wrapStringRep(self, stringRep):
         sRep = '\n'.join(
-            ['   a b c d e f g h   ', ' '*21] +
-            ['%d  %s  %d' % (8-r, s.strip(), 8-r)
+            ['%d  %s' % (8-r, s.rstrip())
              for r, s in enumerate(stringRep.split('\n'))] +
-            [' '*21, '   a b c d e f g h   ']
+            [' '*21, '   a b c d e f g h']
             ).rstrip()
         return sRep
 
