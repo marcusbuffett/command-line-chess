@@ -28,7 +28,7 @@ class Move:
             displayString = 'Old pos : ' + str(self.oldPos) + \
                             ' -- New pos : ' + str(self.newPos) + \
                             ' -- Pawn taken : ' + str(self.specialMovePiece)
-            displayString += ' PESSANT'
+            displayString += ' PASSANT'
         return displayString
 
     def __eq__(self, other):
