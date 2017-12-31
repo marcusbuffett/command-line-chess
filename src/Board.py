@@ -197,7 +197,37 @@ class Board:
         transTable = str.maketrans('01234567', 'abcdefgh')
         return str(piece.position[0]).translate(transTable)
 
-    def getShortNotationOfMove(self, move):
+    def getCoordinateNotationOfMove(self, move):
+        notation = ""
+        notation += self.positionToHumanCoord(move.oldPos)
+        notation += self.positionToHumanCoord(move.newPos)
+
+        if move.promotion:
+            notation += str(move.specialMovePiece.stringRep)
+
+        return notation
+
+    def getCaptureNotation(self, move, short=False):
+        notation = ""
+        pieceToMove = move.piece
+        pieceToTake = move.pieceToCapture
+
+        if type(pieceToMove) is Pawn:
+            notation += self.fileOfPiece(pieceToMove)
+        else:
+            notation += pieceToMove.stringRep
+        notation += 'x'
+        if short:
+            notation += pieceToTake.stringRep
+        else:
+            notation += self.positionToHumanCoord(move.newPos)
+
+        if move.promotion:
+            notation += str(move.specialMovePiece.stringRep)
+
+        return notation
+
+    def getAlgebraicNotationOfMove(self, move, short=True):
         notation = ""
         pieceToMove = move.piece
         pieceToTake = move.pieceToCapture
@@ -208,11 +238,11 @@ class Board:
         if move.kingsideCastle:
             return "O-O"
 
-        if pieceToMove.stringRep != 'p':
+        if not short or type(pieceToMove) is not Pawn:
             notation += pieceToMove.stringRep
 
         if pieceToTake is not None:
-            if pieceToMove.stringRep == 'p':
+            if short and type(pieceToMove) is Pawn:
                 notation += self.fileOfPiece(pieceToMove)
             notation += 'x'
 
@@ -223,15 +253,15 @@ class Board:
 
         return notation
 
-    def getShortNotationOfMoveWithFile(self, move):
-        # TODO: Use self.getShortNotationOfMove instead of repeating code
+    def getAlgebraicNotationOfMoveWithFile(self, move, short=True):
+        # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
         notation = ""
         pieceToMove = self.pieceAtPosition(move.oldPos)
         pieceToTake = self.pieceAtPosition(move.newPos)
 
-        if pieceToMove.stringRep != 'p':
+        if not short or type(pieceToMove) is not Pawn:
             notation += pieceToMove.stringRep
-            notation += self.fileOfPiece(pieceToMove)
+        notation += self.fileOfPiece(pieceToMove)
 
         if pieceToTake is not None:
             notation += 'x'
@@ -239,39 +269,42 @@ class Board:
         notation += self.positionToHumanCoord(move.newPos)
         return notation
 
-    def getShortNotationOfMoveWithRank(self, move):
-        # TODO: Use self.getShortNotationOfMove instead of repeating code
+    def getAlgebraicNotationOfMoveWithRank(self, move, short=True):
+        # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
         notation = ""
         pieceToMove = self.pieceAtPosition(move.oldPos)
         pieceToTake = self.pieceAtPosition(move.newPos)
 
-        if pieceToMove.stringRep != 'p':
+        if not short or type(pieceToMove) is not Pawn:
             notation += pieceToMove.stringRep
-            notation += self.rankOfPiece(pieceToMove)
+
+        notation += self.rankOfPiece(pieceToMove)
+
+        if pieceToTake is not None:
+            if short and type(pieceToMove) is Pawn:
+                notation += self.fileOfPiece(pieceToMove)
+            notation += 'x'
+
+        notation += self.positionToHumanCoord(move.newPos)
+        return notation
+
+    def getAlgebraicNotationOfMoveWithFileAndRank(self, move, short=True):
+        # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
+        notation = ""
+        pieceToMove = self.pieceAtPosition(move.oldPos)
+        pieceToTake = self.pieceAtPosition(move.newPos)
+
+        if not short or type(pieceToMove) is not Pawn:
+            notation += pieceToMove.stringRep
+
+        notation += self.fileOfPiece(pieceToMove)
+        notation += self.rankOfPiece(pieceToMove)
 
         if pieceToTake is not None:
             notation += 'x'
 
         notation += self.positionToHumanCoord(move.newPos)
         return notation
-
-    def getShortNotationOfMoveWithFileAndRank(self, move):
-        # TODO: Use self.getShortNotationOfMove instead of repeating code
-        notation = ""
-        pieceToMove = self.pieceAtPosition(move.oldPos)
-        pieceToTake = self.pieceAtPosition(move.newPos)
-
-        if pieceToMove.stringRep != 'p':
-            notation += pieceToMove.stringRep
-            notation += self.fileOfPiece(pieceToMove)
-            notation += self.rankOfPiece(pieceToMove)
-
-        if pieceToTake is not None:
-            notation += 'x'
-
-        notation += self.positionToHumanCoord(move.newPos)
-        return notation
-        return
 
     def humanCoordToPosition(self, coord):
         transTable = str.maketrans('abcdefgh', '12345678')

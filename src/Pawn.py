@@ -13,7 +13,7 @@ BLACK = False
 
 class Pawn(Piece):
 
-    stringRep = 'p'
+    stringRep = 'P'
     value = 1
 
     def __init__(self, board, side, position,  movesMade=0):
