@@ -100,6 +100,12 @@ class Board:
             pawnPromoted = lastMove.piece
             promotedPiece = self.pieceAtPosition(lastMove.newPos)
             self.pieces.remove(promotedPiece)
+            if pieceTaken:
+                if pieceTaken.side == WHITE:
+                    self.points += pieceTaken.value
+                if pieceTaken.side == BLACK:
+                    self.points -= pieceTaken.value
+                self.pieces.append(pieceTaken)
             self.pieces.append(pawnPromoted)
             if pawnPromoted.side == WHITE:
                 self.points -= promotedPiece.value - 1
@@ -180,7 +186,7 @@ class Board:
                     pieceRep = ' '
                 stringRep += pieceRep + ' '
             stringRep += '\n'
-        return stringRep.strip()
+        return stringRep.rstrip()
 
     def wrapStringRep(self, stringRep):
         sRep = '\n'.join(
@@ -372,12 +378,21 @@ class Board:
             pawnToMove.movesMade += 1
 
         elif move.promotion:
+            pieceToTake = move.pieceToCapture
             self.pieces.remove(move.piece)
+            if pieceToTake:
+                if pieceToTake.side == WHITE:
+                    self.points -= pieceToTake.value
+                if pieceToTake.side == BLACK:
+                    self.points += pieceToTake.value
+                self.pieces.remove(pieceToTake)
+
             self.pieces.append(move.specialMovePiece)
             if move.piece.side == WHITE:
                 self.points += move.specialMovePiece.value - 1
             if move.piece.side == BLACK:
                 self.points -= move.specialMovePiece.value - 1
+            move.piece.movesMade += 1
 
         else:
             pieceToMove = move.piece
