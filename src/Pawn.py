@@ -72,7 +72,7 @@ class Pawn(Piece):
                              Bishop(self.board, self.side, newPosition),
                              Queen(self.board, self.side, newPosition)]
                         for piece in piecesForPromotion:
-                            move = Move(self, advanceOnePosition)
+                            move = Move(self, newPosition, pieceToCapture=pieceToTake)
                             move.promotion = True
                             move.specialMovePiece = piece
                             yield move

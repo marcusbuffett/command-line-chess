@@ -9,20 +9,20 @@ class InputParser:
         self.side = side
 
     def parse(self, humanInput):
-        regexCoordinateNotation = re.compile('[a-h][1-8][a-h][1-8][qrbn]?')
+        regexCoordinateNotation = re.compile('(?i)[a-h][1-8][a-h][1-8][QRBN]?')
         if regexCoordinateNotation.match(humanInput):
             return self.moveForCoordinateNotation(humanInput)
-        regexAlgebraicNotation = re.compile('(?i)O-O|O-O-O|(?:[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8]|(?:[Pa-h]x?|x)[a-h])(?:=?[QRBN])?')
+        regexAlgebraicNotation = re.compile('(?i)O-O|O-O-O|(?:[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8]|[Pa-h]x?[a-h])(?:=?[QRBN])?')
         if regexAlgebraicNotation.match(humanInput):
             return self.moveForShortAlgebraicNotation(humanInput)
-        raise ValueError("Invalid input: %s" % humanInput)
+        raise ValueError("Invalid move: %s" % humanInput)
 
     def moveForCoordinateNotation(self, notation):
         for move in self.board.getAllMovesLegal(self.side):
-            if self.board.getCoordinateNotationOfMove(move) == notation:
+            if self.board.getCoordinateNotationOfMove(move).lower() == notation.lower():
                 move.notation = self.notationForMove(move)
                 return move
-        raise ValueError("Invalid move: %s" % notation)
+        raise ValueError("Illegal move: %s" % notation)
 
     # Only handles SAN, not long-algebraic or descriptive
     def moveForShortAlgebraicNotation(self, notation):
@@ -44,20 +44,20 @@ class InputParser:
         shortNotation = notation.lower().replace("p","").replace("=","")
         if re.compile('[a-h][1-8]?[qrbn]?').match(shortNotation):
             for move in moves:
-                if type(move.piece) is Pawn and not move.pieceToCapture and self.board.getCoordinateNotationOfMove(move).replace("=","").endswith(shortNotation):
+                if type(move.piece) is Pawn and not move.pieceToCapture and self.board.getCoordinateNotationOfMove(move).replace("=","").lower().endswith(shortNotation):
                     return move
             for move in moves:
-                if type(move.piece) is Pawn and not move.pieceToCapture and re.sub("[1-8]", "", self.board.getCoordinateNotationOfMove(move)).replace("=","").endswith(shortNotation):
+                if type(move.piece) is Pawn and not move.pieceToCapture and re.sub("[1-8]", "", self.board.getCoordinateNotationOfMove(move)).replace("=","").lower().endswith(shortNotation):
                     return move # ASSUME lazy pawn move (P)c is unambiguous
         shortNotation = shortNotation.lower().replace("x","")
         if re.compile('[a-h]?[a-h][1-8]?[qrbn]?').match(shortNotation):
             for move in moves:
-                if type(move.piece) is Pawn and move.pieceToCapture and self.board.getCaptureNotation(move).replace("x","").endswith(shortNotation):
-                    return move # ASSUME lazier pawn capture (P)(b)(x)c3 is unambiguous
+                if type(move.piece) is Pawn and move.pieceToCapture and self.board.getCaptureNotation(move).replace("x","").lower().endswith(shortNotation):
+                    return move # ASSUME lazier pawn capture (P)b(x)c3 is unambiguous
             for move in moves:
-                if type(move.piece) is Pawn and move.pieceToCapture and re.sub("[1-8]", "", self.board.getCaptureNotation(move).replace("x","")).endswith(shortNotation):
-                    return move # ASSUME laziest pawn capture (P)(b)(x)c is unambiguous
-        raise ValueError("Invalid SAN move: %s" % notation)
+                if type(move.piece) is Pawn and move.pieceToCapture and re.sub("[1-8]", "", self.board.getCaptureNotation(move).replace("x","")).lower().endswith(shortNotation):
+                    return move # ASSUME laziest pawn capture (P)b(x)c is unambiguous
+        raise ValueError("Illegal move: %s" % notation)
 
     def notationForMove(self, move):
         side = self.board.getSideOfMove(move)
