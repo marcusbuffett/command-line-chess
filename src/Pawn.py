@@ -13,7 +13,7 @@ BLACK = False
 
 class Pawn(Piece):
 
-    stringRep = 'p'
+    stringRep = 'P'
     value = 1
 
     def __init__(self, board, side, position,  movesMade=0):
@@ -72,7 +72,7 @@ class Pawn(Piece):
                              Bishop(self.board, self.side, newPosition),
                              Queen(self.board, self.side, newPosition)]
                         for piece in piecesForPromotion:
-                            move = Move(self, advanceOnePosition)
+                            move = Move(self, newPosition, pieceToCapture=pieceToTake)
                             move.promotion = True
                             move.specialMovePiece = piece
                             yield move
@@ -80,7 +80,7 @@ class Pawn(Piece):
                         yield Move(self, newPosition,
                                    pieceToCapture=pieceToTake)
 
-        # En pessant
+        # En passant
         movements = [C(1, 1), C(-1, 1)] \
             if self.side == WHITE else [C(1, -1), C(-1, -1)]
         for movement in movements:
@@ -103,6 +103,6 @@ class Pawn(Piece):
                    lastMoveWasAdvanceTwo:
                     move = Move(self, self.position + movement,
                                 pieceToCapture=pieceBesidePawn)
-                    move.pessant = True
+                    move.passant = True
                     move.specialMovePiece = pieceBesidePawn
                     yield move

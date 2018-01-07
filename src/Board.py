@@ -16,7 +16,7 @@ BLACK = False
 class Board:
 
     def __init__(self, mateInOne=False, castleBoard=False,
-                 pessant=False, promotion=False):
+                 passant=False, promotion=False):
         self.pieces = []
         self.history = []
         self.points = 0
@@ -24,7 +24,7 @@ class Board:
         self.movesMade = 0
         self.checkmate = False
 
-        if not mateInOne and not castleBoard and not pessant and not promotion:
+        if not mateInOne and not castleBoard and not passant and not promotion:
             self.pieces.extend([Rook(self, BLACK, C(0, 7)),
                                 Knight(self, BLACK, C(1, 7)),
                                 Bishop(self, BLACK, C(2, 7)),
@@ -53,7 +53,7 @@ class Board:
             kingBlack = King(self, BLACK, C(3, 2))
             self.pieces.extend([pawnToPromote, kingWhite, kingBlack])
 
-        elif pessant:
+        elif passant:
             pawn = Pawn(self, WHITE, C(1, 4))
             pawn2 = Pawn(self, BLACK, C(2, 6))
             kingWhite = King(self, WHITE, C(4, 0))
@@ -85,7 +85,7 @@ class Board:
             king.movesMade -= 1
             rook.movesMade -= 1
 
-        elif lastMove.pessant:
+        elif lastMove.passant:
             pawnMoved = lastMove.piece
             pawnTaken = pieceTaken
             self.pieces.append(pawnTaken)
@@ -100,6 +100,12 @@ class Board:
             pawnPromoted = lastMove.piece
             promotedPiece = self.pieceAtPosition(lastMove.newPos)
             self.pieces.remove(promotedPiece)
+            if pieceTaken:
+                if pieceTaken.side == WHITE:
+                    self.points += pieceTaken.value
+                if pieceTaken.side == BLACK:
+                    self.points -= pieceTaken.value
+                self.pieces.append(pieceTaken)
             self.pieces.append(pawnPromoted)
             if pawnPromoted.side == WHITE:
                 self.points -= promotedPiece.value - 1
@@ -148,7 +154,7 @@ class Board:
 
     def addMoveToHistory(self, move):
         pieceTaken = None
-        if move.pessant:
+        if move.passant:
             pieceTaken = move.specialMovePiece
             self.history.append([move, pieceTaken])
             return
@@ -177,18 +183,16 @@ class Board:
                     color = 'blue' if side == WHITE else 'red'
                     pieceRep = colored(piece.stringRep, color)
                 else:
-                    pieceRep = 'x'
+                    pieceRep = ' '
                 stringRep += pieceRep + ' '
             stringRep += '\n'
-        stringRep = stringRep.strip()
-        return stringRep
+        return stringRep.rstrip()
 
     def wrapStringRep(self, stringRep):
         sRep = '\n'.join(
-            ['   a b c d e f g h   ', ' '*21] +
-            ['%d  %s  %d' % (8-r, s.strip(), 8-r)
+            ['%d  %s' % (8-r, s.rstrip())
              for r, s in enumerate(stringRep.split('\n'))] +
-            [' '*21, '   a b c d e f g h   ']
+            [' '*21, '   a b c d e f g h']
             ).rstrip()
         return sRep
 
@@ -199,22 +203,52 @@ class Board:
         transTable = str.maketrans('01234567', 'abcdefgh')
         return str(piece.position[0]).translate(transTable)
 
-    def getShortNotationOfMove(self, move):
+    def getCoordinateNotationOfMove(self, move):
+        notation = ""
+        notation += self.positionToHumanCoord(move.oldPos)
+        notation += self.positionToHumanCoord(move.newPos)
+
+        if move.promotion:
+            notation += str(move.specialMovePiece.stringRep)
+
+        return notation
+
+    def getCaptureNotation(self, move, short=False):
+        notation = ""
+        pieceToMove = move.piece
+        pieceToTake = move.pieceToCapture
+
+        if type(pieceToMove) is Pawn:
+            notation += self.fileOfPiece(pieceToMove)
+        else:
+            notation += pieceToMove.stringRep
+        notation += 'x'
+        if short:
+            notation += pieceToTake.stringRep
+        else:
+            notation += self.positionToHumanCoord(move.newPos)
+
+        if move.promotion:
+            notation += str(move.specialMovePiece.stringRep)
+
+        return notation
+
+    def getAlgebraicNotationOfMove(self, move, short=True):
         notation = ""
         pieceToMove = move.piece
         pieceToTake = move.pieceToCapture
 
         if move.queensideCastle:
-            return "0-0-0"
+            return "O-O-O"
 
         if move.kingsideCastle:
-            return "0-0"
+            return "O-O"
 
-        if pieceToMove.stringRep != 'p':
+        if not short or type(pieceToMove) is not Pawn:
             notation += pieceToMove.stringRep
 
         if pieceToTake is not None:
-            if pieceToMove.stringRep == 'p':
+            if short and type(pieceToMove) is Pawn:
                 notation += self.fileOfPiece(pieceToMove)
             notation += 'x'
 
@@ -225,15 +259,15 @@ class Board:
 
         return notation
 
-    def getShortNotationOfMoveWithFile(self, move):
-        # TODO: Use self.getShortNotationOfMove instead of repeating code
+    def getAlgebraicNotationOfMoveWithFile(self, move, short=True):
+        # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
         notation = ""
         pieceToMove = self.pieceAtPosition(move.oldPos)
         pieceToTake = self.pieceAtPosition(move.newPos)
 
-        if pieceToMove.stringRep != 'p':
+        if not short or type(pieceToMove) is not Pawn:
             notation += pieceToMove.stringRep
-            notation += self.fileOfPiece(pieceToMove)
+        notation += self.fileOfPiece(pieceToMove)
 
         if pieceToTake is not None:
             notation += 'x'
@@ -241,39 +275,42 @@ class Board:
         notation += self.positionToHumanCoord(move.newPos)
         return notation
 
-    def getShortNotationOfMoveWithRank(self, move):
-        # TODO: Use self.getShortNotationOfMove instead of repeating code
+    def getAlgebraicNotationOfMoveWithRank(self, move, short=True):
+        # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
         notation = ""
         pieceToMove = self.pieceAtPosition(move.oldPos)
         pieceToTake = self.pieceAtPosition(move.newPos)
 
-        if pieceToMove.stringRep != 'p':
+        if not short or type(pieceToMove) is not Pawn:
             notation += pieceToMove.stringRep
-            notation += self.rankOfPiece(pieceToMove)
+
+        notation += self.rankOfPiece(pieceToMove)
+
+        if pieceToTake is not None:
+            if short and type(pieceToMove) is Pawn:
+                notation += self.fileOfPiece(pieceToMove)
+            notation += 'x'
+
+        notation += self.positionToHumanCoord(move.newPos)
+        return notation
+
+    def getAlgebraicNotationOfMoveWithFileAndRank(self, move, short=True):
+        # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
+        notation = ""
+        pieceToMove = self.pieceAtPosition(move.oldPos)
+        pieceToTake = self.pieceAtPosition(move.newPos)
+
+        if not short or type(pieceToMove) is not Pawn:
+            notation += pieceToMove.stringRep
+
+        notation += self.fileOfPiece(pieceToMove)
+        notation += self.rankOfPiece(pieceToMove)
 
         if pieceToTake is not None:
             notation += 'x'
 
         notation += self.positionToHumanCoord(move.newPos)
         return notation
-
-    def getShortNotationOfMoveWithFileAndRank(self, move):
-        # TODO: Use self.getShortNotationOfMove instead of repeating code
-        notation = ""
-        pieceToMove = self.pieceAtPosition(move.oldPos)
-        pieceToTake = self.pieceAtPosition(move.newPos)
-
-        if pieceToMove.stringRep != 'p':
-            notation += pieceToMove.stringRep
-            notation += self.fileOfPiece(pieceToMove)
-            notation += self.rankOfPiece(pieceToMove)
-
-        if pieceToTake is not None:
-            notation += 'x'
-
-        notation += self.positionToHumanCoord(move.newPos)
-        return notation
-        return
 
     def humanCoordToPosition(self, coord):
         transTable = str.maketrans('abcdefgh', '12345678')
@@ -329,11 +366,11 @@ class Board:
             kingToMove = move.piece
             rookToMove = move.specialMovePiece
             self.movePieceToPosition(kingToMove, move.newPos)
-            self.movePieceToPosition(rookToMove, move.rookMovePos)
+            self.movePieceToPosition(rookToMove, move.rookMove.newPos)
             kingToMove.movesMade += 1
             rookToMove.movesMade += 1
 
-        elif move.pessant:
+        elif move.passant:
             pawnToMove = move.piece
             pawnToTake = move.specialMovePiece
             pawnToMove.position = move.newPos
@@ -341,12 +378,21 @@ class Board:
             pawnToMove.movesMade += 1
 
         elif move.promotion:
+            pieceToTake = move.pieceToCapture
             self.pieces.remove(move.piece)
+            if pieceToTake:
+                if pieceToTake.side == WHITE:
+                    self.points -= pieceToTake.value
+                if pieceToTake.side == BLACK:
+                    self.points += pieceToTake.value
+                self.pieces.remove(pieceToTake)
+
             self.pieces.append(move.specialMovePiece)
             if move.piece.side == WHITE:
                 self.points += move.specialMovePiece.value - 1
             if move.piece.side == BLACK:
                 self.points -= move.specialMovePiece.value - 1
+            move.piece.movesMade += 1
 
         else:
             pieceToMove = move.piece

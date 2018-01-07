@@ -42,7 +42,7 @@ def printCommandOptions():
 
 
 def printAllLegalMoves(board, parser):
-    for move in parser.getLegalMovesWithShortNotation(board.currentSide):
+    for move in parser.getLegalMovesWithNotation(board.currentSide, short=True):
         print(move.notation)
 
 
@@ -54,7 +54,6 @@ def getRandomMove(board, parser):
 
 
 def makeMove(move, board):
-    print()
     print("Making move : " + move.notation)
     board.makeMove(move)
 
@@ -73,6 +72,7 @@ def undoLastTwoMoves(board):
 def startGame(board, playerSide, ai):
     parser = InputParser(board, playerSide)
     while True:
+        print()
         print(board)
         print()
         if board.isCheckmate():
@@ -93,26 +93,26 @@ def startGame(board, playerSide, ai):
             # printPointAdvantage(board)
             move = None
             command = input("It's your move."
-                            " Type '?' for options. ? ").lower()
-            if command == 'u':
+                            " Type '?' for options. ? ")
+            if command.lower() == 'u':
                 undoLastTwoMoves(board)
                 continue
-            elif command == '?':
+            elif command.lower() == '?':
                 printCommandOptions()
                 continue
-            elif command == 'l':
+            elif command.lower() == 'l':
                 printAllLegalMoves(board, parser)
                 continue
-            elif command == 'r':
+            elif command.lower() == 'r':
                 move = getRandomMove(board, parser)
-            elif command == 'quit':
+            elif command.lower() == 'exit' or command.lower() == 'quit':
                 return
-            else:
-                move = parser.moveForShortNotation(command)
-            if move:
-                makeMove(move, board)
-            else:
-                print("Couldn't parse input, enter a valid command or move.")
+            try:
+                move = parser.parse(command)
+            except ValueError as error:
+                print("%s" % error)
+                continue
+            makeMove(move, board)
 
         else:
             print("AI thinking...")
