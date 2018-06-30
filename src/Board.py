@@ -270,10 +270,10 @@ class Board:
         pieceToTake = move.pieceToCapture
 
         if move.queensideCastle:
-            return "O-O-O"
+            return "0-0-0"
 
         if move.kingsideCastle:
-            return "O-O"
+            return "0-0"
 
         if not short or type(pieceToMove) is not Pawn:
             notation += pieceToMove.stringRep
