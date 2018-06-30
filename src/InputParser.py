@@ -12,9 +12,11 @@ class InputParser:
         regexCoordinateNotation = re.compile('(?i)[a-h][1-8][a-h][1-8][QRBN]?')
         if regexCoordinateNotation.match(humanInput):
             return self.moveForCoordinateNotation(humanInput)
-        regexAlgebraicNotation = re.compile('(?i)O-O|O-O-O|(?:[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8]|[Pa-h]x?[a-h])(?:=?[QRBN])?')
+        regexAlgebraicNotation = re.compile('(?i)0-0|0-0-0|(?:[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8]|[Pa-h]x?[a-h])(?:=?[QRBN])?')
         if regexAlgebraicNotation.match(humanInput):
             return self.moveForShortAlgebraicNotation(humanInput)
+        if re.compile('(?i)O-O|O-O-O').match(humanInput):
+            return self.moveForShortAlgebraicNotation(humanInput.upper().replace("O","0"))
         raise ValueError("Invalid move: %s" % humanInput)
 
     def moveForCoordinateNotation(self, notation):
