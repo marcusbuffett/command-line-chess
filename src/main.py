@@ -24,7 +24,7 @@ def askForDepthOfAI():
     try:
         depthInput = int(input("How deep should the AI look for moves?\n"
                                "Warning : values above 3 will be very slow."
-                               " [n]? "))
+                               " [2]? "))
     except:
         print("Invalid input, defaulting to 2")
     return depthInput
