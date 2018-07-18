@@ -3,13 +3,13 @@ command-line-chess
 
 A python program to play chess against an AI in the terminal.
 
-##Installation
+## Installation
 
 Requires Python 3, run the following to install :
   
     pip3 install cl-chess
 
-##Usage
+## Usage
 
 Run the following command after installation
   
@@ -25,7 +25,7 @@ You can then make any (legal) move :
 
 ![First move](http://i.imgur.com/AsXhhvC.png)
 
-##Options
+## Options
 
 Instead of a move, you can input :
 
@@ -33,6 +33,6 @@ Instead of a move, you can input :
 * `r` to make a random move
 * `u` to undo your last move
 
-##Technical stuff
+## Technical stuff
 
 The AI is a simple brute-force AI with no pruning. It evaluates a given position by counting the value of the pieces for each side (pawn -> 1, knight/bishop -> 3, rook -> 5, queen -> 9). It will evaluate the tree of moves, and take the path that results in the greatest gain. To learn more, check out [my post on how it works] (http://blog.mbuffett.com/creating-a-basic-chess-ai-using-python/).
