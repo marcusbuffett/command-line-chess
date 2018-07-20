@@ -25,6 +25,8 @@ def askForDepthOfAI():
         depthInput = int(input("How deep should the AI look for moves?\n"
                                "Warning : values above 3 will be very slow."
                                " [2]? "))
+    except KeyboardInterrupt:
+        sys.exit()
     except:
         print("Invalid input, defaulting to 2")
     return depthInput
@@ -120,13 +122,60 @@ def startGame(board, playerSide, ai):
             move.notation = parser.notationForMove(move)
             makeMove(move, board)
 
+def twoPlayerGame(board):
+    parserWhite = InputParser(board, WHITE)
+    parserBlack = InputParser(board, BLACK)
+    while True:
+        print()
+        print(board)
+        print()
+        if board.isCheckmate():
+            print("Checkmate")
+            return
+
+        if board.isStalemate():
+            print("Stalemate")
+            return
+
+        # printPointAdvantage(board)
+        if board.currentSide == WHITE:
+            parser = parserWhite
+        else:
+            parser = parserBlack
+        move = None
+        command = input("It's your move, {}.".format(board.currentSideRep()) + \
+                        " Type '?' for options. ? ")
+        if command.lower() == 'u':
+            undoLastTwoMoves(board)
+            continue
+        elif command.lower() == '?':
+            printCommandOptions()
+            continue
+        elif command.lower() == 'l':
+            printAllLegalMoves(board, parser)
+            continue
+        elif command.lower() == 'r':
+            move = getRandomMove(board, parser)
+        elif command.lower() == 'exit' or command.lower() == 'quit':
+            return
+        try:
+            move = parser.parse(command)
+        except ValueError as error:
+            print("%s" % error)
+            continue
+        makeMove(move, board)
+
+
 board = Board()
-playerSide = askForPlayerSide()
-print()
-aiDepth = askForDepthOfAI()
-opponentAI = AI(board, not playerSide, aiDepth)
 
 try:
-    startGame(board, playerSide, opponentAI)
+    if len(sys.argv) >= 2 and sys.argv[1] == "--two":
+        twoPlayerGame(board)
+    else:
+        playerSide = askForPlayerSide()
+        print()
+        aiDepth = askForDepthOfAI()
+        opponentAI = AI(board, not playerSide, aiDepth)
+        startGame(board, playerSide, opponentAI)
 except KeyboardInterrupt:
     sys.exit()
