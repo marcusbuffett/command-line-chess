@@ -167,7 +167,7 @@ class Board:
 
     def getCurrentSide(self):
         return self.currentSide
-
+    
     def makeStringRep(self, pieces):
         stringRep = ''
         for y in range(7, -1, -1):
@@ -185,6 +185,34 @@ class Board:
                 else:
                     pieceRep = ' '
                 stringRep += pieceRep + ' '
+            stringRep += '\n'
+        return stringRep.rstrip()
+    
+    def makeUnicodeStringRep(self, pieces):
+        DISPLAY_LOOKUP = {
+            "R": '♜',
+            "N": '♞',
+            "B": '♝',
+            "K": '♚',	
+            "Q": '♛',
+            "P": '♟',
+        }
+
+        stringRep = ''
+        for y in range(7, -1, -1):
+            for x in range(8):
+                piece = None
+                for p in pieces:
+                    if p.position == C(x, y):
+                        piece = p
+                        break
+                on_color = 'on_cyan' if y % 2 == x % 2 else 'on_yellow'
+                pieceRep = colored('  ', on_color=on_color)
+                if piece:
+                    side = piece.side
+                    color = 'white' if side == WHITE else 'grey'
+                    pieceRep = colored(piece.stringRep + ' ', color=color, on_color=on_color)
+                stringRep += pieceRep
             stringRep += '\n'
         return stringRep.rstrip()
 
@@ -232,6 +260,9 @@ class Board:
             notation += str(move.specialMovePiece.stringRep)
 
         return notation
+
+    def currentSideRep(self):
+        return "White" if self.currentSide else "Black"
 
     def getAlgebraicNotationOfMove(self, move, short=True):
         notation = ""

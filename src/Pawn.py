@@ -97,7 +97,7 @@ class Pawn(Piece):
                         lastMoveWasAdvanceTwo = True
 
                 if pieceBesidePawn and \
-                   pieceBesidePawn.stringRep == 'p' and \
+                   pieceBesidePawn.stringRep == 'P' and \
                    pieceBesidePawn.side != self.side and \
                    lastPieceMoved is pieceBesidePawn and \
                    lastMoveWasAdvanceTwo:
