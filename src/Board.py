@@ -1,13 +1,12 @@
-from Pawn import Pawn
-from Rook import Rook
-from King import King
 from Bishop import Bishop
-from Knight import Knight
-from Queen import Queen
 from Coordinate import Coordinate as C
-from termcolor import colored
-
+from King import King
+from Knight import Knight
 from Move import Move
+from Pawn import Pawn
+from Queen import Queen
+from Rook import Rook
+from termcolor import colored
 
 WHITE = True
 BLACK = False
@@ -183,7 +182,7 @@ class Board:
                     color = 'blue' if side == WHITE else 'red'
                     pieceRep = colored(piece.stringRep, color)
                 else:
-                    pieceRep = ' '
+                    pieceRep = '·'
                 stringRep += pieceRep + ' '
             stringRep += '\n'
         return stringRep.rstrip()

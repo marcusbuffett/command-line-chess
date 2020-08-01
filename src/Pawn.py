@@ -1,11 +1,10 @@
-from Rook import Rook
 from Bishop import Bishop
-from Knight import Knight
-from Queen import Queen
-
-from Piece import Piece
 from Coordinate import Coordinate as C
+from Knight import Knight
 from Move import Move
+from Piece import Piece
+from Queen import Queen
+from Rook import Rook
 
 WHITE = True
 BLACK = False
@@ -13,7 +12,7 @@ BLACK = False
 
 class Pawn(Piece):
 
-    stringRep = 'P'
+    stringRep = '▲'
     value = 1
 
     def __init__(self, board, side, position,  movesMade=0):
