@@ -1,10 +1,10 @@
-from Board import Board
-from MoveNode import MoveNode
-from InputParser import InputParser
 import copy
 import random
 from multiprocessing import Pool
 
+from src.Board import Board
+from src.InputParser import InputParser
+from src.MoveNode import MoveNode
 
 WHITE = True
 BLACK = False

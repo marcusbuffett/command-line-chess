@@ -1,8 +1,9 @@
-from Board import Board
-from InputParser import InputParser
-from AI import AI
-import sys
 import random
+import sys
+
+from src.AI import AI
+from src.Board import Board
+from src.InputParser import InputParser
 
 WHITE = True
 BLACK = False
@@ -168,14 +169,18 @@ def twoPlayerGame(board):
 
 board = Board()
 
-try:
-    if len(sys.argv) >= 2 and sys.argv[1] == "--two":
-        twoPlayerGame(board)
-    else:
-        playerSide = askForPlayerSide()
-        print()
-        aiDepth = askForDepthOfAI()
-        opponentAI = AI(board, not playerSide, aiDepth)
-        startGame(board, playerSide, opponentAI)
-except KeyboardInterrupt:
-    sys.exit()
+def main():
+    try:
+        if len(sys.argv) >= 2 and sys.argv[1] == "--two":
+            twoPlayerGame(board)
+        else:
+            playerSide = askForPlayerSide()
+            print()
+            aiDepth = askForDepthOfAI()
+            opponentAI = AI(board, not playerSide, aiDepth)
+            startGame(board, playerSide, opponentAI)
+    except KeyboardInterrupt:
+        sys.exit()
+
+if __name__ == "__main__":
+    main()

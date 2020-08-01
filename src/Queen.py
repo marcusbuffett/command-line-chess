@@ -1,5 +1,5 @@
-from Piece import Piece
-from Coordinate import Coordinate as C
+from src.Coordinate import Coordinate as C
+from src.Piece import Piece
 
 WHITE = True
 BLACK = False

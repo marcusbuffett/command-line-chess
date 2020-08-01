@@ -1,5 +1,6 @@
 import re
-from Pawn import Pawn
+
+from src.Pawn import Pawn
 
 
 class InputParser:

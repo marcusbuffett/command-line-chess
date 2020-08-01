@@ -1,9 +1,9 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
+
 setup(
     name='cl-chess',
-    package_dir = {'': 'src'},
-    packages=[''],
-    version='1.0',
+    packages=['src'],
+    version='1.2.7',
     description='A program to play chess on the command line',
     author='Marcus Buffett',
     author_email='marcusbuffett@me.com',
@@ -11,9 +11,12 @@ setup(
     #download_url='https://github.com/peterldowns/mypackage/tarball/0.1',
     entry_points={
         'console_scripts': [
-            'chess = main:main',
+            'chess = src.main:main',
         ],
     },
+    install_requires=[
+        'termcolor',
+        ],
     keywords=['chess', 'game'],
     classifiers=["Programming Language :: Python :: 3"],
 )

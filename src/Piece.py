@@ -1,5 +1,5 @@
-from Coordinate import Coordinate as C
-from Move import Move
+from src.Coordinate import Coordinate as C
+from src.Move import Move
 
 WHITE = True
 BLACK = False
