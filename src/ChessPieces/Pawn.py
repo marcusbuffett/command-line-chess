@@ -1,10 +1,10 @@
-from src.Bishop import Bishop
-from src.Coordinate import Coordinate as C
-from src.Knight import Knight
-from src.Move import Move
-from src.Piece import Piece
-from src.Queen import Queen
-from src.Rook import Rook
+from src.BoardSetup.Coordinate import Coordinate as C
+from src.BoardSetup.Move import Move
+from src.ChessPieces.Bishop import Bishop
+from src.ChessPieces.Knight import Knight
+from src.ChessPieces.Piece import Piece
+from src.ChessPieces.Queen import Queen
+from src.ChessPieces.Rook import Rook
 
 WHITE = True
 BLACK = False

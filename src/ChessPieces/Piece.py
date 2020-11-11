@@ -1,5 +1,5 @@
-from src.Coordinate import Coordinate as C
-from src.Move import Move
+from src.BoardSetup.Coordinate import Coordinate as C
+from src.BoardSetup.Move import Move
 
 WHITE = True
 BLACK = False

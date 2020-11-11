@@ -22,6 +22,7 @@
 # Author: Konstantin Lepa <konstantin.lepa@gmail.com>
 
 import os
+
 from .termcolor import cprint
 
 

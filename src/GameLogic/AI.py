@@ -2,9 +2,9 @@ import copy
 import random
 from multiprocessing import Pool
 
-from src.Board import Board
-from src.InputParser import InputParser
-from src.MoveNode import MoveNode
+from src.BoardSetup.Board import Board
+from src.BoardSetup.MoveNode import MoveNode
+from src.GameLogic.InputParser import InputParser
 
 WHITE = True
 BLACK = False
@@ -163,3 +163,6 @@ if __name__ == "__main__":
     print(mainBoard)
     print(ai.movesAnalyzed)
     print(mainBoard.movesMade)
+    f = open("log.txt", "a")
+    f.write(mainBoard.movesMade)
+    f.close()

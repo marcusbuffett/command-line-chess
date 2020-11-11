@@ -1,5 +1,5 @@
-from src.Coordinate import Coordinate as C
-from src.Piece import Piece
+from src.BoardSetup.Coordinate import Coordinate as C
+from src.ChessPieces.Piece import Piece
 
 WHITE = True
 BLACK = False
