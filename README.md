@@ -4,6 +4,8 @@ command-line-chess
 
 A python program to play chess against an AI in the terminal.
 
+Also check out my other project, a program to [practice chess tactics](https://github.com/marcusbuffett/chess-tactics-cli).
+
 ## Installation
 
 Requires Python 3, run the following to install :
