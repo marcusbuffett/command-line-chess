@@ -479,7 +479,7 @@ class Board:
         self.undoLastMove()
         return isLegal
 
-    # TODO: remove side parameter, unneccesary
+    # TODO: remove side parameter, unnecessary
     def getAllMovesLegal(self, side):
         unfilteredMoves = list(self.getAllMovesUnfiltered(side))
         legalMoves = []
