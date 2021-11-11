@@ -26,6 +26,12 @@ def askForDepthOfAI():
         depthInput = int(input("How deep should the AI look for moves?\n"
                                "Warning : values above 3 will be very slow."
                                " [2]? "))
+        while depthInput<=0:
+             depthInput = int(input("How deep should the AI look for moves?\n"
+                               "Warning : values above 3 will be very slow. "
+                               "Your input must be above 0."
+                               " [2]? "))
+
     except KeyboardInterrupt:
         sys.exit()
     except:
