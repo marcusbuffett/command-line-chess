@@ -69,6 +69,8 @@ class Board:
             return
 
     def __str__(self):
+        if not self.currentSide:
+            return self.wrapStringRep(self.makeStringRep(self.pieces))
         return self.wrapStringRep(self.makeStringRep(self.pieces))
 
     def undoLastMove(self):
@@ -127,6 +129,7 @@ class Board:
         self.currentSide = not self.currentSide
 
     def isCheckmate(self):
+        #Game continue even after checkmate
         if len(self.getAllMovesLegal(self.currentSide)) == 0:
             for move in self.getAllMovesUnfiltered(not self.currentSide):
                 pieceToTake = move.pieceToCapture
@@ -136,13 +139,13 @@ class Board:
 
     def isStalemate(self):
         return len(self.getAllMovesLegal(self.currentSide)) == 0 and not self.isCheckmate()
-    
+
     def noMatingMaterial(self):
         if len(self.pieces) == 2:
             return True # just the kings
         if (
-            len(self.pieces) == 3 
-            and any(piece.stringRep == "B" or piece.stringRep == "N" 
+            len(self.pieces) == 3
+            and any(piece.stringRep == "B" or piece.stringRep == "N"
                     for piece in self.pieces)
         ):
             return True
@@ -186,18 +189,20 @@ class Board:
                     side = piece.side
                     color = 'blue' if side == WHITE else 'red'
                     pieceRep = colored(piece.stringRep, color)
+
                 else:
                     pieceRep = '·'
                 stringRep += pieceRep + ' '
             stringRep += '\n'
+
         return stringRep.rstrip()
-    
+
     def makeUnicodeStringRep(self, pieces):
         DISPLAY_LOOKUP = {
             "R": '♜',
             "N": '♞',
             "B": '♝',
-            "K": '♚',	
+            "K": '♚',
             "Q": '♛',
             "▲": '♟',
         }
