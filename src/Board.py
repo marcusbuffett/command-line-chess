@@ -135,11 +135,16 @@ class Board:
         return False
 
     def isStalemate(self):
-        if len(self.getAllMovesLegal(self.currentSide)) == 0:
-            for move in self.getAllMovesUnfiltered(not self.currentSide):
-                pieceToTake = move.pieceToCapture
-                if pieceToTake and pieceToTake.stringRep == "K":
-                    return False
+        return len(self.getAllMovesLegal(self.currentSide)) == 0 and not self.isCheckmate()
+    
+    def noMatingMaterial(self):
+        if len(self.pieces) == 2:
+            return True # just the kings
+        if (
+            len(self.pieces) == 3 
+            and any(piece.stringRep == "B" or piece.stringRep == "N" 
+                    for piece in self.pieces)
+        ):
             return True
         return False
 
@@ -355,10 +360,7 @@ class Board:
         return notation
 
     def isValidPos(self, pos):
-        if 0 <= pos[0] <= 7 and 0 <= pos[1] <= 7:
-            return True
-        else:
-            return False
+        return 0 <= pos[0] <= 7 and 0 <= pos[1] <= 7
 
     def getSideOfMove(self, move):
         return move.piece.side
@@ -451,10 +453,6 @@ class Board:
         pointAdvantage = self.getPointValueOfSide(side) - \
             self.getPointValueOfSide(not side)
         return pointAdvantage
-        if side == WHITE:
-            return self.points
-        if side == BLACK:
-            return -self.points
 
     def getAllMovesUnfiltered(self, side, includeKing=True):
         unfilteredMoves = []

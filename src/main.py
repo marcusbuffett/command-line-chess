@@ -92,10 +92,11 @@ def startGame(board, playerSide, ai):
             return
 
         if board.isStalemate():
-            if board.currentSide == playerSide:
-                print("Stalemate")
-            else:
-                print("Stalemate")
+            print("Stalemate")
+            return
+        
+        if board.noMatingMaterial():
+            print("Draw due to no mating material")
             return
 
         if board.currentSide == playerSide:
@@ -142,6 +143,10 @@ def twoPlayerGame(board):
 
         if board.isStalemate():
             print("Stalemate")
+            return
+        
+        if board.noMatingMaterial():
+            print("Draw due to no mating material")
             return
 
         # printPointAdvantage(board)
