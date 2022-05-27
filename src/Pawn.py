@@ -92,14 +92,14 @@ class Pawn(Piece):
 
             if lastMove:
                 if lastMove.newPos - lastMove.oldPos == C(0, 2) or \
-                    lastMove.newPos - lastMove.oldPos == C(0, -2):
+                   lastMove.newPos - lastMove.oldPos == C(0, -2):
                     lastMoveWasAdvanceTwo = True
 
             if pieceBesidePawn and \
-                pieceBesidePawn.stringRep == 'P' and \
-                pieceBesidePawn.side != self.side and \
-                lastPieceMoved == pieceBesidePawn and \
-                lastMoveWasAdvanceTwo:
+               pieceBesidePawn.stringRep == 'P' and \
+               pieceBesidePawn.side != self.side and \
+               lastPieceMoved == pieceBesidePawn and \
+               lastMoveWasAdvanceTwo:
                 move = Move(self, self.position + movement,
                             pieceToCapture=pieceBesidePawn)
                 move.passant = True
