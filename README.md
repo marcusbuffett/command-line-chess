@@ -4,7 +4,7 @@ command-line-chess
 
 A python program to play chess against an AI in the terminal.
 
-Also check out my other project, a program to [chess training site](https://chessmadra.com/).
+Also check out my other project, a [chess training site](https://chessmadra.com/).
 
 ## Installation
 
