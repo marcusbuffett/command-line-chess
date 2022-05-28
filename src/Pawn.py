@@ -80,28 +80,28 @@ class Pawn(Piece):
                                    pieceToCapture=pieceToTake)
 
         # En passant
-        movements = [C(1, 1), C(-1, 1)] \
-            if self.side == WHITE else [C(1, -1), C(-1, -1)]
+        movements = [C(1, 1), C(-1, 1)] if self.side == WHITE else [C(1, -1), C(-1, -1)]
         for movement in movements:
             posBesidePawn = self.position + C(movement[0], 0)
-            if self.board.isValidPos(posBesidePawn):
-                pieceBesidePawn = self.board.pieceAtPosition(posBesidePawn)
-                lastPieceMoved = self.board.getLastPieceMoved()
-                lastMoveWasAdvanceTwo = False
-                lastMove = self.board.getLastMove()
+            if not self.board.isValidPos(posBesidePawn):
+                continue
+            pieceBesidePawn = self.board.pieceAtPosition(posBesidePawn)
+            lastPieceMoved = self.board.getLastPieceMoved()
+            lastMoveWasAdvanceTwo = False
+            lastMove = self.board.getLastMove()
 
-                if lastMove:
-                    if lastMove.newPos - lastMove.oldPos == C(0, 2) or \
-                       lastMove.newPos - lastMove.oldPos == C(0, -2):
-                        lastMoveWasAdvanceTwo = True
+            if lastMove:
+                if lastMove.newPos - lastMove.oldPos == C(0, 2) or \
+                   lastMove.newPos - lastMove.oldPos == C(0, -2):
+                    lastMoveWasAdvanceTwo = True
 
-                if pieceBesidePawn and \
-                   pieceBesidePawn.stringRep == 'P' and \
-                   pieceBesidePawn.side != self.side and \
-                   lastPieceMoved is pieceBesidePawn and \
-                   lastMoveWasAdvanceTwo:
-                    move = Move(self, self.position + movement,
-                                pieceToCapture=pieceBesidePawn)
-                    move.passant = True
-                    move.specialMovePiece = pieceBesidePawn
-                    yield move
+            if pieceBesidePawn and \
+               pieceBesidePawn.stringRep == Pawn.stringRep and \
+               pieceBesidePawn.side != self.side and \
+               lastPieceMoved is pieceBesidePawn and \
+               lastMoveWasAdvanceTwo:
+                move = Move(self, self.position + movement,
+                            pieceToCapture=pieceBesidePawn)
+                move.passant = True
+                move.specialMovePiece = pieceBesidePawn
+                yield move
