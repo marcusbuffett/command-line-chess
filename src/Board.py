@@ -450,9 +450,7 @@ class Board:
         return points
 
     def getPointAdvantageOfSide(self, side):
-        pointAdvantage = self.getPointValueOfSide(side) - \
-            self.getPointValueOfSide(not side)
-        return pointAdvantage
+        return self.getPointValueOfSide(side) - self.getPointValueOfSide(not side)
 
     def getAllMovesUnfiltered(self, side, includeKing=True):
         unfilteredMoves = []
