@@ -78,6 +78,10 @@ def undoLastTwoMoves(board):
         board.undoLastMove()
         board.undoLastMove()
 
+def printBoard(board):
+    print()
+    print(board)
+    print()
 
 def printGameMoves(history):
     counter = 0
@@ -95,9 +99,6 @@ def printGameMoves(history):
 def startGame(board, playerSide, ai):
     parser = InputParser(board, playerSide)
     while True:
-        print()
-        print(board)
-        print()
         if board.isCheckmate():
             if board.currentSide == playerSide:
                 print("Checkmate, you lost")
@@ -123,6 +124,7 @@ def startGame(board, playerSide, ai):
                             " Type '?' for options. ? ")
             if command.lower() == 'u':
                 undoLastTwoMoves(board)
+                printBoard(board)
                 continue
             elif command.lower() == '?':
                 printCommandOptions()
@@ -137,25 +139,26 @@ def startGame(board, playerSide, ai):
             elif command.lower() == 'exit' or command.lower() == 'quit':
                 return
             try:
-                move = parser.parse(command)
+                if move is None:
+                    move = parser.parse(command)
             except ValueError as error:
                 print("%s" % error)
                 continue
             makeMove(move, board)
+            printBoard(board)
 
         else:
             print("AI thinking...")
             move = ai.getBestMove()
             move.notation = parser.notationForMove(move)
             makeMove(move, board)
+            printBoard(board)
 
 def twoPlayerGame(board):
     parserWhite = InputParser(board, WHITE)
     parserBlack = InputParser(board, BLACK)
     while True:
-        print()
-        print(board)
-        print()
+        printBoard(board)
         if board.isCheckmate():
             print("Checkmate")
             printGameMoves(board.history)
@@ -210,9 +213,11 @@ def main():
             twoPlayerGame(board)
         else:
             playerSide = askForPlayerSide()
+            board.currentSide = playerSide
             print()
             aiDepth = askForDepthOfAI()
             opponentAI = AI(board, not playerSide, aiDepth)
+            printBoard(board)
             startGame(board, playerSide, opponentAI)
     except KeyboardInterrupt:
         sys.exit()
