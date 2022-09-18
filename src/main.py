@@ -43,9 +43,10 @@ def printCommandOptions():
     undoOption = 'u : undo last move'
     printLegalMovesOption = 'l : show all legal moves'
     randomMoveOption = 'r : make a random move'
+    printGameMoves = 'gm: moves of current game in PGN format'
     quitOption = 'quit : resign'
     moveOption = 'a3, Nc3, Qxa2, etc : make the move'
-    options = [undoOption, printLegalMovesOption, randomMoveOption,
+    options = [undoOption, printLegalMovesOption, randomMoveOption, printGameMoves,
                quitOption, moveOption, '', ]
     print('\n'.join(options))
 
@@ -78,6 +79,19 @@ def undoLastTwoMoves(board):
         board.undoLastMove()
 
 
+def printGameMoves(history):
+    counter = 0
+    for num, mv in enumerate(history):
+        if num % 2 == 0:
+            if counter % 6 == 0:
+                print()
+            print(f'{counter + 1}.', end=" ")
+            counter += 1
+
+        print(mv[0].notation, end=" ")
+    print()
+
+
 def startGame(board, playerSide, ai):
     parser = InputParser(board, playerSide)
     while True:
@@ -89,14 +103,17 @@ def startGame(board, playerSide, ai):
                 print("Checkmate, you lost")
             else:
                 print("Checkmate! You won!")
+            printGameMoves(board.history)
             return
 
         if board.isStalemate():
             print("Stalemate")
+            printGameMoves(board.history)
             return
-        
+
         if board.noMatingMaterial():
             print("Draw due to no mating material")
+            printGameMoves(board.history)
             return
 
         if board.currentSide == playerSide:
@@ -113,6 +130,8 @@ def startGame(board, playerSide, ai):
             elif command.lower() == 'l':
                 printAllLegalMoves(board, parser)
                 continue
+            elif command.lower() == 'gm':
+                printGameMoves(board.history)
             elif command.lower() == 'r':
                 move = getRandomMove(board, parser)
             elif command.lower() == 'exit' or command.lower() == 'quit':
@@ -139,14 +158,17 @@ def twoPlayerGame(board):
         print()
         if board.isCheckmate():
             print("Checkmate")
+            printGameMoves(board.history)
             return
 
         if board.isStalemate():
             print("Stalemate")
+            printGameMoves(board.history)
             return
-        
+
         if board.noMatingMaterial():
             print("Draw due to no mating material")
+            printGameMoves(board.history)
             return
 
         # printPointAdvantage(board)
@@ -166,6 +188,8 @@ def twoPlayerGame(board):
         elif command.lower() == 'l':
             printAllLegalMoves(board, parser)
             continue
+        elif command.lower() == 'gm':
+            printGameMoves(board.history)
         elif command.lower() == 'r':
             move = getRandomMove(board, parser)
         elif command.lower() == 'exit' or command.lower() == 'quit':
