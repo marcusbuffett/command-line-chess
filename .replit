@@ -1,2 +1,31 @@
+# The command that runs the program.
+run = "pip install . && clear && chess"
+
+# The primary language of the repl. There can be others, though!
 language = "python3"
-run = "python src/main.py"
+# A list of globs that specify which files and directories should be hidden in the workspace.
+hidden = ["venv", ".config", "**/__pycache__", "**/.mypy_cache", "**/*.pyc"]
+
+# Specifies which nix channel to use when building the environment.
+[nix]
+channel = "stable-21_11"
+
+[env]
+VIRTUAL_ENV = "/home/runner/${REPL_SLUG}/venv"
+PATH = "${VIRTUAL_ENV}/bin"
+PYTHONPATH = "${VIRTUAL_ENV}/lib/python3.10/site-packages"
+REPLIT_POETRY_PYPI_REPOSITORY = "https://package-proxy.replit.com/pypi/"
+MPLBACKEND = "TkAgg"
+POETRY_CACHE_DIR = "${HOME}/${REPL_SLUG}/.cache/pypoetry"
+
+# These are the files that need to be preserved when this
+# language template is used as the base language template
+# for Python repos imported from GitHub
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", ".config", "venv"]
+
+[languages.python3]
+pattern = "**/*.py"
+
+[languages.python3.languageServer]
+start = "pylsp"
