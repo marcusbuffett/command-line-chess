@@ -1,40 +1,89 @@
 [![Run on Repl.it](https://repl.it/badge/github/marcusbuffett/command-line-chess)](https://repl.it/github/marcusbuffett/command-line-chess)
-command-line-chess
-==================
+
+# command-line-chess
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/marcusbuffett/command-line-chess/graphs/commit-activity)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![PyPI download month](https://img.shields.io/pypi/dm/cl-chess.svg)](https://pypi.python.org/project/cl-chess/)
+[![PyPi version](https://badgen.net/pypi/v/cl-chess/)](https://pypi.org/project/cl-chess)
+[![GitHub issues](https://img.shields.io/github/issues/marcusbuffett/command-line-chess.svg)](https://GitHub.com/marcusbuffett/command-line-chess/issues/)
+[![GitHub watchers](https://img.shields.io/github/watchers/marcusbuffett/command-line-chess.svg?style=social&label=Watch&maxAge=2592000)](https://github.com/marcusbuffett/command-line-chess)
+[![GitHub stars](https://img.shields.io/github/stars/marcusbuffett/command-line-chess.svg?style=social&label=Star&maxAge=2592000)](https://github.com/marcusbuffett/command-line-chess)
+
 
 A python program to play chess against an AI in the terminal.
 
 Also check out my other project, a [chess training site](https://chessmadra.com/).
 
+## Features
+
+- Play chess against an AI in the terminal
+- Two player mode (run `chess --two` to enter)
+- possible commands:
+    * `a3`, `Nc3`, `Qxa`, etc: make a move
+    * `l`: prints every legal move
+    * `r`: make a random move
+    * `u`: undo your last move
+    * `quit`: resign the current game
+    * `gm`: prints moves of current game in PGN format
+    * `?`: help, prints all available commands
+
+## Screenshots
+Initial State:
+
+![Initial](https://i.imgur.com/PSS7csc.png)
+
+First move:
+
+![First move](https://i.imgur.com/AsXhhvC.png)
+
 ## Installation
 
-Requires Python 3, run the following to install :
-  
-    pip3 install cl-chess
+### Install from [PyPI](https://pypi.org/project/cl-chess/)
+Just run the following command:
 
+```
+pip install cl-chess
+```
+
+### Install from source
+- First clone the repository:
+```
+git clone https://github.com/marcusbuffett/command-line-chess
+```
+- navigate into the newly created `command-line-chess` directory and run:
+```
+pip install .
+```
 ## Usage
 
-Run the following command after installation
-  
-    chess
+Run the command:
+```
+chess
+```
+and enjoy the game.
+## Contributing
 
-Type '?' to get help at any time during the game.
+Contributions are always welcome!
 
-You'll be asked to choose between playing as white or black, and what depth you want the AI to search :
+See `CONTRIBUTING.md`for ways to get started.
 
-![Initial](http://i.imgur.com/PSS7csc.png)
+Please adhere to this project's `CODE-OF-CONDUCT.md`.
 
-You can then make any (legal) move :
 
-![First move](http://i.imgur.com/AsXhhvC.png)
+## LICENSE
+Take a look at the [LICENSE](https://github.com/marcusbuffett/command-line-chess/LICENSE) file
 
-## Options
+## Authors
 
-Instead of a move, you can input :
+- [@marcusbuffett](https://www.github.com/marcusbuffett)
+- [@ClasherKasten](https://www.github.com/ClasherKasten)
 
-* `l` to see every legal move
-* `r` to make a random move
-* `u` to undo your last move
+
+## Questions, bugs, etc.
+Please create an issue.
 
 ## Technical stuff
 
