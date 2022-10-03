@@ -256,7 +256,7 @@ def main():
             twoPlayerGame(board)
         else:
             playerSide = askForPlayerSide()
-            board.currentSide = playerSide
+            board.currentSide = WHITE
             print()
             aiDepth = askForDepthOfAI()
             opponentAI = AI(board, not playerSide, aiDepth)
