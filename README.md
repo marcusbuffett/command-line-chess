@@ -59,11 +59,24 @@ pip install .
 ```
 ## Usage
 
-Run the command:
+```sh
+chess -h        # to see all possible options
 ```
-chess
 ```
-and enjoy the game.
+usage: chess [-h] [-t] [-u] [-w W] [-b B]
+
+A python program to play chess against an AI in the terminal.
+
+optional arguments:
+  -h, --help       show this help message and exit
+  -t, --two        to play a 2-player game (default: False)
+  -u, --unicode    display chess pieces using unicode characters (default: False)
+  -w W, --white W  color for white player (default: blue)
+  -b B, --black B  color for black player (default: red)
+
+Enjoy the game!
+```
+
 ## Contributing
 
 Contributions are always welcome!

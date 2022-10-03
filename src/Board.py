@@ -22,6 +22,9 @@ class Board:
         self.currentSide = WHITE
         self.movesMade = 0
         self.checkmate = False
+        self.unicode = False
+        self.whiteColor = 'blue'
+        self.blackColor = 'red'
 
         if not mateInOne and not castleBoard and not passant and not promotion:
             self.pieces.extend([Rook(self, BLACK, C(0, 7)),
@@ -69,9 +72,9 @@ class Board:
             return
 
     def __str__(self):
-        if not self.currentSide:
+        if not self.unicode:
             return self.wrapStringRep(self.makeStringRep(self.pieces))
-        return self.wrapStringRep(self.makeStringRep(self.pieces))
+        return self.wrapStringRep(self.makeUnicodeStringRep(self.pieces))
 
     def undoLastMove(self):
         lastMove, pieceTaken = self.history.pop()
@@ -187,7 +190,7 @@ class Board:
                 pieceRep = ''
                 if piece:
                     side = piece.side
-                    color = 'blue' if side == WHITE else 'red'
+                    color = self.whiteColor if side == WHITE else self.blackColor
                     pieceRep = colored(piece.stringRep, color)
 
                 else:
@@ -219,8 +222,8 @@ class Board:
                 pieceRep = colored('  ', on_color=on_color)
                 if piece:
                     side = piece.side
-                    color = 'white' if side == WHITE else 'grey'
-                    pieceRep = colored(piece.stringRep + ' ', color=color, on_color=on_color)
+                    color = self.whiteColor if side == WHITE else self.blackColor
+                    pieceRep = colored(DISPLAY_LOOKUP[piece.stringRep] + ' ', color=color, on_color=on_color)
                 stringRep += pieceRep
             stringRep += '\n'
         return stringRep.rstrip()
