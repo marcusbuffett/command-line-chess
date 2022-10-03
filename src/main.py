@@ -218,7 +218,7 @@ def main():
             aiDepth = askForDepthOfAI()
             opponentAI = AI(board, not playerSide, aiDepth)
             printBoard(board)
-            startGame(board, playerSide, opponentAI)
+            startGame(board, WHITE, opponentAI)
     except KeyboardInterrupt:
         sys.exit()
 
