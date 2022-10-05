@@ -1,3 +1,4 @@
+import argparse
 import random
 import sys
 from typing import List
@@ -209,12 +210,54 @@ def twoPlayerGame(board: Board) -> None:
 board = Board()
 
 def main() -> None:
+    parser = argparse.ArgumentParser(
+        prog="chess",
+        description="A python program to play chess "
+                    "against an AI in the terminal.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog="Enjoy the game!"
+    )
+    parser.add_argument(
+        '-t',
+        '--two',
+        action='store_true',
+        default=False,
+        help="to play a 2-player game"
+    )
+    parser.add_argument(
+        '-u',
+        '--unicode',
+        action='store_true',
+        default=False,
+        help="display chess pieces using unicode characters"
+    )
+    parser.add_argument(
+        '-w',
+        '--white',
+        action='store',
+        default="blue",
+        metavar='W',
+        help="color for white player"
+    )
+    parser.add_argument(
+        '-b',
+        '--black',
+        action='store',
+        default="red",
+        metavar='B',
+        help="color for black player"
+    )
+    args = parser.parse_args()
+    board.unicode = args.unicode
+    board.whiteColor = args.white
+    board.blackColor = args.black
+
     try:
-        if len(sys.argv) >= 2 and sys.argv[1] == "--two":
+        if args.two:
             twoPlayerGame(board)
         else:
             playerSide = askForPlayerSide()
-            board.currentSide = playerSide
+            board.currentSide = WHITE
             print()
             aiDepth = askForDepthOfAI()
             opponentAI = AI(board, not playerSide, aiDepth)
