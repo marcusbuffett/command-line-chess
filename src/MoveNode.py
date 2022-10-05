@@ -1,13 +1,20 @@
+from __future__ import annotations
+
+from typing import List, Optional
+
+from src.Move import Move
+
+
 class MoveNode:
 
-    def __init__(self, move, children, parent):
+    def __init__(self, move: Move, children: List[MoveNode], parent: Optional[MoveNode]):
         self.move = move
         self.children = children
         self.parent = parent
-        self.pointAdvantage = None
+        self.pointAdvantage = 0
         self.depth = 1
 
-    def __str__(self):
+    def __str__(self) -> str:
         stringRep = "Move : " + str(self.move) + \
                     " Point advantage : " + str(self.pointAdvantage) + \
                     " Checkmate : " + str(self.move.checkmate)
@@ -19,7 +26,9 @@ class MoveNode:
 
         return stringRep
 
-    def __gt__(self, other):
+    def __gt__(self, other: object) -> bool:
+        if not isinstance(other, MoveNode):
+            return NotImplemented
         if self.move.checkmate and not other.move.checkmate:
             return True
         if not self.move.checkmate and other.move.checkmate:
@@ -28,7 +37,9 @@ class MoveNode:
             return False
         return self.pointAdvantage > other.pointAdvantage
 
-    def __lt__(self, other):
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, MoveNode):
+            return NotImplemented
         if self.move.checkmate and not other.move.checkmate:
             return False
         if not self.move.checkmate and other.move.checkmate:
@@ -37,12 +48,14 @@ class MoveNode:
             return False
         return self.pointAdvantage < other.pointAdvantage
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, MoveNode):
+            return NotImplemented
         if self.move.checkmate and other.move.checkmate:
             return True
         return self.pointAdvantage == other.pointAdvantage
 
-    def getHighestNode(self):
+    def getHighestNode(self) -> MoveNode:
         highestNode = self
         while True:
             if highestNode.parent is not None:
@@ -50,7 +63,7 @@ class MoveNode:
             else:
                 return highestNode
 
-    def getDepth(self):
+    def getDepth(self) -> int:
         depth = 1
         highestNode = self
         while True:

@@ -1,15 +1,17 @@
 import random
 import sys
+from typing import List
 
 from src.AI import AI
 from src.Board import Board
 from src.InputParser import InputParser
+from src.Move import Move
 
 WHITE = True
 BLACK = False
 
 
-def askForPlayerSide():
+def askForPlayerSide() -> bool:
     playerChoiceInput = input(
         "What side would you like to play as [wB]? ").lower()
     if 'w' in playerChoiceInput:
@@ -20,7 +22,7 @@ def askForPlayerSide():
         return BLACK
 
 
-def askForDepthOfAI():
+def askForDepthOfAI() -> int:
     depthInput = 2
     try:
         depthInput = int(input("How deep should the AI look for moves?\n"
@@ -39,7 +41,7 @@ def askForDepthOfAI():
     return depthInput
 
 
-def printCommandOptions():
+def printCommandOptions() -> None:
     undoOption = 'u : undo last move'
     printLegalMovesOption = 'l : show all legal moves'
     randomMoveOption = 'r : make a random move'
@@ -51,39 +53,39 @@ def printCommandOptions():
     print('\n'.join(options))
 
 
-def printAllLegalMoves(board, parser):
+def printAllLegalMoves(board: Board, parser: InputParser) -> None:
     for move in parser.getLegalMovesWithNotation(board.currentSide, short=True):
         print(move.notation)
 
 
-def getRandomMove(board, parser):
+def getRandomMove(board: Board, parser: InputParser) -> Move:
     legalMoves = board.getAllMovesLegal(board.currentSide)
     randomMove = random.choice(legalMoves)
     randomMove.notation = parser.notationForMove(randomMove)
     return randomMove
 
 
-def makeMove(move, board):
+def makeMove(move: Move, board: Board) -> None:
     print("Making move : " + move.notation)
     board.makeMove(move)
 
 
-def printPointAdvantage(board):
+def printPointAdvantage(board: Board) -> None:
     print("Currently, the point difference is : " +
           str(board.getPointAdvantageOfSide(board.currentSide)))
 
 
-def undoLastTwoMoves(board):
+def undoLastTwoMoves(board: Board) -> None:
     if len(board.history) >= 2:
         board.undoLastMove()
         board.undoLastMove()
 
-def printBoard(board):
+def printBoard(board: Board) -> None:
     print()
     print(board)
     print()
 
-def printGameMoves(history):
+def printGameMoves(history: List[List[Move]]) -> None:
     counter = 0
     for num, mv in enumerate(history):
         if num % 2 == 0:
@@ -96,7 +98,7 @@ def printGameMoves(history):
     print()
 
 
-def startGame(board, playerSide, ai):
+def startGame(board: Board, playerSide: bool, ai: AI) -> None:
     parser = InputParser(board, playerSide)
     while True:
         if board.isCheckmate():
@@ -154,7 +156,7 @@ def startGame(board, playerSide, ai):
             makeMove(move, board)
             printBoard(board)
 
-def twoPlayerGame(board):
+def twoPlayerGame(board: Board) -> None:
     parserWhite = InputParser(board, WHITE)
     parserBlack = InputParser(board, BLACK)
     while True:
@@ -179,7 +181,6 @@ def twoPlayerGame(board):
             parser = parserWhite
         else:
             parser = parserBlack
-        move = None
         command = input("It's your move, {}.".format(board.currentSideRep()) + \
                         " Type '?' for options. ? ")
         if command.lower() == 'u':
@@ -207,7 +208,7 @@ def twoPlayerGame(board):
 
 board = Board()
 
-def main():
+def main() -> None:
     try:
         if len(sys.argv) >= 2 and sys.argv[1] == "--two":
             twoPlayerGame(board)

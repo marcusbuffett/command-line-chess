@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Iterator
+
 from src.Bishop import Bishop
 from src.Coordinate import Coordinate as C
 from src.Knight import Knight
@@ -5,6 +9,9 @@ from src.Move import Move
 from src.Piece import Piece
 from src.Queen import Queen
 from src.Rook import Rook
+
+if TYPE_CHECKING:
+    from src.Board import Board
 
 WHITE = True
 BLACK = False
@@ -15,12 +22,12 @@ class Pawn(Piece):
     stringRep = '▲'
     value = 1
 
-    def __init__(self, board, side, position,  movesMade=0):
+    def __init__(self, board: Board, side: bool, position: C, movesMade: int = 0):
         super(Pawn, self).__init__(board, side, position)
         self.movesMade = movesMade
 
     # @profile
-    def getPossibleMoves(self):
+    def getPossibleMoves(self) -> Iterator[Move]:
         currentPosition = self.position
 
         # Pawn moves one up
@@ -39,7 +46,7 @@ class Pawn(Piece):
                     for piece in piecesForPromotion:
                         move = Move(self, advanceOnePosition)
                         move.promotion = True
-                        move.specialMovePiece = piece
+                        move.specialMovePiece = piece  # type: ignore[assignment]
                         yield move
                 else:
                     yield Move(self, advanceOnePosition)
@@ -73,7 +80,7 @@ class Pawn(Piece):
                         for piece in piecesForPromotion:
                             move = Move(self, newPosition, pieceToCapture=pieceToTake)
                             move.promotion = True
-                            move.specialMovePiece = piece
+                            move.specialMovePiece = piece  # type: ignore[assignment]
                             yield move
                     else:
                         yield Move(self, newPosition,
@@ -103,5 +110,5 @@ class Pawn(Piece):
                 move = Move(self, self.position + movement,
                             pieceToCapture=pieceBesidePawn)
                 move.passant = True
-                move.specialMovePiece = pieceBesidePawn
+                move.specialMovePiece = pieceBesidePawn  # type: ignore[assignment]
                 yield move

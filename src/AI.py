@@ -1,9 +1,11 @@
 import copy
 import random
 from multiprocessing import Pool
+from typing import List, no_type_check
 
 from src.Board import Board
 from src.InputParser import InputParser
+from src.Move import Move
 from src.MoveNode import MoveNode
 
 WHITE = True
@@ -13,20 +15,20 @@ BLACK = False
 class AI:
 
     depth = 1
-    board = None
-    side = None
     movesAnalyzed = 0
 
-    def __init__(self, board, side, depth):
+    def __init__(self, board: Board, side: bool, depth: int):
         self.board = board
         self.side = side
         self.depth = depth
         self.parser = InputParser(self.board, self.side)
 
-    def getFirstMove(self, side):
+    def getFirstMove(self, side: bool) -> Move:
         move = list(self.board.getAllMovesLegal(side))[0]
         return move
 
+    # TODO this method is never used, remove?
+    @no_type_check
     def getAllMovesLegalConcurrent(self, side):
         p = Pool(8)
         unfilteredMovesWithBoard = \
@@ -38,8 +40,8 @@ class AI:
         p.join()
         return list(filter(None, legalMoves))
 
-    def minChildrenOfNode(self, node):
-        lowestNodes = []
+    def minChildrenOfNode(self, node: MoveNode) -> List[MoveNode]:
+        lowestNodes: List[MoveNode] = []
         for child in node.children:
             if not lowestNodes:
                 lowestNodes.append(child)
@@ -50,8 +52,8 @@ class AI:
                 lowestNodes.append(child)
         return lowestNodes
 
-    def maxChildrenOfNode(self, node):
-        highestNodes = []
+    def maxChildrenOfNode(self, node: MoveNode) -> List[MoveNode]:
+        highestNodes: List[MoveNode] = []
         for child in node.children:
             if not highestNodes:
                 highestNodes.append(child)
@@ -62,12 +64,12 @@ class AI:
                 highestNodes.append(child)
         return highestNodes
 
-    def getRandomMove(self):
+    def getRandomMove(self) -> Move:
         legalMoves = list(self.board.getAllMovesLegal(self.side))
         randomMove = random.choice(legalMoves)
         return randomMove
 
-    def generateMoveTree(self):
+    def generateMoveTree(self) -> List[MoveNode]:
         moveTree = []
         for move in self.board.getAllMovesLegal(self.side):
             moveTree.append(MoveNode(move, [], None))
@@ -78,7 +80,7 @@ class AI:
             self.board.undoLastMove()
         return moveTree
 
-    def populateNodeChildren(self, node):
+    def populateNodeChildren(self, node: MoveNode) -> None:
         node.pointAdvantage = self.board.getPointAdvantageOfSide(self.side)
         node.depth = node.getDepth()
         if node.depth == self.depth:
@@ -104,7 +106,7 @@ class AI:
             self.populateNodeChildren(node.children[-1])
             self.board.undoLastMove()
 
-    def getOptimalPointAdvantageForNode(self, node):
+    def getOptimalPointAdvantageForNode(self, node: MoveNode) -> int:
         if node.children:
             for child in node.children:
                 child.pointAdvantage = \
@@ -119,18 +121,18 @@ class AI:
         else:
             return node.pointAdvantage
 
-    def getBestMove(self):
+    def getBestMove(self) -> Move:
         moveTree = self.generateMoveTree()
         bestMoves = self.bestMovesWithMoveTree(moveTree)
         randomBestMove = random.choice(bestMoves)
         randomBestMove.notation = self.parser.notationForMove(randomBestMove)
         return randomBestMove
 
-    def makeBestMove(self):
+    def makeBestMove(self) -> None:
         self.board.makeMove(self.getBestMove())
 
-    def bestMovesWithMoveTree(self, moveTree):
-        bestMoveNodes = []
+    def bestMovesWithMoveTree(self, moveTree: List[MoveNode]) -> List[Move]:
+        bestMoveNodes: List[MoveNode] = []
         for moveNode in moveTree:
             moveNode.pointAdvantage = \
                 self.getOptimalPointAdvantageForNode(moveNode)
@@ -144,13 +146,13 @@ class AI:
 
         return [node.move for node in bestMoveNodes]
 
-    def isValidMove(self, move, side):
+    def isValidMove(self, move: Move, side: bool) -> bool:
         for legalMove in self.board.getAllMovesLegal(side):
             if move == legalMove:
                 return True
         return False
 
-    def makeRandomMove(self):
+    def makeRandomMove(self) -> None:
         moveToMake = self.getRandomMove()
         self.board.makeMove(moveToMake)
 
