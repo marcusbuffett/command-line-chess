@@ -1,1 +1,5 @@
 termcolor
+mypy>=0.981
+mypy-extensions>=0.4.3
+tomli>=2.0.1
+types-setuptools>=65.4.0.0
