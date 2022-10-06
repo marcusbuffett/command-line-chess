@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import re
-from typing import List
 
 from src.Board import Board
 from src.Move import Move
@@ -73,7 +74,7 @@ class InputParser:
                 return m.notation
         return ""  # return added to make mypy happy
 
-    def getLegalMovesWithNotation(self, side: bool, short: bool = True) -> List[Move]:
+    def getLegalMovesWithNotation(self, side: bool, short: bool = True) -> list[Move]:
         moves = []
         for legalMove in self.board.getAllMovesLegal(side):
             moves.append(legalMove)
@@ -96,7 +97,7 @@ class InputParser:
 
         return moves
 
-    def duplicateMovesFromMoves(self, moves: List[Move]) -> List[Move]:
+    def duplicateMovesFromMoves(self, moves: list[Move]) -> list[Move]:
         return list(filter(
             lambda move:
             len([m for m in moves if m.notation == move.notation]) > 1, moves))

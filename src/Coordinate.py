@@ -1,15 +1,11 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import NamedTuple
 
 
-class Coordinate(tuple[int, int]):
-
-    def __new__(cls, *args: int) -> Coordinate:
-        return tuple.__new__(cls, args)
-
-    def __reduce__(self) -> tuple[Any, Any]:
-        return (self.__class__, tuple(self))
+class Coordinate(NamedTuple):
+    rank: int
+    file: int
 
     def __add__(self, other: object) -> Coordinate:
         if not isinstance(other, Coordinate):

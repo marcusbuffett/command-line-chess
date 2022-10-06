@@ -1,4 +1,6 @@
-from typing import List, no_type_check
+from __future__ import annotations
+
+from typing import no_type_check
 
 from termcolor import colored
 
@@ -20,8 +22,8 @@ class Board:
 
     def __init__(self, mateInOne: bool = False, castleBoard: bool = False,
                  passant: bool = False, promotion: bool = False):
-        self.pieces: List[Piece] = []
-        self.history: List[List] = []  # type: ignore[type-arg]  # TODO: make 'history' contain only Move, not None
+        self.pieces: list[Piece] = []
+        self.history: list[list] = []  # type: ignore[type-arg]  # TODO: make 'history' contain only Move, not None
         self.points = 0
         self.currentSide = WHITE
         self.movesMade = 0
@@ -182,7 +184,7 @@ class Board:
     def getCurrentSide(self) -> bool:
         return self.currentSide
     
-    def makeStringRep(self, pieces: List[Piece]) -> str:
+    def makeStringRep(self, pieces: list[Piece]) -> str:
         stringRep = ''
         for y in range(7, -1, -1):
             for x in range(8):
@@ -204,7 +206,7 @@ class Board:
 
         return stringRep.rstrip()
 
-    def makeUnicodeStringRep(self, pieces: List[Piece]) -> str:
+    def makeUnicodeStringRep(self, pieces: list[Piece]) -> str:
         DISPLAY_LOOKUP = {
             "R": '♜',
             "N": '♞',
@@ -474,7 +476,7 @@ class Board:
     def getPointAdvantageOfSide(self, side: bool) -> int:
         return self.getPointValueOfSide(side) - self.getPointValueOfSide(not side)
 
-    def getAllMovesUnfiltered(self, side: bool, includeKing: bool = True) -> List[Move]:
+    def getAllMovesUnfiltered(self, side: bool, includeKing: bool = True) -> list[Move]:
         unfilteredMoves = []
         for piece in self.pieces:
             if piece.side == side:
@@ -498,7 +500,7 @@ class Board:
         return isLegal
 
     # TODO: remove side parameter, unnecessary
-    def getAllMovesLegal(self, side: bool) -> List[Move]:
+    def getAllMovesLegal(self, side: bool) -> list[Move]:
         unfilteredMoves = list(self.getAllMovesUnfiltered(side))
         legalMoves = []
         for move in unfilteredMoves:

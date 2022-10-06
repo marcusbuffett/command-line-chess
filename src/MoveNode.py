@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Optional
 
 from src.Move import Move
 
 
 class MoveNode:
 
-    def __init__(self, move: Move, children: List[MoveNode], parent: Optional[MoveNode]):
+    def __init__(self, move: Move, children: list[MoveNode], parent: Optional[MoveNode]):
         self.move = move
         self.children = children
         self.parent = parent

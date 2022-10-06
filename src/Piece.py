@@ -62,5 +62,5 @@ class Piece:
                              movesMade=self.movesMade)
         return cpy
 
-    def getPossibleMoves(self) -> Any:
+    def getPossibleMoves(self) -> Iterator[Move]:
         pass

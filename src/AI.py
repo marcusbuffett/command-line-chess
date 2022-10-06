@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import copy
 import random
 from multiprocessing import Pool
-from typing import List, no_type_check
+from typing import no_type_check
 
 from src.Board import Board
 from src.InputParser import InputParser
@@ -40,8 +42,8 @@ class AI:
         p.join()
         return list(filter(None, legalMoves))
 
-    def minChildrenOfNode(self, node: MoveNode) -> List[MoveNode]:
-        lowestNodes: List[MoveNode] = []
+    def minChildrenOfNode(self, node: MoveNode) -> list[MoveNode]:
+        lowestNodes: list[MoveNode] = []
         for child in node.children:
             if not lowestNodes:
                 lowestNodes.append(child)
@@ -52,8 +54,8 @@ class AI:
                 lowestNodes.append(child)
         return lowestNodes
 
-    def maxChildrenOfNode(self, node: MoveNode) -> List[MoveNode]:
-        highestNodes: List[MoveNode] = []
+    def maxChildrenOfNode(self, node: MoveNode) -> list[MoveNode]:
+        highestNodes: list[MoveNode] = []
         for child in node.children:
             if not highestNodes:
                 highestNodes.append(child)
@@ -69,7 +71,7 @@ class AI:
         randomMove = random.choice(legalMoves)
         return randomMove
 
-    def generateMoveTree(self) -> List[MoveNode]:
+    def generateMoveTree(self) -> list[MoveNode]:
         moveTree = []
         for move in self.board.getAllMovesLegal(self.side):
             moveTree.append(MoveNode(move, [], None))
@@ -131,8 +133,8 @@ class AI:
     def makeBestMove(self) -> None:
         self.board.makeMove(self.getBestMove())
 
-    def bestMovesWithMoveTree(self, moveTree: List[MoveNode]) -> List[Move]:
-        bestMoveNodes: List[MoveNode] = []
+    def bestMovesWithMoveTree(self, moveTree: list[MoveNode]) -> list[Move]:
+        bestMoveNodes: list[MoveNode] = []
         for moveNode in moveTree:
             moveNode.pointAdvantage = \
                 self.getOptimalPointAdvantageForNode(moveNode)
