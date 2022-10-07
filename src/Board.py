@@ -13,10 +13,16 @@ from src.Pawn import Pawn
 from src.Piece import Piece
 from src.Queen import Queen
 from src.Rook import Rook
+import colored
+from colored import fg, bg, attr
 
 WHITE = True
 BLACK = False
 
+TILES = {
+    0:'#769656',
+    1:'#EEEED2',
+}
 
 class Board:
 
@@ -28,8 +34,13 @@ class Board:
         self.currentSide = WHITE
         self.movesMade = 0
         self.checkmate = False
-        self.whiteColor = 'blue'
-        self.blackColor = 'red'
+        self.whiteColor = 'white'
+        self.blackColor = 'black'
+        self.isCheckered = False
+        self.tileColors = {
+            0:'#769656',
+            1:'#BACA44',
+        }
 
         if not mateInOne and not castleBoard and not passant and not promotion:
             self.pieces.extend([Rook(self, BLACK, C(0, 7)),
@@ -201,12 +212,13 @@ class Board:
                     if p.position == C(x, y):
                         piece = p
                         break
-                on_color = 'on_cyan' if y % 2 == x % 2 else 'on_yellow'
-                pieceRep = colored('  ', on_color=on_color)
+                bg_color = bg(self.tileColors[(x+y)%2]) if self.isCheckered else ''
+                pieceRep = bg_color + '  ' + attr(0)
                 if piece:
                     side = piece.side
                     color = self.whiteColor if side == WHITE else self.blackColor
-                    pieceRep = colored(DISPLAY_LOOKUP[piece.stringRep] + ' ', color=color, on_color=on_color)
+                    fg_color = fg(color)
+                    pieceRep = fg_color + bg_color + DISPLAY_LOOKUP[piece.stringRep] + ' ' + attr(0)
                 stringRep += pieceRep
             stringRep += '\n'
         return stringRep.rstrip()
