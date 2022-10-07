@@ -15,7 +15,7 @@ setup(
         ],
     },
     install_requires=[
-        'termcolor',
+        'colored',
         ],
     keywords=['chess', 'game'],
     classifiers=["Programming Language :: Python :: 3"],

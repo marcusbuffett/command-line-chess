@@ -231,7 +231,7 @@ def main() -> None:
         '-w',
         '--white',
         action='store',
-        default="blue",
+        default='white',
         metavar='W',
         help="color for white player"
     )
@@ -239,14 +239,22 @@ def main() -> None:
         '-b',
         '--black',
         action='store',
-        default="red",
+        default='black',
         metavar='B',
         help="color for black player"
     )
+    parser.add_argument(
+        '-c',
+        '--checkered',
+        action='store_true',
+        default=False,
+        help="use checkered theme for the chess board",
+    )
+
     args = parser.parse_args()
     board.whiteColor = args.white
     board.blackColor = args.black
-
+    board.isCheckered = args.checkered
     try:
         if args.two:
             twoPlayerGame(board)
