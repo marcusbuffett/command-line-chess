@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import no_type_check
+from typing import Optional, no_type_check
 
 from termcolor import colored
 
@@ -23,7 +23,7 @@ class Board:
     def __init__(self, mateInOne: bool = False, castleBoard: bool = False,
                  passant: bool = False, promotion: bool = False):
         self.pieces: list[Piece] = []
-        self.history: list[list] = []  # type: ignore[type-arg]  # TODO: make 'history' contain only Move, not None
+        self.history: list[tuple[Move, Optional[Piece]]] = []
         self.points = 0
         self.currentSide = WHITE
         self.movesMade = 0
@@ -90,21 +90,23 @@ class Board:
             rook = lastMove.specialMovePiece
 
             self.movePieceToPosition(king, lastMove.oldPos)
-            self.movePieceToPosition(rook, lastMove.rookMove.oldPos)
-
             king.movesMade -= 1
-            rook.movesMade -= 1
+
+            if rook:
+                self.movePieceToPosition(rook, lastMove.rookMove.oldPos)
+                rook.movesMade -= 1
 
         elif lastMove.passant:
             pawnMoved = lastMove.piece
             pawnTaken = pieceTaken
-            self.pieces.append(pawnTaken)
+            if pawnTaken:
+                self.pieces.append(pawnTaken)
+                if pawnTaken.side == WHITE:
+                    self.points += 1
+                if pawnTaken.side == BLACK:
+                    self.points -= 1
             self.movePieceToPosition(pawnMoved, lastMove.oldPos)
             pawnMoved.movesMade -= 1
-            if pawnTaken.side == WHITE:
-                self.points += 1
-            if pawnTaken.side == BLACK:
-                self.points -= 1
 
         elif lastMove.promotion:
             pawnPromoted = lastMove.piece
@@ -162,24 +164,24 @@ class Board:
 
     def getLastMove(self) -> Move:  # type: ignore[return]  # TODO: add consistent return for else condition
         if self.history:
-            return self.history[-1][0]  # type: ignore[no-any-return]
+            return self.history[-1][0]
 
     def getLastPieceMoved(self) -> Piece:  # type: ignore[return]  # TODO: add consistent return for else condition
         if self.history:
-            return self.history[-1][0].piece  # type: ignore[no-any-return]
+            return self.history[-1][0].piece
 
     def addMoveToHistory(self, move: Move) -> None:
         pieceTaken = None
         if move.passant:
             pieceTaken = move.specialMovePiece
-            self.history.append([move, pieceTaken])
+            self.history.append((move, pieceTaken))
             return
         pieceTaken = move.pieceToCapture
         if pieceTaken:
-            self.history.append([move, pieceTaken])
+            self.history.append((move, pieceTaken))
             return
 
-        self.history.append([move, None])
+        self.history.append((move, None))
 
     def getCurrentSide(self) -> bool:
         return self.currentSide

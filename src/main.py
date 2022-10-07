@@ -3,11 +3,13 @@ from __future__ import annotations
 import argparse
 import random
 import sys
+from typing import Optional
 
 from src.AI import AI
 from src.Board import Board
 from src.InputParser import InputParser
 from src.Move import Move
+from src.Piece import Piece
 
 WHITE = True
 BLACK = False
@@ -87,7 +89,7 @@ def printBoard(board: Board) -> None:
     print(board)
     print()
 
-def printGameMoves(history: list[list[Move]]) -> None:
+def printGameMoves(history: list[tuple[Move, Optional[Piece]]]) -> None:
     counter = 0
     for num, mv in enumerate(history):
         if num % 2 == 0:
