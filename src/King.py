@@ -1,6 +1,13 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Iterator
+
 from src.Coordinate import Coordinate as C
 from src.Move import Move
 from src.Piece import Piece
+
+if TYPE_CHECKING:
+    from src.Board import Board
 
 WHITE = True
 BLACK = False
@@ -11,11 +18,11 @@ class King (Piece):
     stringRep = 'K'
     value = 100
 
-    def __init__(self, board, side, position,  movesMade=0):
+    def __init__(self, board: Board, side: bool, position: C, movesMade: int = 0):
         super(King, self).__init__(board, side, position)
         self.movesMade = movesMade
 
-    def getPossibleMoves(self):
+    def getPossibleMoves(self) -> Iterator[Move]:
         currentPos = self.position
         movements = [C(0, 1), C(0, -1), C(1, 0), C(-1, 0), C(1, 1),
                      C(1, -1), C(-1, 1), C(-1, -1)]
@@ -73,7 +80,7 @@ class King (Piece):
             kingsideRookPos = self.position + C(3, 0)
             kingsideRook = self.board.pieceAtPosition(kingsideRookPos) \
                 if self.board.isValidPos(kingsideRookPos) \
-                else None
+                else None  # TODO kingsideRook should never be None to match Move class requirements
             if kingsideRook and \
                kingsideRook.stringRep == 'R' and \
                kingsideRook.movesMade == 0:
@@ -82,7 +89,7 @@ class King (Piece):
             queensideRookPos = self.position - C(4, 0)
             queensideRook = self.board.pieceAtPosition(queensideRookPos) \
                 if self.board.isValidPos(queensideRookPos) \
-                else None
+                else None  # TODO queensideRook should never be None to match Move class requirements
             if queensideRook and \
                queensideRook.stringRep == 'R' and \
                queensideRook.movesMade == 0:
@@ -93,19 +100,17 @@ class King (Piece):
                    not kingsideCastleCheck and \
                    not kingsideRookMoved:
                     move = Move(self, self.position + C(2, 0))
-                    rookMove = Move(kingsideRook, self.position + C(1, 0))
-                    move.specialMovePiece = \
-                        self.board.pieceAtPosition(kingsideRookPos)
+                    rookMove = Move(kingsideRook, self.position + C(1, 0))  # type: ignore[arg-type]
+                    move.specialMovePiece = self.board.pieceAtPosition(kingsideRookPos)  # type: ignore[assignment]
                     move.kingsideCastle = True
-                    move.rookMove = rookMove
+                    move.rookMove = rookMove  # type: ignore[assignment]
                     yield move
                 if not queensideCastleBlocked and \
                    not queensideCastleCheck and \
                    not queensideRookMoved:
                     move = Move(self, self.position - C(2, 0))
-                    rookMove = Move(queensideRook, self.position - C(1, 0))
-                    move.specialMovePiece = \
-                        self.board.pieceAtPosition(queensideRookPos)
+                    rookMove = Move(queensideRook, self.position - C(1, 0))  # type: ignore[arg-type]
+                    move.specialMovePiece = self.board.pieceAtPosition(queensideRookPos)  # type: ignore[assignment]
                     move.queensideCastle = True
-                    move.rookMove = rookMove
+                    move.rookMove = rookMove  # type: ignore[assignment]
                     yield move
