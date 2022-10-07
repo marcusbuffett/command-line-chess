@@ -63,14 +63,13 @@ pip install .
 chess -h        # to see all possible options
 ```
 ```
-usage: chess [-h] [-t] [-u] [-w W] [-b B]
+usage: chess [-h] [-t] [-w W] [-b B]
 
 A python program to play chess against an AI in the terminal.
 
 optional arguments:
   -h, --help       show this help message and exit
   -t, --two        to play a 2-player game (default: False)
-  -u, --unicode    display chess pieces using unicode characters (default: False)
   -w W, --white W  color for white player (default: blue)
   -b B, --black B  color for black player (default: red)
 
