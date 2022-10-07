@@ -28,7 +28,6 @@ class Board:
         self.currentSide = WHITE
         self.movesMade = 0
         self.checkmate = False
-        self.unicode = False
         self.whiteColor = 'blue'
         self.blackColor = 'red'
 
@@ -77,9 +76,7 @@ class Board:
             self.currentSide = WHITE
             return
 
-    def __str__(self) -> str:
-        if not self.unicode:
-            return self.wrapStringRep(self.makeStringRep(self.pieces))
+    def __str__(self):
         return self.wrapStringRep(self.makeUnicodeStringRep(self.pieces))
 
     def undoLastMove(self) -> None:
@@ -185,28 +182,6 @@ class Board:
 
     def getCurrentSide(self) -> bool:
         return self.currentSide
-    
-    def makeStringRep(self, pieces: list[Piece]) -> str:
-        stringRep = ''
-        for y in range(7, -1, -1):
-            for x in range(8):
-                piece = None
-                for p in pieces:
-                    if p.position == C(x, y):
-                        piece = p
-                        break
-                pieceRep = ''
-                if piece:
-                    side = piece.side
-                    color = self.whiteColor if side == WHITE else self.blackColor
-                    pieceRep = colored(piece.stringRep, color)
-
-                else:
-                    pieceRep = '·'
-                stringRep += pieceRep + ' '
-            stringRep += '\n'
-
-        return stringRep.rstrip()
 
     def makeUnicodeStringRep(self, pieces: list[Piece]) -> str:
         DISPLAY_LOOKUP = {

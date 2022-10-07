@@ -228,13 +228,6 @@ def main() -> None:
         help="to play a 2-player game"
     )
     parser.add_argument(
-        '-u',
-        '--unicode',
-        action='store_true',
-        default=False,
-        help="display chess pieces using unicode characters"
-    )
-    parser.add_argument(
         '-w',
         '--white',
         action='store',
@@ -251,7 +244,6 @@ def main() -> None:
         help="color for black player"
     )
     args = parser.parse_args()
-    board.unicode = args.unicode
     board.whiteColor = args.white
     board.blackColor = args.black
 
