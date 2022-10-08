@@ -6,11 +6,15 @@ if TYPE_CHECKING:
     from src.Coordinate import Coordinate as C
     from src.Piece import Piece
 
-class Move:
 
-    def __init__(self, piece: Piece, newPos: C, pieceToCapture: Optional[Piece] = None):
-        self.notation = ""
-        self.check = False
+class Move:
+    def __init__(
+            self,
+            piece: Piece,
+            newPos: C,
+            pieceToCapture: Optional[Piece] = None
+    ) -> None:
+        self.notation = ''
         self.checkmate = False
         self.kingsideCastle = False
         self.queensideCastle = False
@@ -23,9 +27,11 @@ class Move:
         self.newPos = newPos
         self.pieceToCapture = pieceToCapture
         # For en passant and castling
-        self.specialMovePiece = None  # TODO: this should be a 'Piece' type to satisfy mypy
+        # TODO: specialMovePiece should be a 'Piece' type to satisfy mypy
+        self.specialMovePiece = None
         # For castling
-        self.rookMove = None  # TODO: this should be a 'Move' type to satisfy mypy
+        # TODO: rookMove should be a 'Move' type to satisfy mypy
+        self.rookMove = None
 
     def __str__(self) -> str:
         displayString = 'Old pos : ' + str(self.oldPos) + \
@@ -42,13 +48,16 @@ class Move:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Move):
             return NotImplemented
-        if self.oldPos == other.oldPos and \
-           self.newPos == other.newPos and \
-           self.specialMovePiece == other.specialMovePiece:
+        if (
+                self.oldPos == other.oldPos and self.newPos == other.newPos
+                and self.specialMovePiece == other.specialMovePiece
+        ):
             if not self.specialMovePiece:
                 return True
-            if self.specialMovePiece and \
-               self.specialMovePiece == other.specialMovePiece:
+            if (
+                    self.specialMovePiece
+                    and self.specialMovePiece == other.specialMovePiece
+            ):
                 return True
             else:
                 return False
@@ -57,7 +66,3 @@ class Move:
 
     def __hash__(self) -> int:
         return hash((self.oldPos, self.newPos))
-
-    def reverse(self) -> Move:
-        return Move(self.piece, self.piece.position,
-                    pieceToCapture=self.pieceToCapture)

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Optional, no_type_check
+from typing import Optional
+
+from colored import attr, bg, fg
 
 from src.Bishop import Bishop
 from src.Coordinate import Coordinate as C
@@ -11,20 +13,20 @@ from src.Pawn import Pawn
 from src.Piece import Piece
 from src.Queen import Queen
 from src.Rook import Rook
-from colored import fg, bg, attr
+
 
 WHITE = True
 BLACK = False
 
-TILES = {
-    0:'#769656',
-    1:'#EEEED2',
-}
 
 class Board:
-
-    def __init__(self, mateInOne: bool = False, castleBoard: bool = False,
-                 passant: bool = False, promotion: bool = False):
+    def __init__(
+            self,
+            mateInOne: bool = False,
+            castleBoard: bool = False,
+            passant: bool = False,
+            promotion: bool = False,
+    ):
         self.pieces: list[Piece] = []
         self.history: list[tuple[Move, Optional[Piece]]] = []
         self.points = 0
@@ -35,31 +37,39 @@ class Board:
         self.blackColor = 'black'
         self.isCheckered = False
         self.tileColors = {
-            0:'#769656',
-            1:'#BACA44',
+            0: '#769656',
+            1: '#BACA44',
         }
 
         if not mateInOne and not castleBoard and not passant and not promotion:
-            self.pieces.extend([Rook(self, BLACK, C(0, 7)),
-                                Knight(self, BLACK, C(1, 7)),
-                                Bishop(self, BLACK, C(2, 7)),
-                                Queen(self, BLACK, C(3, 7)),
-                                King(self, BLACK, C(4, 7)),
-                                Bishop(self, BLACK, C(5, 7)),
-                                Knight(self, BLACK, C(6, 7)),
-                                Rook(self, BLACK, C(7, 7))])
+            self.pieces.extend(
+                [
+                    Rook(self, BLACK, C(0, 7)),
+                    Knight(self, BLACK, C(1, 7)),
+                    Bishop(self, BLACK, C(2, 7)),
+                    Queen(self, BLACK, C(3, 7)),
+                    King(self, BLACK, C(4, 7)),
+                    Bishop(self, BLACK, C(5, 7)),
+                    Knight(self, BLACK, C(6, 7)),
+                    Rook(self, BLACK, C(7, 7)),
+                ]
+            )
             for x in range(8):
                 self.pieces.append(Pawn(self, BLACK, C(x, 6)))
             for x in range(8):
                 self.pieces.append(Pawn(self, WHITE, C(x, 1)))
-            self.pieces.extend([Rook(self, WHITE, C(0, 0)),
-                                Knight(self, WHITE, C(1, 0)),
-                                Bishop(self, WHITE, C(2, 0)),
-                                Queen(self, WHITE, C(3, 0)),
-                                King(self, WHITE, C(4, 0)),
-                                Bishop(self, WHITE, C(5, 0)),
-                                Knight(self, WHITE, C(6, 0)),
-                                Rook(self, WHITE, C(7, 0))])
+            self.pieces.extend(
+                [
+                    Rook(self, WHITE, C(0, 0)),
+                    Knight(self, WHITE, C(1, 0)),
+                    Bishop(self, WHITE, C(2, 0)),
+                    Queen(self, WHITE, C(3, 0)),
+                    King(self, WHITE, C(4, 0)),
+                    Bishop(self, WHITE, C(5, 0)),
+                    Knight(self, WHITE, C(6, 0)),
+                    Rook(self, WHITE, C(7, 0)),
+                ]
+            )
 
         elif promotion:
             pawnToPromote = Pawn(self, WHITE, C(1, 6))
@@ -84,7 +94,7 @@ class Board:
             self.currentSide = WHITE
             return
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.wrapStringRep(self.makeUnicodeStringRep(self.pieces))
 
     def undoLastMove(self) -> None:
@@ -145,33 +155,37 @@ class Board:
         self.currentSide = not self.currentSide
 
     def isCheckmate(self) -> bool:
-        #Game continue even after checkmate
+        # Game continue even after checkmate
         if len(self.getAllMovesLegal(self.currentSide)) == 0:
             for move in self.getAllMovesUnfiltered(not self.currentSide):
                 pieceToTake = move.pieceToCapture
-                if pieceToTake and pieceToTake.stringRep == "K":
+                if pieceToTake and pieceToTake.stringRep == 'K':
                     return True
         return False
 
     def isStalemate(self) -> bool:
-        return len(self.getAllMovesLegal(self.currentSide)) == 0 and not self.isCheckmate()
+        return (
+            len(self.getAllMovesLegal(self.currentSide)) == 0
+            and not self.isCheckmate()
+        )
 
     def noMatingMaterial(self) -> bool:
         if len(self.pieces) == 2:
-            return True # just the kings
-        if (
-            len(self.pieces) == 3
-            and any(piece.stringRep == "B" or piece.stringRep == "N"
-                    for piece in self.pieces)
+            return True  # just the kings
+        if len(self.pieces) == 3 and any(
+                piece.stringRep == 'B' or piece.stringRep == 'N'
+                for piece in self.pieces
         ):
             return True
         return False
 
-    def getLastMove(self) -> Move:  # type: ignore[return]  # TODO: add consistent return for else condition
+    # TODO: add consistent return for else condition
+    def getLastMove(self) -> Move:  # type: ignore[return]
         if self.history:
             return self.history[-1][0]
 
-    def getLastPieceMoved(self) -> Piece:  # type: ignore[return]  # TODO: add consistent return for else condition
+    # TODO: add consistent return for else condition
+    def getLastPieceMoved(self) -> Piece:  # type: ignore[return]
         if self.history:
             return self.history[-1][0].piece
 
@@ -188,17 +202,14 @@ class Board:
 
         self.history.append((move, None))
 
-    def getCurrentSide(self) -> bool:
-        return self.currentSide
-
     def makeUnicodeStringRep(self, pieces: list[Piece]) -> str:
         DISPLAY_LOOKUP = {
-            "R": '♜',
-            "N": '♞',
-            "B": '♝',
-            "K": '♚',
-            "Q": '♛',
-            "▲": '♟',
+            'R': '♜',
+            'N': '♞',
+            'B': '♝',
+            'K': '♚',
+            'Q': '♛',
+            '▲': '♟',
         }
 
         stringRep = ''
@@ -209,23 +220,33 @@ class Board:
                     if p.position == C(x, y):
                         piece = p
                         break
-                bg_color = bg(self.tileColors[(x+y)%2]) if self.isCheckered else ''
+                bg_color = (
+                    bg(self.tileColors[(x + y) % 2])
+                    if self.isCheckered
+                    else ''
+                )
                 pieceRep = bg_color + '  ' + attr(0)
                 if piece:
                     side = piece.side
-                    color = self.whiteColor if side == WHITE else self.blackColor
+                    color = (
+                        self.whiteColor if side == WHITE else self.blackColor
+                    )
                     fg_color = fg(color)
-                    pieceRep = fg_color + bg_color + DISPLAY_LOOKUP[piece.stringRep] + ' ' + attr(0)
+                    pieceRep = fg_color + bg_color + \
+                        DISPLAY_LOOKUP[piece.stringRep] + ' ' + attr(0)
+
                 stringRep += pieceRep
             stringRep += '\n'
         return stringRep.rstrip()
 
     def wrapStringRep(self, stringRep: str) -> str:
         sRep = '\n'.join(
-            ['%d  %s' % (8-r, s.rstrip())
-             for r, s in enumerate(stringRep.split('\n'))] +
-            [' '*21, '   a b c d e f g h']
-            ).rstrip()
+            [
+                '%d  %s' % (8 - r, s.rstrip())
+                for r, s in enumerate(stringRep.split('\n'))
+            ]
+            + [' ' * 21, '   a b c d e f g h']
+        ).rstrip()
         return sRep
 
     def rankOfPiece(self, piece: Piece) -> str:
@@ -236,17 +257,18 @@ class Board:
         return str(piece.position[0]).translate(transTable)
 
     def getCoordinateNotationOfMove(self, move: Move) -> str:
-        notation = ""
+        notation = ''
         notation += self.positionToHumanCoord(move.oldPos)
         notation += self.positionToHumanCoord(move.newPos)
 
         if move.promotion:
-            notation += str(move.specialMovePiece.stringRep)  # type: ignore[attr-defined]
-
+            notation += str(
+                move.specialMovePiece.stringRep  # type: ignore[attr-defined] # noqa: E501
+            )
         return notation
 
     def getCaptureNotation(self, move: Move, short: bool = True) -> str:
-        notation = ""
+        notation = ''
         pieceToMove = move.piece
         pieceToTake = move.pieceToCapture
 
@@ -261,23 +283,26 @@ class Board:
             notation += self.positionToHumanCoord(move.newPos)
 
         if move.promotion:
-            notation += str(move.specialMovePiece.stringRep)  # type: ignore[attr-defined, operator]
-
+            notation += str(
+                move.specialMovePiece.stringRep   # type: ignore[attr-defined, operator]  # noqa: E501
+            )
         return notation
 
     def currentSideRep(self) -> str:
-        return "White" if self.currentSide else "Black"
+        return 'White' if self.currentSide else 'Black'
 
-    def getAlgebraicNotationOfMove(self, move: Move, short: bool = True) -> str:
-        notation = ""
+    def getAlgebraicNotationOfMove(
+            self, move: Move, short: bool = True
+    ) -> str:
+        notation = ''
         pieceToMove = move.piece
         pieceToTake = move.pieceToCapture
 
         if move.queensideCastle:
-            return "0-0-0"
+            return '0-0-0'
 
         if move.kingsideCastle:
-            return "0-0"
+            return '0-0'
 
         if not short or type(pieceToMove) is not Pawn:
             notation += pieceToMove.stringRep
@@ -290,13 +315,17 @@ class Board:
         notation += self.positionToHumanCoord(move.newPos)
 
         if move.promotion:
-            notation += "=" + str(move.specialMovePiece.stringRep)  # type: ignore[attr-defined]
+            notation += '=' + str(
+                move.specialMovePiece.stringRep   # type: ignore[attr-defined]  # noqa: E501
+            )
 
         return notation
 
-    def getAlgebraicNotationOfMoveWithFile(self, move: Move, short: bool = True) -> str:
+    def getAlgebraicNotationOfMoveWithFile(
+            self, move: Move, short: bool = True
+    ) -> str:
         # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
-        notation = ""
+        notation = ''
         pieceToMove = self.pieceAtPosition(move.oldPos)
         pieceToTake = self.pieceAtPosition(move.newPos)
 
@@ -310,9 +339,11 @@ class Board:
         notation += self.positionToHumanCoord(move.newPos)
         return notation
 
-    def getAlgebraicNotationOfMoveWithRank(self, move: Move, short: bool = True) -> str:
+    def getAlgebraicNotationOfMoveWithRank(
+            self, move: Move, short: bool = True
+    ) -> str:
         # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
-        notation = ""
+        notation = ''
         pieceToMove = self.pieceAtPosition(move.oldPos)
         pieceToTake = self.pieceAtPosition(move.newPos)
 
@@ -329,9 +360,11 @@ class Board:
         notation += self.positionToHumanCoord(move.newPos)
         return notation
 
-    def getAlgebraicNotationOfMoveWithFileAndRank(self, move: Move, short: bool = True) -> str:
+    def getAlgebraicNotationOfMoveWithFileAndRank(
+            self, move: Move, short: bool = True
+    ) -> str:
         # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
-        notation = ""
+        notation = ''
         pieceToMove = self.pieceAtPosition(move.oldPos)
         pieceToTake = self.pieceAtPosition(move.newPos)
 
@@ -347,18 +380,9 @@ class Board:
         notation += self.positionToHumanCoord(move.newPos)
         return notation
 
-    # TODO this method is never used, remove?
-    @no_type_check
-    def humanCoordToPosition(self, coord):
-        transTable = str.maketrans('abcdefgh', '12345678')
-        coord = coord.translate(transTable)
-        coord = [int(c)-1 for c in coord]
-        pos = C(coord[0], coord[1])
-        return pos
-
     def positionToHumanCoord(self, pos: C) -> str:
         transTable = str.maketrans('01234567', 'abcdefgh')
-        notation = str(pos[0]).translate(transTable) + str(pos[1]+1)
+        notation = str(pos[0]).translate(transTable) + str(pos[1] + 1)
         return notation
 
     def isValidPos(self, pos: C) -> bool:
@@ -367,15 +391,8 @@ class Board:
     def getSideOfMove(self, move: Move) -> bool:
         return move.piece.side
 
-    # TODO this method is never used, remove?
-    @no_type_check
-    def getPositionOfPiece(self, piece):
-        for y in range(8):
-            for x in range(8):
-                if self.boardArray[y][x] is piece:
-                    return C(x, 7-y)
-
-    def pieceAtPosition(self, pos: C) -> Piece:  # type: ignore[return] # TODO: add consistent return for else condition
+    # TODO: add consistent return for else condition
+    def pieceAtPosition(self, pos: C) -> Piece:  # type: ignore[return]
         for piece in self.pieces:
             if piece.position == pos:
                 return piece
@@ -386,35 +403,23 @@ class Board:
     def addPieceToPosition(self, piece: Piece, pos: C) -> None:
         piece.position = pos
 
-    # TODO this method is never used, remove?
-    @no_type_check
-    def clearPosition(self, pos):
-        x, y = self.coordToLocationInArray(pos)
-        self.boardArray[x][y] = None
-
-    # TODO this method is never used, remove?
-    @no_type_check
-    def coordToLocationInArray(self, pos):
-        return (7-pos[1], pos[0])
-
-    # TODO this method is never used, remove?
-    @no_type_check
-    def locationInArrayToCoord(self, loc):
-        return (loc[1], 7-loc[0])
-
     def makeMove(self, move: Move) -> None:
         self.addMoveToHistory(move)
         if move.kingsideCastle or move.queensideCastle:
             kingToMove = move.piece
             rookToMove = move.specialMovePiece
             self.movePieceToPosition(kingToMove, move.newPos)
-            self.movePieceToPosition(rookToMove, move.rookMove.newPos)  # type: ignore[arg-type, attr-defined]
+            self.movePieceToPosition(
+                rookToMove,  # type: ignore[arg-type]
+                move.rookMove.newPos  # type: ignore[attr-defined]
+            )
             kingToMove.movesMade += 1
             rookToMove.movesMade += 1  # type: ignore[attr-defined]
 
         elif move.passant:
             pawnToMove = move.piece
-            pawnToTake = move.specialMovePiece  # TODO fix specialMovePiece default type to be not None
+            # TODO fix specialMovePiece default type to be not None
+            pawnToTake = move.specialMovePiece
             pawnToMove.position = move.newPos
             self.pieces.remove(pawnToTake)  # type: ignore[arg-type]
             pawnToMove.movesMade += 1
@@ -431,9 +436,9 @@ class Board:
             # TODO fix specialMovePiece default type to be not None
             self.pieces.append(move.specialMovePiece)  # type: ignore[arg-type]
             if move.piece.side == WHITE:
-                self.points += move.specialMovePiece.value - 1  # type: ignore[attr-defined]
+                self.points += move.specialMovePiece.value - 1  # type: ignore[attr-defined]  # noqa: E501
             if move.piece.side == BLACK:
-                self.points -= move.specialMovePiece.value - 1  # type: ignore[attr-defined]
+                self.points -= move.specialMovePiece.value - 1  # type: ignore[attr-defined]  # noqa: E501
             move.piece.movesMade += 1
 
         else:
@@ -460,9 +465,14 @@ class Board:
         return points
 
     def getPointAdvantageOfSide(self, side: bool) -> int:
-        return self.getPointValueOfSide(side) - self.getPointValueOfSide(not side)
+        return (
+            self.getPointValueOfSide(side)
+            - self.getPointValueOfSide(not side)
+        )
 
-    def getAllMovesUnfiltered(self, side: bool, includeKing: bool = True) -> list[Move]:
+    def getAllMovesUnfiltered(
+            self, side: bool, includeKing: bool = True
+    ) -> list[Move]:
         unfilteredMoves = []
         for piece in self.pieces:
             if piece.side == side:
