@@ -1,7 +1,7 @@
 from src.Board import Board
 from src.InputParser import InputParser
 
-from . import makeBoardMoves
+from .conftest import makeBoardMoves
 
 def testMate():
     board = Board()
