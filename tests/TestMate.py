@@ -1,9 +1,7 @@
 from src.Board import Board
 from src.InputParser import InputParser
 
-from .conftest import makeBoardMoves
-
-def testMate():
+def testMate(makeBoardMoves):
     board = Board()
     
     # https://www.chess.com/terms/fools-mate
