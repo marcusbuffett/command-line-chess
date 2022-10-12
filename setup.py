@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 setup(
     name='cl-chess',
@@ -8,15 +8,9 @@ setup(
     author='Marcus Buffett',
     author_email='marcusbuffett@me.com',
     url='https://github.com/marcusbuffett/command-line-chess',
-    #download_url='https://github.com/peterldowns/mypackage/tarball/0.1',
-    entry_points={
-        'console_scripts': [
-            'chess = src.main:main',
-        ],
-    },
-    install_requires=[
-        'colored',
-        ],
+    # download_url='https://github.com/peterldowns/mypackage/tarball/0.1',
+    entry_points={'console_scripts': ['chess = src.main:main', ], },
+    install_requires=['colored', ],
     keywords=['chess', 'game'],
-    classifiers=["Programming Language :: Python :: 3"],
+    classifiers=['Programming Language :: Python :: 3'],
 )

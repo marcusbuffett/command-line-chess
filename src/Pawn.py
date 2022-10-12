@@ -18,11 +18,12 @@ BLACK = False
 
 
 class Pawn(Piece):
-
     stringRep = '▲'
     value = 1
 
-    def __init__(self, board: Board, side: bool, position: C, movesMade: int = 0):
+    def __init__(
+            self, board: Board, side: bool, position: C, movesMade: int = 0
+    ) -> None:
         super(Pawn, self).__init__(board, side, position)
         self.movesMade = movesMade
 
@@ -38,15 +39,16 @@ class Pawn(Piece):
             if self.board.pieceAtPosition(advanceOnePosition) is None:
                 col = advanceOnePosition[1]
                 if col == 7 or col == 0:
-                    piecesForPromotion = \
-                        [Rook(self.board, self.side, advanceOnePosition),
-                         Knight(self.board, self.side, advanceOnePosition),
-                         Bishop(self.board, self.side, advanceOnePosition),
-                         Queen(self.board, self.side, advanceOnePosition)]
+                    piecesForPromotion = [
+                        Rook(self.board, self.side, advanceOnePosition),
+                        Knight(self.board, self.side, advanceOnePosition),
+                        Bishop(self.board, self.side, advanceOnePosition),
+                        Queen(self.board, self.side, advanceOnePosition),
+                    ]
                     for piece in piecesForPromotion:
                         move = Move(self, advanceOnePosition)
                         move.promotion = True
-                        move.specialMovePiece = piece  # type: ignore[assignment]
+                        move.specialMovePiece = piece  # type: ignore[assignment]  # noqa: E501
                         yield move
                 else:
                     yield Move(self, advanceOnePosition)
@@ -56,13 +58,19 @@ class Pawn(Piece):
             movement = C(0, 2) if self.side == WHITE else C(0, -2)
             advanceTwoPosition = currentPosition + movement
             if self.board.isValidPos(advanceTwoPosition):
-                if self.board.pieceAtPosition(advanceTwoPosition) is None and \
-                   self.board.pieceAtPosition(advanceOnePosition) is None:
+                if (
+                        self.board.pieceAtPosition(advanceTwoPosition) is None
+                        and self.board.pieceAtPosition(
+                            advanceOnePosition) is None
+                ):
                     yield Move(self, advanceTwoPosition)
 
         # Pawn takes
-        movements = [C(1, 1), C(-1, 1)] \
-            if self.side == WHITE else [C(1, -1), C(-1, -1)]
+        movements = (
+            [C(1, 1), C(-1, 1)]
+            if self.side == WHITE
+            else [C(1, -1), C(-1, -1)]
+        )
 
         for movement in movements:
             newPosition = self.position + movement
@@ -72,22 +80,30 @@ class Pawn(Piece):
                     col = newPosition[1]
                     # Promotions
                     if col == 7 or col == 0:
-                        piecesForPromotion = \
-                            [Rook(self.board, self.side, newPosition),
-                             Knight(self.board, self.side, newPosition),
-                             Bishop(self.board, self.side, newPosition),
-                             Queen(self.board, self.side, newPosition)]
+                        piecesForPromotion = [
+                            Rook(self.board, self.side, newPosition),
+                            Knight(self.board, self.side, newPosition),
+                            Bishop(self.board, self.side, newPosition),
+                            Queen(self.board, self.side, newPosition),
+                        ]
                         for piece in piecesForPromotion:
-                            move = Move(self, newPosition, pieceToCapture=pieceToTake)
+                            move = Move(
+                                self, newPosition, pieceToCapture=pieceToTake
+                            )
                             move.promotion = True
-                            move.specialMovePiece = piece  # type: ignore[assignment]
+                            move.specialMovePiece = piece  # type: ignore[assignment]  # noqa: E501
                             yield move
                     else:
-                        yield Move(self, newPosition,
-                                   pieceToCapture=pieceToTake)
+                        yield Move(
+                            self, newPosition, pieceToCapture=pieceToTake
+                        )
 
         # En passant
-        movements = [C(1, 1), C(-1, 1)] if self.side == WHITE else [C(1, -1), C(-1, -1)]
+        movements = (
+            [C(1, 1), C(-1, 1)]
+            if self.side == WHITE
+            else [C(1, -1), C(-1, -1)]
+        )
         for movement in movements:
             posBesidePawn = self.position + C(movement[0], 0)
             if not self.board.isValidPos(posBesidePawn):
@@ -98,17 +114,24 @@ class Pawn(Piece):
             lastMove = self.board.getLastMove()
 
             if lastMove:
-                if lastMove.newPos - lastMove.oldPos == C(0, 2) or \
-                   lastMove.newPos - lastMove.oldPos == C(0, -2):
+                if (
+                        lastMove.newPos - lastMove.oldPos == C(0, 2)
+                        or lastMove.newPos - lastMove.oldPos == C(0, -2)
+                ):
                     lastMoveWasAdvanceTwo = True
 
-            if pieceBesidePawn and \
-               pieceBesidePawn.stringRep == Pawn.stringRep and \
-               pieceBesidePawn.side != self.side and \
-               lastPieceMoved is pieceBesidePawn and \
-               lastMoveWasAdvanceTwo:
-                move = Move(self, self.position + movement,
-                            pieceToCapture=pieceBesidePawn)
+            if (
+                    pieceBesidePawn
+                    and pieceBesidePawn.stringRep == Pawn.stringRep
+                    and pieceBesidePawn.side != self.side
+                    and lastPieceMoved is pieceBesidePawn
+                    and lastMoveWasAdvanceTwo
+            ):
+                move = Move(
+                    self,
+                    self.position + movement,
+                    pieceToCapture=pieceBesidePawn,
+                )
                 move.passant = True
-                move.specialMovePiece = pieceBesidePawn  # type: ignore[assignment]
+                move.specialMovePiece = pieceBesidePawn  # type: ignore[assignment]  # noqa: E501
                 yield move

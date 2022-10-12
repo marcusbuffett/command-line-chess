@@ -6,8 +6,12 @@ from src.Move import Move
 
 
 class MoveNode:
-
-    def __init__(self, move: Move, children: list[MoveNode], parent: Optional[MoveNode]):
+    def __init__(
+            self,
+            move: Move,
+            children: list[MoveNode],
+            parent: Optional[MoveNode]
+    ) -> None:
         self.move = move
         self.children = children
         self.parent = parent
@@ -21,7 +25,7 @@ class MoveNode:
         stringRep += "\n"
 
         for child in self.children:
-            stringRep += " " * self.getDepth() * 4
+            stringRep += ' ' * self.getDepth() * 4
             stringRep += str(child)
 
         return stringRep
@@ -54,14 +58,6 @@ class MoveNode:
         if self.move.checkmate and other.move.checkmate:
             return True
         return self.pointAdvantage == other.pointAdvantage
-
-    def getHighestNode(self) -> MoveNode:
-        highestNode = self
-        while True:
-            if highestNode.parent is not None:
-                highestNode = highestNode.parent
-            else:
-                return highestNode
 
     def getDepth(self) -> int:
         depth = 1

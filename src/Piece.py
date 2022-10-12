@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Iterator
+from typing import TYPE_CHECKING, Iterator
 
 from src.Coordinate import Coordinate as C
 from src.Move import Move
@@ -15,11 +15,12 @@ Y = 1
 
 
 class Piece:
-
     stringRep: str
     value: int
 
-    def __init__(self, board: Board, side: bool, position: C, movesMade: int = 0):
+    def __init__(
+            self, board: Board, side: bool, position: C, movesMade: int = 0
+    ) -> None:
         self.board = board
         self.side = side
         self.position = position
@@ -33,7 +34,9 @@ class Piece:
                ' -- Value : ' + str(self.value) + \
                " -- Moves made : " + str(self.movesMade)
 
-    def movesInDirectionFromPos(self, pos: C, direction: C, side: bool) -> Iterator[Move]:
+    def movesInDirectionFromPos(
+            self, pos: C, direction: C, side: bool
+    ) -> Iterator[Move]:
         for dis in range(1, 8):
             movement = C(dis * direction[X], dis * direction[Y])
             newPos = pos + movement
@@ -50,17 +53,13 @@ class Piece:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Piece):
             return NotImplemented
-        if self.board == other.board and \
-           self.side == other.side and \
-           self.position == other.position and \
-           self.__class__ == other.__class__:
+        if (
+                self.board == other.board and self.side == other.side
+                and self.position == other.position
+                and self.__class__ == other.__class__
+        ):
             return True
         return False
-
-    def copy(self) -> Piece:
-        cpy = self.__class__(self.board, self.side, self.position,
-                             movesMade=self.movesMade)
-        return cpy
 
     def getPossibleMoves(self) -> Iterator[Move]:
         pass
