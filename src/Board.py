@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Optional, no_type_check
 
-from termcolor import colored
-
 from src.Bishop import Bishop
 from src.Coordinate import Coordinate as C
 from src.King import King
@@ -13,7 +11,6 @@ from src.Pawn import Pawn
 from src.Piece import Piece
 from src.Queen import Queen
 from src.Rook import Rook
-import colored
 from colored import fg, bg, attr
 
 WHITE = True
