@@ -17,7 +17,7 @@ BLACK = False
 
 def askForPlayerSide() -> bool:
     playerChoiceInput = input(
-        'What side would you like to play as [wB]? '
+        'What side would you like to play as [wB]? ',
     ).lower()
     if 'w' in playerChoiceInput:
         print('You will play as white')
@@ -34,8 +34,8 @@ def askForDepthOfAI() -> int:
             input(
                 'How deep should the AI look for moves?\n'
                 'Warning : values above 3 will be very slow.'
-                ' [2]? '
-            )
+                ' [2]? ',
+            ),
         )
         while depthInput <= 0:
             depthInput = int(
@@ -43,8 +43,8 @@ def askForDepthOfAI() -> int:
                     'How deep should the AI look for moves?\n'
                     'Warning : values above 3 will be very slow. '
                     'Your input must be above 0.'
-                    ' [2]? '
-                )
+                    ' [2]? ',
+                ),
             )
 
     except KeyboardInterrupt:
@@ -75,7 +75,7 @@ def printCommandOptions() -> None:
 
 def printAllLegalMoves(board: Board, parser: InputParser) -> None:
     for move in parser.getLegalMovesWithNotation(
-        board.currentSide, short=True
+        board.currentSide, short=True,
     ):
         print(move.notation)
 
@@ -104,7 +104,7 @@ def printBoard(board: Board) -> None:
     print()
 
 
-def printGameMoves(history: list[tuple[Move, Optional[Piece]]]) -> None:
+def printGameMoves(history: list[tuple[Move, Piece | None]]) -> None:
     counter = 0
     for num, mv in enumerate(history):
         if num % 2 == 0:
@@ -202,7 +202,7 @@ def twoPlayerGame(board: Board) -> None:
             parser = parserBlack
         command = input(
             "It's your move, {}.".format(board.currentSideRep())
-            + " Type '?' for options. ? "
+            + " Type '?' for options. ? ",
         )
         if command.lower() == 'u':
             undoLastTwoMoves(board)

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import Optional
 
-from colored import attr, bg, fg
+from colored import attr
+from colored import bg
+from colored import fg
 
 from src.Bishop import Bishop
 from src.Coordinate import Coordinate as C
@@ -28,7 +30,7 @@ class Board:
             promotion: bool = False,
     ):
         self.pieces: list[Piece] = []
-        self.history: list[tuple[Move, Optional[Piece]]] = []
+        self.history: list[tuple[Move, Piece | None]] = []
         self.points = 0
         self.currentSide = WHITE
         self.movesMade = 0
@@ -52,7 +54,7 @@ class Board:
                     Bishop(self, BLACK, C(5, 7)),
                     Knight(self, BLACK, C(6, 7)),
                     Rook(self, BLACK, C(7, 7)),
-                ]
+                ],
             )
             for x in range(8):
                 self.pieces.append(Pawn(self, BLACK, C(x, 6)))
@@ -68,7 +70,7 @@ class Board:
                     Bishop(self, WHITE, C(5, 0)),
                     Knight(self, WHITE, C(6, 0)),
                     Rook(self, WHITE, C(7, 0)),
-                ]
+                ],
             )
 
         elif promotion:
@@ -245,7 +247,7 @@ class Board:
                 '%d  %s' % (8 - r, s.rstrip())
                 for r, s in enumerate(stringRep.split('\n'))
             ]
-            + [' ' * 21, '   a b c d e f g h']
+            + [' ' * 21, '   a b c d e f g h'],
         ).rstrip()
         return sRep
 
@@ -263,7 +265,7 @@ class Board:
 
         if move.promotion:
             notation += str(
-                move.specialMovePiece.stringRep  # type: ignore[attr-defined] # noqa: E501
+                move.specialMovePiece.stringRep,  # type: ignore[attr-defined] # noqa: E501
             )
         return notation
 
@@ -278,13 +280,13 @@ class Board:
             notation += pieceToMove.stringRep
         notation += 'x'
         if short:
-            notation += pieceToTake.stringRep  # type: ignore[union-attr]
+            notation += pieceToTake.stringRep
         else:
             notation += self.positionToHumanCoord(move.newPos)
 
         if move.promotion:
             notation += str(
-                move.specialMovePiece.stringRep   # type: ignore[attr-defined, operator]  # noqa: E501
+                move.specialMovePiece.stringRep,   # type: ignore[attr-defined, operator]  # noqa: E501
             )
         return notation
 
@@ -292,7 +294,7 @@ class Board:
         return 'White' if self.currentSide else 'Black'
 
     def getAlgebraicNotationOfMove(
-            self, move: Move, short: bool = True
+            self, move: Move, short: bool = True,
     ) -> str:
         notation = ''
         pieceToMove = move.piece
@@ -316,13 +318,13 @@ class Board:
 
         if move.promotion:
             notation += '=' + str(
-                move.specialMovePiece.stringRep   # type: ignore[attr-defined]  # noqa: E501
+                move.specialMovePiece.stringRep,   # type: ignore[attr-defined]  # noqa: E501
             )
 
         return notation
 
     def getAlgebraicNotationOfMoveWithFile(
-            self, move: Move, short: bool = True
+            self, move: Move, short: bool = True,
     ) -> str:
         # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
         notation = ''
@@ -340,7 +342,7 @@ class Board:
         return notation
 
     def getAlgebraicNotationOfMoveWithRank(
-            self, move: Move, short: bool = True
+            self, move: Move, short: bool = True,
     ) -> str:
         # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
         notation = ''
@@ -361,7 +363,7 @@ class Board:
         return notation
 
     def getAlgebraicNotationOfMoveWithFileAndRank(
-            self, move: Move, short: bool = True
+            self, move: Move, short: bool = True,
     ) -> str:
         # TODO: Use self.getAlgebraicNotationOfMove instead of repeating code
         notation = ''
@@ -410,8 +412,8 @@ class Board:
             rookToMove = move.specialMovePiece
             self.movePieceToPosition(kingToMove, move.newPos)
             self.movePieceToPosition(
-                rookToMove,  # type: ignore[arg-type]
-                move.rookMove.newPos  # type: ignore[attr-defined]
+                rookToMove,
+                move.rookMove.newPos,  # type: ignore[attr-defined]
             )
             kingToMove.movesMade += 1
             rookToMove.movesMade += 1  # type: ignore[attr-defined]
@@ -421,7 +423,7 @@ class Board:
             # TODO fix specialMovePiece default type to be not None
             pawnToTake = move.specialMovePiece
             pawnToMove.position = move.newPos
-            self.pieces.remove(pawnToTake)  # type: ignore[arg-type]
+            self.pieces.remove(pawnToTake)
             pawnToMove.movesMade += 1
 
         elif move.promotion:
@@ -434,7 +436,7 @@ class Board:
                     self.points += pieceToTake.value
                 self.pieces.remove(pieceToTake)
             # TODO fix specialMovePiece default type to be not None
-            self.pieces.append(move.specialMovePiece)  # type: ignore[arg-type]
+            self.pieces.append(move.specialMovePiece)
             if move.piece.side == WHITE:
                 self.points += move.specialMovePiece.value - 1  # type: ignore[attr-defined]  # noqa: E501
             if move.piece.side == BLACK:
@@ -471,7 +473,7 @@ class Board:
         )
 
     def getAllMovesUnfiltered(
-            self, side: bool, includeKing: bool = True
+            self, side: bool, includeKing: bool = True,
     ) -> list[Move]:
         unfilteredMoves = []
         for piece in self.pieces:

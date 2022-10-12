@@ -67,7 +67,7 @@ class AI:
         if node.children:
             for child in node.children:
                 child.pointAdvantage = self.getOptimalPointAdvantageForNode(
-                    child
+                    child,
                 )
 
             # If the depth is divisible by 2,
@@ -93,7 +93,7 @@ class AI:
         bestMoveNodes: list[MoveNode] = []
         for moveNode in moveTree:
             moveNode.pointAdvantage = self.getOptimalPointAdvantageForNode(
-                moveNode
+                moveNode,
             )
             if not bestMoveNodes:
                 bestMoveNodes.append(moveNode)

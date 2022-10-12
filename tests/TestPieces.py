@@ -6,7 +6,7 @@ from src.Knight import Knight
 
 
 @pytest.mark.parametrize(
-    ["coord", "expected"],
+    ['coord', 'expected'],
     [
         [(4, 4), [(6, 5), (6, 3), (2, 5), (2, 3), (5, 6), (5, 2), (3, 2), (3, 6)]],
         [(6, 4), [(8, 5), (8, 3), (4, 5), (4, 3), (7, 6), (7, 2), (5, 2), (5, 6)]],

@@ -1,7 +1,7 @@
 import pytest
 
-from src.InputParser import InputParser
 from src.Board import Board
+from src.InputParser import InputParser
 
 
 @pytest.fixture
