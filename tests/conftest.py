@@ -1,7 +1,6 @@
 import pytest
 
 from src.InputParser import InputParser
-from src.Board import Board
 
 
 @pytest.fixture

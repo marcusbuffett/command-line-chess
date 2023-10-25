@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from src.Move import Move
 
 
@@ -10,7 +8,7 @@ class MoveNode:
             self,
             move: Move,
             children: list[MoveNode],
-            parent: Optional[MoveNode]
+            parent: MoveNode | None,
     ) -> None:
         self.move = move
         self.children = children
@@ -19,10 +17,10 @@ class MoveNode:
         self.depth = 1
 
     def __str__(self) -> str:
-        stringRep = "Move : " + str(self.move) + \
-                    " Point advantage : " + str(self.pointAdvantage) + \
-                    " Checkmate : " + str(self.move.checkmate)
-        stringRep += "\n"
+        stringRep = 'Move : ' + str(self.move) + \
+                    ' Point advantage : ' + str(self.pointAdvantage) + \
+                    ' Checkmate : ' + str(self.move.checkmate)
+        stringRep += '\n'
 
         for child in self.children:
             stringRep += ' ' * self.getDepth() * 4

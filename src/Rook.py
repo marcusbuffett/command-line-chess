@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator
+from typing import Iterator
+from typing import TYPE_CHECKING
 
 from src.Coordinate import Coordinate as C
 from src.Move import Move
@@ -18,9 +19,9 @@ class Rook(Piece):
     value = 5
 
     def __init__(
-            self, board: Board, side: bool, position: C, movesMade: int = 0
+            self, board: Board, side: bool, position: C, movesMade: int = 0,
     ) -> None:
-        super(Rook, self).__init__(board, side, position)
+        super().__init__(board, side, position)
         self.movesMade = movesMade
 
     def getPossibleMoves(self) -> Iterator[Move]:
@@ -28,7 +29,6 @@ class Rook(Piece):
 
         directions = [C(0, 1), C(0, -1), C(1, 0), C(-1, 0)]
         for direction in directions:
-            for move in self.movesInDirectionFromPos(
-                    currentPosition, direction, self.side
-            ):
-                yield move
+            yield from self.movesInDirectionFromPos(
+                currentPosition, direction, self.side,
+            )

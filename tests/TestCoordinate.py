@@ -4,7 +4,7 @@ from src.Coordinate import Coordinate
 
 
 @pytest.mark.parametrize(
-    ["coords", "other", "expected"],
+    ['coords', 'other', 'expected'],
     [
         [(1, 1), (1, 1), (2, 2)],
         [(0, 1), (2, 3), (2, 4)],
@@ -13,8 +13,9 @@ from src.Coordinate import Coordinate
 def testAddition(coords, other, expected):
     assert Coordinate(*coords) + Coordinate(*other) == Coordinate(*expected)
 
+
 @pytest.mark.parametrize(
-    ["coords", "other", "expected"],
+    ['coords', 'other', 'expected'],
     [
         [(1, 1), (1, 1), (0, 0)],
         [(0, 1), (2, 3), (-2, -2)],
@@ -23,8 +24,9 @@ def testAddition(coords, other, expected):
 def testSubtraction(coords, other, expected):
     assert Coordinate(*coords) - Coordinate(*other) == Coordinate(*expected)
 
+
 @pytest.mark.parametrize(
-    ["coords", "other"],
+    ['coords', 'other'],
     [
         [(1, 1), (1, 1)],
         [(0, 1), 42],

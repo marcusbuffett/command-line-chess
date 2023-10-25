@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator
+from typing import Iterator
+from typing import TYPE_CHECKING
 
 from src.Coordinate import Coordinate as C
 from src.Move import Move
@@ -19,7 +20,7 @@ class Piece:
     value: int
 
     def __init__(
-            self, board: Board, side: bool, position: C, movesMade: int = 0
+            self, board: Board, side: bool, position: C, movesMade: int = 0,
     ) -> None:
         self.board = board
         self.side = side
@@ -30,12 +31,12 @@ class Piece:
         sideString = 'White' if self.side == WHITE else 'Black'
         return 'Type : ' + type(self).__name__ + \
                ' - Position : ' + str(self.position) + \
-               " - Side : " + sideString + \
+               ' - Side : ' + sideString + \
                ' -- Value : ' + str(self.value) + \
-               " -- Moves made : " + str(self.movesMade)
+               ' -- Moves made : ' + str(self.movesMade)
 
     def movesInDirectionFromPos(
-            self, pos: C, direction: C, side: bool
+            self, pos: C, direction: C, side: bool,
     ) -> Iterator[Move]:
         for dis in range(1, 8):
             movement = C(dis * direction[X], dis * direction[Y])
@@ -61,5 +62,5 @@ class Piece:
             return True
         return False
 
-    def getPossibleMoves(self) -> Iterator[Move]:
+    def getPossibleMoves(self) -> Iterator[Move]:  # type: ignore[empty-body]
         pass

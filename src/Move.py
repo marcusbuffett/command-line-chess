@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.Coordinate import Coordinate as C
@@ -12,7 +12,7 @@ class Move:
             self,
             piece: Piece,
             newPos: C,
-            pieceToCapture: Optional[Piece] = None
+            pieceToCapture: Piece | None = None,
     ) -> None:
         self.notation = ''
         self.checkmate = False
