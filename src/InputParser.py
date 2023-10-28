@@ -17,20 +17,21 @@ class InputParser:
         if regexCoordinateNotation.match(humanInput):
             return self.moveForCoordinateNotation(humanInput)
         regexAlgebraicNotation = re.compile(
-            '(?i)0-0|0-0-0|(?:[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8]|[Pa-h]x?[a-h])(?:=?[QRBN])?'  # noqa: E501
+            '(?i)0-0|0-0-0|(?:[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8]|[Pa-h]x?[a-h])(?:=?[QRBN])?',  # noqa: E501
         )
         if regexAlgebraicNotation.match(humanInput):
             return self.moveForShortAlgebraicNotation(humanInput)
         if re.compile('(?i)O-O|O-O-O').match(humanInput):
             return self.moveForShortAlgebraicNotation(
-                humanInput.upper().replace('O', '0')
+                humanInput.upper().replace('O', '0'),
             )
         raise ValueError('Invalid move: %s' % humanInput)
 
     def moveForCoordinateNotation(self, notation: str) -> Move:
         for move in self.board.getAllMovesLegal(self.side):
             if self.board.getCoordinateNotationOfMove(
-                    move).lower() == notation.lower():
+                    move,
+            ).lower() == notation.lower():
                 move.notation = self.notationForMove(move)
                 return move
         raise ValueError('Illegal move: %s' % notation)
@@ -55,30 +56,45 @@ class InputParser:
         shortNotation = notation.lower().replace('p', '').replace('=', '')
         if re.compile('[a-h][1-8]?[qrbn]?').match(shortNotation):
             for move in moves:
-                if type(move.piece) is Pawn and not move.pieceToCapture \
-                        and self.board.getCoordinateNotationOfMove(
-                        move).replace('=', '').lower().endswith(shortNotation):
+                if (
+                    type(move.piece) is Pawn and
+                    not move.pieceToCapture and
+                    self.board.getCoordinateNotationOfMove(move).replace(
+                        '=', '',
+                    ).lower().endswith(shortNotation)
+                ):
                     return move
             for move in moves:
-                if type(move.piece) is Pawn and not move.pieceToCapture \
-                        and re.sub(
+                if (
+                    type(move.piece) is Pawn and
+                    not move.pieceToCapture and
+                    re.sub(
                         '[1-8]', '', self.board.getCoordinateNotationOfMove(
-                                move), ).replace('=', '').lower().endswith(
-                        shortNotation):
+                        move,
+                        ),
+                    ).replace(
+                        '=', '',
+                    ).lower().endswith(shortNotation)
+                ):
                     return move  # ASSUME lazy pawn move (P)c is unambiguous
         shortNotation = shortNotation.lower().replace('x', '')
         if re.compile('[a-h]?[a-h][1-8]?[qrbn]?').match(shortNotation):
             for move in moves:
-                if type(move.piece) is Pawn and move.pieceToCapture \
-                        and self.board.getCaptureNotation(
-                        move).replace('x', '').lower().endswith(shortNotation):
+                if (
+                    type(move.piece) is Pawn and move.pieceToCapture
+                    and self.board.getCaptureNotation(
+                        move,
+                    ).replace('x', '').lower().endswith(shortNotation)
+                ):
                     # ASSUME lazier pawn capture (P)b(x)c3 is unambiguous
                     return move
             for move in moves:
                 if type(move.piece) is Pawn and move.pieceToCapture and re.sub(
                         '[1-8]', '',
-                        self.board.getCaptureNotation(move).replace('x',
-                                                                    ''),
+                        self.board.getCaptureNotation(move).replace(
+                            'x',
+                            '',
+                        ),
                 ).lower().endswith(shortNotation):
                     # ASSUME laziest pawn capture (P)b(x)c is unambiguous
                     return move
@@ -93,30 +109,31 @@ class InputParser:
         return ''  # return added to make mypy happy
 
     def getLegalMovesWithNotation(
-            self, side: bool, short: bool = True) -> list[Move]:
+            self, side: bool, short: bool = True,
+    ) -> list[Move]:
         moves = []
         for legalMove in self.board.getAllMovesLegal(side):
             moves.append(legalMove)
             legalMove.notation = self.board.getAlgebraicNotationOfMove(
-                legalMove, short
+                legalMove, short,
             )
 
         duplicateNotationMoves = self.duplicateMovesFromMoves(moves)
         for duplicateMove in duplicateNotationMoves:
             duplicateMove.notation = self.board.getAlgebraicNotationOfMoveWithFile(  # noqa: E501
-                duplicateMove, short
+                duplicateMove, short,
             )
 
         duplicateNotationMoves = self.duplicateMovesFromMoves(moves)
         for duplicateMove in duplicateNotationMoves:
             duplicateMove.notation = self.board.getAlgebraicNotationOfMoveWithRank(  # noqa: E501
-                duplicateMove, short
+                duplicateMove, short,
             )
 
         duplicateNotationMoves = self.duplicateMovesFromMoves(moves)
         for duplicateMove in duplicateNotationMoves:
             duplicateMove.notation = self.board.getAlgebraicNotationOfMoveWithFileAndRank(  # noqa: E501
-                duplicateMove, short
+                duplicateMove, short,
             )
 
         return moves
@@ -125,9 +142,9 @@ class InputParser:
         return list(
             filter(
                 lambda move: len(
-                    [m for m in moves if m.notation == move.notation]
+                    [m for m in moves if m.notation == move.notation],
                 )
                 > 1,
                 moves,
-            )
+            ),
         )

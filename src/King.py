@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator
+from typing import Iterator
+from typing import TYPE_CHECKING
 
 from src.Coordinate import Coordinate as C
 from src.Move import Move
@@ -18,9 +19,9 @@ class King(Piece):
     value = 100
 
     def __init__(
-            self, board: Board, side: bool, position: C, movesMade: int = 0
+            self, board: Board, side: bool, position: C, movesMade: int = 0,
     ) -> None:
-        super(King, self).__init__(board, side, position)
+        super().__init__(board, side, position)
         self.movesMade = movesMade
 
     def getPossibleMoves(self) -> Iterator[Move]:
@@ -77,7 +78,7 @@ class King(Piece):
                 return
 
             otherSideMoves = self.board.getAllMovesUnfiltered(
-                not self.side, includeKing=False
+                not self.side, includeKing=False,
             )
             for move in otherSideMoves:
                 if move.newPos == self.position:

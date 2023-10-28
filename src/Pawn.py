@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterator
+from typing import Iterator
+from typing import TYPE_CHECKING
 
 from src.Bishop import Bishop
 from src.Coordinate import Coordinate as C
@@ -22,9 +23,9 @@ class Pawn(Piece):
     value = 1
 
     def __init__(
-            self, board: Board, side: bool, position: C, movesMade: int = 0
+            self, board: Board, side: bool, position: C, movesMade: int = 0,
     ) -> None:
-        super(Pawn, self).__init__(board, side, position)
+        super().__init__(board, side, position)
         self.movesMade = movesMade
 
     # @profile
@@ -61,7 +62,8 @@ class Pawn(Piece):
                 if (
                         self.board.pieceAtPosition(advanceTwoPosition) is None
                         and self.board.pieceAtPosition(
-                            advanceOnePosition) is None
+                            advanceOnePosition,
+                        ) is None
                 ):
                     yield Move(self, advanceTwoPosition)
 
@@ -88,14 +90,14 @@ class Pawn(Piece):
                         ]
                         for piece in piecesForPromotion:
                             move = Move(
-                                self, newPosition, pieceToCapture=pieceToTake
+                                self, newPosition, pieceToCapture=pieceToTake,
                             )
                             move.promotion = True
                             move.specialMovePiece = piece  # type: ignore[assignment]  # noqa: E501
                             yield move
                     else:
                         yield Move(
-                            self, newPosition, pieceToCapture=pieceToTake
+                            self, newPosition, pieceToCapture=pieceToTake,
                         )
 
         # En passant
