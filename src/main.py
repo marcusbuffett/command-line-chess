@@ -13,6 +13,9 @@ from src.Piece import Piece
 WHITE = True
 BLACK = False
 
+VISIBLE = True
+INVISIBLE = False
+
 
 def askForPlayerSide() -> bool:
     playerChoiceInput = input(
@@ -51,6 +54,18 @@ def askForDepthOfAI() -> int:
     except Exception:
         print('Invalid input, defaulting to 2')
     return depthInput
+
+
+def askForBoardDisplay() -> bool:
+    displayInput = input(
+        'Would you like to display a board [yN]?'
+    ).lower()
+    if 'y' in displayInput:
+        print('You will see the board during the game')
+        return VISIBLE
+    else:
+        print('You will play a blind game')
+        return INVISIBLE
 
 
 def printCommandOptions() -> None:
@@ -116,7 +131,7 @@ def printGameMoves(history: list[tuple[Move, Piece | None]]) -> None:
     print()
 
 
-def startGame(board: Board, playerSide: bool, ai: AI) -> None:
+def startGame(board: Board, playerSide: bool, boardDisplay: bool, ai: AI) -> None:
     parser = InputParser(board, playerSide)
     while True:
         if board.isCheckmate():
@@ -164,14 +179,16 @@ def startGame(board: Board, playerSide: bool, ai: AI) -> None:
                 print('%s' % error)
                 continue
             makeMove(move, board)
-            printBoard(board)
+            if boardDisplay:
+                printBoard(board)
 
         else:
             print('AI thinking...')
             move = ai.getBestMove()
             move.notation = parser.notationForMove(move)
             makeMove(move, board)
-            printBoard(board)
+            if boardDisplay:
+                printBoard(board)
 
 
 def twoPlayerGame(board: Board) -> None:
@@ -281,8 +298,10 @@ def main() -> None:
             print()
             aiDepth = askForDepthOfAI()
             opponentAI = AI(board, not playerSide, aiDepth)
-            printBoard(board)
-            startGame(board, playerSide, opponentAI)
+            boardDisplay = askForBoardDisplay()
+            if boardDisplay:
+                printBoard(board)
+            startGame(board, playerSide, boardDisplay, opponentAI)
     except KeyboardInterrupt:
         sys.exit()
 
