@@ -7,6 +7,42 @@ if TYPE_CHECKING:
     from src.Piece import Piece
 
 
+class NullMove:
+    """
+    Represents a non-existent move (Null Object Pattern).
+    Used when there's no move history instead of returning None.
+    This allows code to safely call methods without None checks.
+    """
+    def __init__(self) -> None:
+        self.notation = ''
+        self.checkmate = False
+        self.kingsideCastle = False
+        self.queensideCastle = False
+        self.promotion = False
+        self.passant = False
+        self.stalemate = False
+        self.piece = None
+        self.oldPos = None
+        self.newPos = None
+        self.pieceToCapture = None
+        self.specialMovePiece = None
+        self.rookMove = None
+
+    def __bool__(self) -> bool:
+        """Makes 'if lastMove:' work correctly - returns False"""
+        return False
+
+    def __str__(self) -> str:
+        return 'NullMove (no move history)'
+
+    def __eq__(self, other: object) -> bool:
+        """NullMove is only equal to another NullMove"""
+        return isinstance(other, NullMove)
+
+    def __hash__(self) -> int:
+        return hash('NullMove')
+
+
 class Move:
     def __init__(
             self,
