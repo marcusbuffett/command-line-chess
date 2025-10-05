@@ -115,7 +115,7 @@ class Pawn(Piece):
             lastMoveWasAdvanceTwo = False
             lastMove = self.board.getLastMove()
 
-            if lastMove:
+            if isinstance(lastMove, Move):
                 if (
                         lastMove.newPos - lastMove.oldPos == C(0, 2)
                         or lastMove.newPos - lastMove.oldPos == C(0, -2)

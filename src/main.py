@@ -97,8 +97,6 @@ def undoLastTwoMoves(board: Board) -> None:
         board.undoLastMove()
     else:
         print('Warning: Not enough moves in history to undo.')
-    
-    
 
 
 def printBoard(board: Board) -> None:
