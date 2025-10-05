@@ -95,6 +95,10 @@ def undoLastTwoMoves(board: Board) -> None:
     if len(board.history) >= 2:
         board.undoLastMove()
         board.undoLastMove()
+    else:
+        print('Warning: Not enough moves in history to undo.')
+    
+    
 
 
 def printBoard(board: Board) -> None:
