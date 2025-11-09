@@ -23,6 +23,10 @@ class Bishop(Piece):
     ) -> None:
         super().__init__(board, side, position)
         self.movesMade = movesMade
+        if (C.rank + C.fil) % 2 == 0:
+            self.light = False
+        else:
+            self.light = True
 
     def getPossibleMoves(self) -> Iterator[Move]:
         currentPosition = self.position
