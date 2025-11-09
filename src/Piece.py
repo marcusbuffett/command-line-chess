@@ -15,6 +15,36 @@ X = 0
 Y = 1
 
 
+class NullPiece:
+    """
+    Represents a non-existent piece (Null Object Pattern).
+    Used when there's no piece instead of returning None.
+    """
+    stringRep = ''
+    value = 0
+
+    def __init__(self) -> None:
+        self.board = None
+        self.side = None
+        self.position = C(0, 0)
+        self.movesMade = 0
+
+    def __bool__(self) -> bool:
+        """Makes 'if piece:' return False"""
+        return False
+
+    def __str__(self) -> str:
+        return 'NullPiece (no piece)'
+
+    def __eq__(self, other: object) -> bool:
+        """NullPiece is only equal to another NullPiece"""
+        return isinstance(other, NullPiece)
+
+    def getPossibleMoves(self) -> Iterator[Move]:
+        """NullPiece has no possible moves"""
+        return iter([])
+
+
 class Piece:
     stringRep: str
     value: int

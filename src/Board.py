@@ -9,7 +9,9 @@ from src.Coordinate import Coordinate as C
 from src.King import King
 from src.Knight import Knight
 from src.Move import Move
+from src.Move import NullMove
 from src.Pawn import Pawn
+from src.Piece import NullPiece
 from src.Piece import Piece
 from src.Queen import Queen
 from src.Rook import Rook
@@ -179,15 +181,15 @@ class Board:
             return True
         return False
 
-    # TODO: add consistent return for else condition
-    def getLastMove(self) -> Move:  # type: ignore[return]
+    def getLastMove(self) -> Move | NullMove:
         if self.history:
             return self.history[-1][0]
+        return NullMove()
 
-    # TODO: add consistent return for else condition
-    def getLastPieceMoved(self) -> Piece:  # type: ignore[return]
+    def getLastPieceMoved(self) -> Piece | NullPiece:
         if self.history:
             return self.history[-1][0].piece
+        return NullPiece()
 
     def addMoveToHistory(self, move: Move) -> None:
         pieceTaken = None
