@@ -98,12 +98,38 @@ def undoLastTwoMoves(board: Board) -> None:
     else:
         print('Warning: Not enough moves in history to undo.')
 
+def printCapturedPieces(board: Board) -> None:
+    """Display captured pieces for each side based on move history."""
+    DISPLAY_LOOKUP = {
+        'R': '♜',
+        'N': '♞',
+        'B': '♝',
+        'K': '♚',
+        'Q': '♛',
+        '▲': '♟',
+    }
+    captured_pieces = [piece for (_, piece) in board.history if piece is not None]
+    white_captured = [p for p in captured_pieces if p.side is False]
+    black_captured = [p for p in captured_pieces if p.side is True]
+    def pieces_to_string(pieces: list[Piece]) -> str:
+        order = {'Q': 5, 'R': 4, 'B': 3, 'N': 2, '▲': 1, 'K': 0}
+        sorted_pieces = sorted(
+            pieces,
+            key=lambda p: order.get(p.stringRep, 0),
+            reverse=True,
+        )
+        return ''.join(DISPLAY_LOOKUP[p.stringRep] for p in sorted_pieces)
+    white_bar = pieces_to_string(white_captured)
+    black_bar = pieces_to_string(black_captured)
+    print(f"White captured: {white_bar}")
+    print(f"Black captured: {black_bar}")
 
 def printBoard(board: Board) -> None:
     print()
     print(board)
     print()
-
+    printCapturedPieces(board)
+    print()
 
 def printGameMoves(history: list[tuple[Move, Piece | None]]) -> None:
     counter = 0
