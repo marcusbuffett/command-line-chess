@@ -155,6 +155,7 @@ def startGame(board: Board, playerSide: bool, ai: AI) -> None:
                 continue
             elif command.lower() == 'gm':
                 printGameMoves(board.history)
+                continue
             elif command.lower() == 'r':
                 move = getRandomMove(board, parser)
             elif command.lower() == 'exit' or command.lower() == 'quit':
@@ -216,6 +217,7 @@ def twoPlayerGame(board: Board) -> None:
             continue
         elif command.lower() == 'gm':
             printGameMoves(board.history)
+            continue
         elif command.lower() == 'r':
             move = getRandomMove(board, parser)
         elif command.lower() == 'exit' or command.lower() == 'quit':
