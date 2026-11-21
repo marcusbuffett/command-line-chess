@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from src.Coordinate import Coordinate as C
 from src.Move import Move
+from src.Pawn import Pawn
 from src.Piece import Piece
 
 if TYPE_CHECKING:
@@ -94,6 +95,13 @@ class King(Piece):
                         or move.newPos == self.position - C(2, 0)
                 ):
                     queensideCastleCheck = True
+
+            # A pawn blocked by the king still attacks both transit squares.
+            pawn = self.board.pieceAtPosition(
+                self.position + C(0, 1 if self.side else -1),
+            )
+            if isinstance(pawn, Pawn) and pawn.side != self.side:
+                kingsideCastleCheck = queensideCastleCheck = True
 
             kingsideRookPos = self.position + C(3, 0)
             kingsideRook = (
