@@ -43,9 +43,6 @@ class InputParser:
         for move in moves:
             if move.notation.replace('x', '') == shortNotation:
                 return move  # Bxc3 versus bxc3
-        for move in moves:
-            if move.notation.replace('x', '').lower() == shortNotation.lower():
-                return move
         moves = self.getLegalMovesWithNotation(self.side, True)
         for move in moves:
             if move.notation.replace('x', '') == shortNotation:
